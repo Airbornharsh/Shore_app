@@ -1,6 +1,6 @@
 # shore_app
 
-A Social Media App
+Social Media App
 
 ## Getting Started
 

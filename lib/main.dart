@@ -1,11 +1,10 @@
-import 'dart:io';
-
 import 'package:file_picker/file_picker.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:shore_app/provider/User.dart';
 import 'package:shore_app/screens/HomeScreen.dart';
 import 'package:video_player/video_player.dart';
 
@@ -22,7 +21,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
-        // ChangeNotifierProvider.value(value: User()),
+        ChangeNotifierProvider.value(value: User()),
         // ChangeNotifierProvider.value(value: Expenses()),
         // ChangeNotifierProvider.value(value: OfflineExpenses()),
       ],
@@ -30,14 +29,11 @@ class MyApp extends StatelessWidget {
         title: 'MTrace',
         theme: ThemeData(
           colorScheme: ColorScheme.fromSwatch().copyWith(
-            primary: const Color.fromRGBO(203, 213, 225, 1),
+            primary: Color.fromARGB(255, 0, 190, 184),
           ),
         ),
         // home: const HomeScreen(),
-        home: HomeScreen(),
-        routes: {
-          // AuthScreen.routeName: (ctx) => const AuthScreen(),
-        },
+        home: const HomeScreen(),
       ),
     );
   }
