@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "587468145711",
+    "project_id": "shore-fccbb",
+    "storage_bucket": "shore-fccbb.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:587468145711:android:6648548c9775096fabf2da",
+        "android_client_info": {
+          "package_name": "com.airbornharsh.shore_app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "587468145711-kn76i4c85lrdn8tng8m18nrh62sc336t.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBKdXVJot9PvUPW0ZOHF22BKQRKhI5bu54"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "587468145711-kn76i4c85lrdn8tng8m18nrh62sc336t.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -4,11 +4,18 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:shore_app/firebase_options.dart';
+import 'package:shore_app/provider/Posts.dart';
 import 'package:shore_app/provider/User.dart';
+import 'package:shore_app/screens/AuthScreen.dart';
 import 'package:shore_app/screens/HomeScreen.dart';
 import 'package:video_player/video_player.dart';
 
-void main() {
+Future main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+
   runApp(const MyApp());
 }
 
@@ -22,6 +29,7 @@ class MyApp extends StatelessWidget {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider.value(value: User()),
+        ChangeNotifierProvider.value(value: Posts()),
         // ChangeNotifierProvider.value(value: Expenses()),
         // ChangeNotifierProvider.value(value: OfflineExpenses()),
       ],
@@ -34,6 +42,7 @@ class MyApp extends StatelessWidget {
         ),
         // home: const HomeScreen(),
         home: const HomeScreen(),
+        routes: {AuthScreen.routeName: (ctx) => AuthScreen()},
       ),
     );
   }
