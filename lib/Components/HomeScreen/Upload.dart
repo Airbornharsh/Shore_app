@@ -2,6 +2,7 @@ import "dart:io";
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:shore_app/Utils/snackBar.dart';
 import 'package:shore_app/provider/Posts.dart';
 import 'package:shore_app/provider/User.dart';
 import 'package:video_player/video_player.dart';
@@ -17,6 +18,14 @@ class _UploadState extends State<Upload> {
   late File tempFile;
   String isFile = "";
   late VideoPlayerController _controller;
+  final _descriptionController = TextEditingController();
+
+  @override
+  void dispose() {
+    _descriptionController.dispose(); // TODO: implement dispose
+
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -45,8 +54,9 @@ class _UploadState extends State<Upload> {
                 decoration: BoxDecoration(
                     border: Border.all(width: 0.9, color: Colors.black45)),
                 width: MediaQuery.of(context).size.width - 140,
-                child: const TextField(
-                  decoration: InputDecoration(
+                child: TextField(
+                  controller: _descriptionController,
+                  decoration: const InputDecoration(
                       border: InputBorder.none,
                       contentPadding: EdgeInsets.symmetric(horizontal: 10)),
                 ),
@@ -58,11 +68,26 @@ class _UploadState extends State<Upload> {
                 child: TextButton(
                   onPressed: () async {
                     try {
-                      await Provider.of<Posts>(context, listen: false)
-                          .postUpload(
-                              tempFile,
-                              Provider.of<User>(context, listen: false)
-                                  .getUserDetails);
+                      final user = Provider.of<User>(context, listen: false)
+                          .getUserDetails;
+                      final fileName =
+                          "${tempFile.path.split('/').last}_${DateTime.now().toString()}";
+                      final destination = "files/${user.id}/$fileName";
+
+                      bool res =
+                          await Provider.of<Posts>(context, listen: false)
+                              .postUpload(tempFile, _descriptionController.text,
+                                  fileName, destination);
+
+                      if (res) {
+                        snackBar(context, "Post Uploaded");
+                        setState(() {
+                          _descriptionController.clear();
+                          isFile = "";
+                        });
+                      } else {
+                        snackBar(context, "Try Again");
+                      }
                     } catch (e) {
                       print(e);
                     }
