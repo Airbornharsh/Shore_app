@@ -42,8 +42,8 @@ class _HomeScreenState extends State<HomeScreen> {
               const BoxDecoration(color: Color.fromARGB(31, 121, 121, 121)),
           height: MediaQuery.of(context).size.height - 130,
           child: Column(
-            children: [
-              const SizedBox(
+            children: const [
+              SizedBox(
                 height: 12,
               ),
               Upload()

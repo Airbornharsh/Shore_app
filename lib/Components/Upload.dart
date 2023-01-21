@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shore_app/provider/Posts.dart';
 import 'package:shore_app/provider/User.dart';
+import 'package:video_player/video_player.dart';
 
 class Upload extends StatefulWidget {
   const Upload({super.key});
@@ -15,17 +16,26 @@ class Upload extends StatefulWidget {
 class _UploadState extends State<Upload> {
   late File tempFile;
   String isFile = "";
+  late VideoPlayerController _controller;
 
   @override
   Widget build(BuildContext context) {
     return Container(
       decoration: const BoxDecoration(color: Colors.white),
       width: MediaQuery.of(context).size.width,
-      height: 140,
+      height: isFile == "image" ? 350 : 140,
       padding: const EdgeInsets.only(top: 10, right: 20, bottom: 10, left: 20),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: [
+          if (isFile == "image")
+            Image.file(
+              tempFile,
+              height: 190,
+            ),
+          const SizedBox(
+            height: 10,
+          ),
           Row(
             crossAxisAlignment: CrossAxisAlignment.center,
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -36,7 +46,9 @@ class _UploadState extends State<Upload> {
                     border: Border.all(width: 0.9, color: Colors.black45)),
                 width: MediaQuery.of(context).size.width - 140,
                 child: const TextField(
-                  decoration: InputDecoration(border: InputBorder.none),
+                  decoration: InputDecoration(
+                      border: InputBorder.none,
+                      contentPadding: EdgeInsets.symmetric(horizontal: 10)),
                 ),
               ),
               Container(
@@ -92,6 +104,7 @@ class _UploadState extends State<Upload> {
                     });
                   } catch (e) {
                     print(e);
+                    isFile = "";
                   }
                 },
                 child: Row(children: const [
@@ -114,7 +127,26 @@ class _UploadState extends State<Upload> {
                 height: 30,
               ),
               GestureDetector(
-                onTap: () {},
+                onTap: () async {
+                  try {
+                    FilePickerResult? result = await FilePicker.platform
+                        .pickFiles(type: FileType.video, allowMultiple: false);
+
+                    if (result == null) return;
+
+                    setState(() {
+                      isFile = "video";
+                      final path = result.files[0].path;
+
+                      tempFile = File(path as String);
+
+                      _controller = VideoPlayerController.file(tempFile);
+                    });
+                  } catch (e) {
+                    print(e);
+                    isFile = "";
+                  }
+                },
                 child: Row(children: const [
                   Icon(
                     Icons.video_collection_rounded,
