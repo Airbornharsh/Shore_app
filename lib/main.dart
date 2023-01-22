@@ -1,7 +1,4 @@
-import 'package:file_picker/file_picker.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:firebase_storage/firebase_storage.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shore_app/firebase_options.dart';
@@ -9,7 +6,6 @@ import 'package:shore_app/provider/Posts.dart';
 import 'package:shore_app/provider/User.dart';
 import 'package:shore_app/screens/AuthScreen.dart';
 import 'package:shore_app/screens/HomeScreen.dart';
-import 'package:video_player/video_player.dart';
 
 Future main() async {
   WidgetsFlutterBinding.ensureInitialized();

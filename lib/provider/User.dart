@@ -1,5 +1,7 @@
 import 'dart:convert';
+import 'dart:io';
 
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:http/http.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -24,8 +26,7 @@ class User with ChangeNotifier {
       commentLiked: [],
       commented: [],
       fav: []);
-  
-  
+
   late String _accessToken;
   late bool _isAuth = false;
 
@@ -43,9 +44,15 @@ class User with ChangeNotifier {
     var client = Client();
     final prefs = await SharedPreferences.getInstance();
     String domainUri = prefs.get("shore_backend_uri") as String;
+
+    print(domainUri);
     try {
       var tokenRes = await client.post(Uri.parse("$domainUri/api/user/login"),
           body: json.encode({"emailId": emailId, "password": password}),
+          // body: json.encode({
+          //   "emailId": "harshkeshri1234567@gmail.com",
+          //   "password": "Password1!"
+          // }),
           headers: {"Content-Type": "application/json"});
 
       if (tokenRes.statusCode != 200) {
@@ -84,15 +91,6 @@ class User with ChangeNotifier {
           commented: List<String>.from(parsedUserBody["commented"]),
           fav: List<String>.from(parsedUserBody["fav"]));
 
-      // _name = parsedUserBody["name"];
-      // _phoneNumber = parsedUserBody["phoneNumber"];
-      // _emailId = parsedUserBody["emailId"];
-      // _orders = parsedUserBody["orders"];
-      // _address = parsedUserBody["address"];
-      // _createdAt = parsedUserBody["createdAt"];
-      // _imgUrl = parsedUserBody["imgUrl"];
-      // _shopkeeper = parsedUserBody["shopkeeper"];
-
       return true;
     } catch (e) {
       print(e);
@@ -127,10 +125,15 @@ class User with ChangeNotifier {
             "password": password
           }),
           headers: {"Content-Type": "application/json"});
+
       if (res.statusCode != 200) {
+        print(res.body);
         return false;
       }
+
       var parsedBody = json.decode(res.body);
+
+      print(parsedBody);
 
       return true;
     } catch (e) {
@@ -141,4 +144,155 @@ class User with ChangeNotifier {
       notifyListeners();
     }
   }
+
+  Future<bool> postUpload(File file, String description, String fileName,
+      String destination) async {
+    var client = Client();
+    final prefs = await SharedPreferences.getInstance();
+    String domainUri = prefs.get("shore_backend_uri") as String;
+    try {
+      final fileUrl = await fileUpload(file, destination);
+
+      if (fileUrl == "") {
+        return false;
+      }
+
+      print(fileUrl);
+
+      final accessToken = prefs.get("shore_accessToken") as String;
+
+      var postRes = await client.post(Uri.parse("$domainUri/api/user/post/add"),
+          body: json.encode({"url": fileUrl, "description": description}),
+          headers: {"authorization": "Bearer $accessToken"});
+
+      var postResBody = json.decode(postRes.body);
+
+      print(postResBody);
+
+      return true;
+    } catch (e) {
+      print(e);
+      return false;
+    } finally {
+      notifyListeners();
+    }
+  }
+
+  Future fileUpload(File file, String destination) async {
+    try {
+      final ref = FirebaseStorage.instance.ref(destination);
+
+      final task = await ref.putFile(file);
+
+      if (task == null) return "";
+
+      final fileUrl = await task.ref.getDownloadURL();
+
+      return fileUrl;
+    } catch (e) {
+      print(e);
+      return "";
+    } finally {}
+  }
+
+  Future<bool> postLike(String postId) async {
+    var client = Client();
+    final prefs = await SharedPreferences.getInstance();
+    String domainUri = prefs.get("shore_backend_uri") as String;
+    try {
+      final accessToken = prefs.get("shore_accessToken") as String;
+
+      var res = await client.post(
+          Uri.parse("$domainUri/api/user/post/like/add"),
+          body: json.encode({"postId": postId}),
+          headers: {"authorization": "Bearer $accessToken"});
+
+      var resBody = json.decode(res.body);
+
+      print(resBody);
+
+      return true;
+    } catch (e) {
+      print(e);
+      return false;
+    } finally {
+      notifyListeners();
+    }
+  }
+
+  Future<bool> postUnlike(String postId) async {
+    var client = Client();
+    final prefs = await SharedPreferences.getInstance();
+    String domainUri = prefs.get("shore_backend_uri") as String;
+    try {
+      final accessToken = prefs.get("shore_accessToken") as String;
+
+      var res = await client.post(
+          Uri.parse("$domainUri/api/user/post/like/remove"),
+          body: json.encode({"postId": postId}),
+          headers: {"authorization": "Bearer $accessToken"});
+
+      var resBody = json.decode(res.body);
+
+      print(resBody);
+
+      return true;
+    } catch (e) {
+      print(e);
+      return false;
+    } finally {
+      notifyListeners();
+    }
+  }
+
+  Future<bool> postAddFav(String postId) async {
+    var client = Client();
+    final prefs = await SharedPreferences.getInstance();
+    String domainUri = prefs.get("shore_backend_uri") as String;
+    try {
+      final accessToken = prefs.get("shore_accessToken") as String;
+
+      var res = await client.post(Uri.parse("$domainUri/api/user/post/fav/add"),
+          body: json.encode({"postId": postId}),
+          headers: {"authorization": "Bearer $accessToken"});
+
+      var resBody = json.decode(res.body);
+
+      print(resBody);
+
+      return true;
+    } catch (e) {
+      print(e);
+      return false;
+    } finally {
+      notifyListeners();
+    }
+  }
+
+  Future<bool> postRemoveFav(String postId) async {
+    var client = Client();
+    final prefs = await SharedPreferences.getInstance();
+    String domainUri = prefs.get("shore_backend_uri") as String;
+    try {
+      final accessToken = prefs.get("shore_accessToken") as String;
+
+      var res = await client.post(
+          Uri.parse("$domainUri/api/user/post/fav/remove"),
+          body: json.encode({"postId": postId}),
+          headers: {"authorization": "Bearer $accessToken"});
+
+      var resBody = json.decode(res.body);
+
+      print(resBody);
+
+      return true;
+    } catch (e) {
+      print(e);
+      return false;
+    } finally {
+      notifyListeners();
+    }
+  }
+
+  // List<PostModel> loadPosts
 }

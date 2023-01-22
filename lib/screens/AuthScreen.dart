@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shore_app/provider/User.dart';
+import 'package:shore_app/screens/HomeScreen.dart';
 
 class AuthScreen extends StatefulWidget {
   static const routeName = "/auth";
@@ -100,7 +101,8 @@ class _AuthScreenState extends State<AuthScreen> {
                     },
                   ),
                 );
-                Navigator.of(context).pop();
+                Navigator.of(context)
+                    .popAndPushNamed(HomeScreen.routeName);
               } else {
                 var snackBar = const SnackBar(
                   content: Text('Try Again'),
@@ -270,12 +272,12 @@ class _AuthScreenState extends State<AuthScreen> {
                   setState(() {
                     isLoading = false;
                   });
-                  _nameController.clear();
-                  _userNameController.clear();
-                  _phoneNumberController.clear();
-                  _emailIdController.clear();
-                  _passwordController.clear();
-                  _confirmPasswordController.clear();
+                  // _nameController.clear();
+                  // _userNameController.clear();
+                  // _phoneNumberController.clear();
+                  // _emailIdController.clear();
+                  // _passwordController.clear();
+                  // _confirmPasswordController.clear();
                 }
                 // setState(() {
                 //   isConfirmCode = true;

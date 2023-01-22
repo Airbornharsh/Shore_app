@@ -39,23 +39,26 @@ class UserModel {
 }
 
 class PostModel {
+  final String id;
   final String userId;
   final String description;
   final String url;
-  final String postDate;
+  final String postedDate;
   final List<String> likes;
   final List<String> comments;
 
   PostModel(
-      {required this.userId,
+      {required this.id,
+      required this.userId,
       required this.description,
       required this.url,
-      required this.postDate,
+      required this.postedDate,
       required this.likes,
       required this.comments});
 }
 
 class CommentModel {
+  final String id;
   final String commented;
   final String description;
   final String to;
@@ -63,6 +66,7 @@ class CommentModel {
   final List<String> likes;
 
   CommentModel({
+    required this.id,
     required this.commented,
     required this.description,
     required this.to,

@@ -19,7 +19,9 @@ class _ProfileState extends State<Profile> {
             const BoxDecoration(color: Color.fromARGB(31, 121, 121, 121)),
         height: MediaQuery.of(context).size.height,
         child: Column(
-          children:  [],
+          children:  [
+            
+          ],
         ),
       ),
     );

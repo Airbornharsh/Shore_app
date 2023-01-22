@@ -10,6 +10,7 @@ import 'package:shore_app/screens/AuthScreen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
+  static const routeName = "/";
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
@@ -24,8 +25,8 @@ class _HomeScreenState extends State<HomeScreen> {
     void onLoad() async {
       final prefs = await SharedPreferences.getInstance();
       // prefs.setString("hopl_backend_uri", "http://localhost:3000");
-      prefs.setString("shore_backend_uri", "http://10.0.2.2:3000");
-      // prefs.setString("hopl_backend_uri", "https://hopl.vercel.app");
+      // prefs.setString("shore_backend_uri", "http://10.0.2.2:3000");
+      prefs.setString("shore_backend_uri", "https://shore.vercel.app");
     }
 
     onLoad();
@@ -48,7 +49,8 @@ class _HomeScreenState extends State<HomeScreen> {
                 if (!Provider.of<User>(context).getIsAuth)
                   IconButton(
                       onPressed: () {
-                        Navigator.of(context).pushNamed(AuthScreen.routeName);
+                        Navigator.of(context)
+                            .popAndPushNamed(AuthScreen.routeName);
                       },
                       icon: const Icon(Icons.login)),
                 const SizedBox(

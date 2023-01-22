@@ -75,7 +75,7 @@ class _UploadState extends State<Upload> {
                       final destination = "files/${user.id}/$fileName";
 
                       bool res =
-                          await Provider.of<Posts>(context, listen: false)
+                          await Provider.of<User>(context, listen: false)
                               .postUpload(tempFile, _descriptionController.text,
                                   fileName, destination);
 
