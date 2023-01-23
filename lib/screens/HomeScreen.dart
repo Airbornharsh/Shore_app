@@ -2,15 +2,17 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:shore_app/Components/HomeScreen/Home.dart';
-import 'package:shore_app/Components/HomeScreen/Profile.dart';
+import 'package:shore_app/Components/Profile/Profile.dart';
 import 'package:shore_app/Components/HomeScreen/Requests.dart';
-import 'package:shore_app/Components/HomeScreen/Upload.dart';
+import 'package:shore_app/models.dart';
+import 'package:shore_app/provider/Posts.dart';
 import 'package:shore_app/provider/User.dart';
 import 'package:shore_app/screens/AuthScreen.dart';
 
 class HomeScreen extends StatefulWidget {
-  const HomeScreen({super.key});
+  HomeScreen({super.key});
   static const routeName = "/";
+  int start = 1;
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
@@ -18,6 +20,7 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   int _selectedIndex = 0;
+  List<PostModel> postList = [];
 
   @override
   void initState() {
@@ -36,17 +39,36 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    setState(() {
+      if (widget.start == 1) {
+        Provider.of<Posts>(context, listen: false).loadPosts().then((el) {
+          setState(() {
+            postList = el;
+            widget.start = 0;
+          });
+        });
+      }
+    });
+
+    void reloadPosts() {
+      Provider.of<Posts>(context, listen: false).loadPosts().then((el) {
+        setState(() {
+          postList = el;
+        });
+      });
+    }
+
     List<Widget> selectedWidget = [
-      const Home(),
+      Home(postList: postList, reloadPosts: reloadPosts),
       const Requests(),
-      const Profile()
+      Profile()
     ];
 
     return Scaffold(
-      appBar: _selectedIndex == 0
+      appBar: _selectedIndex == 0 || _selectedIndex == 2
           ? AppBar(
               actions: [
-                if (!Provider.of<User>(context).getIsAuth)
+                if (!Provider.of<User>(context, listen: false).getIsAuth)
                   IconButton(
                       onPressed: () {
                         Navigator.of(context)
@@ -90,9 +112,14 @@ class _HomeScreenState extends State<HomeScreen> {
           BottomNavigationBarItem(icon: Icon(Icons.person), label: ""),
         ],
         onTap: (value) {
-          setState(() {
-            _selectedIndex = value;
-          });
+          if (value == 2 &&
+              !Provider.of<User>(context, listen: false).getIsAuth) {
+            Navigator.of(context).popAndPushNamed(AuthScreen.routeName);
+          } else {
+            setState(() {
+              _selectedIndex = value;
+            });
+          }
         },
       ),
       body: selectedWidget[_selectedIndex],

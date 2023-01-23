@@ -5,6 +5,7 @@ import 'package:shore_app/firebase_options.dart';
 import 'package:shore_app/provider/Posts.dart';
 import 'package:shore_app/provider/User.dart';
 import 'package:shore_app/screens/AuthScreen.dart';
+import 'package:shore_app/screens/EditProfileScreen.dart';
 import 'package:shore_app/screens/HomeScreen.dart';
 
 Future main() async {
@@ -37,8 +38,11 @@ class MyApp extends StatelessWidget {
           ),
         ),
         // home: const HomeScreen(),
-        home: const HomeScreen(),
-        routes: {AuthScreen.routeName: (ctx) => const AuthScreen()},
+        home: HomeScreen(),
+        routes: {
+          AuthScreen.routeName: (ctx) => const AuthScreen(),
+          EditProfileScreen.routeName: (ctx) =>  EditProfileScreen()
+        },
       ),
     );
   }

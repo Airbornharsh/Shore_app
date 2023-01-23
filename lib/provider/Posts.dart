@@ -28,6 +28,9 @@ class Posts with ChangeNotifier {
             userId: post["userId"].toString(),
             description: post["description"].toString(),
             url: post["url"].toString(),
+            profileUrl: post["profileUrl"].toString(),
+            profileName: post["profileName"].toString(),
+            profileUserName: post["profileUserName"].toString(),
             postedDate: post["postedDate"].toString(),
             likes: List<String>.from(post["likes"]),
             comments: List<String>.from(post["comments"]));
@@ -48,5 +51,5 @@ class Posts with ChangeNotifier {
 
   bool isUserFav(UserModel user, String id) {
     return user.fav.contains(id);
-  } 
+  }
 }

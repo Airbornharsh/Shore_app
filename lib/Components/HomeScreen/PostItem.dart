@@ -32,8 +32,6 @@ class _PostItemState extends State<PostItem> {
             .isUserLiked(widget.post, userDetails.id);
         isFav = Provider.of<Posts>(context, listen: false)
             .isUserFav(userDetails, widget.post.id);
-
-        print(isFav);
       });
       widget.start = 0;
     }
@@ -55,7 +53,9 @@ class _PostItemState extends State<PostItem> {
                         ClipRRect(
                             borderRadius: BorderRadius.circular(10),
                             child: Image.network(
-                              "https://t4.ftcdn.net/jpg/03/64/21/11/360_F_364211147_1qgLVxv1Tcq0Ohz3FawUfrtONzz8nq3e.jpg",
+                              widget.post.profileUrl.isNotEmpty
+                                  ? widget.post.profileUrl
+                                  : "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png",
                               height: 50,
                               width: 50,
                               fit: BoxFit.cover,
@@ -67,9 +67,9 @@ class _PostItemState extends State<PostItem> {
                           mainAxisAlignment: MainAxisAlignment.center,
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            const Text(
-                              "Harsh Keshri",
-                              style: TextStyle(
+                            Text(
+                              widget.post.profileName,
+                              style: const TextStyle(
                                   fontWeight: FontWeight.w600, fontSize: 15),
                             ),
                             const SizedBox(
@@ -183,9 +183,7 @@ class _PostItemState extends State<PostItem> {
                           width: MediaQuery.of(context).size.width / 3,
                           child: Center(
                             child: IconButton(
-                                onPressed: () {
-                                  
-                                },
+                                onPressed: () {},
                                 icon: const Icon(
                                   Icons.comment_bank_outlined,
                                   color: Colors.grey,

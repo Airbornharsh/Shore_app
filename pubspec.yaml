@@ -45,6 +45,8 @@ dependencies:
   http: ^0.13.5
   shared_preferences: ^2.0.15
   splashscreen: ^1.3.5
+  flutter_native_image: ^0.0.6+1
+  path_provider: ^2.0.11
 
 dev_dependencies:
   flutter_test:

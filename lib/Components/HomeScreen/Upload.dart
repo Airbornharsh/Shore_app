@@ -1,6 +1,7 @@
 import "dart:io";
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_native_image/flutter_native_image.dart';
 import 'package:provider/provider.dart';
 import 'package:shore_app/Utils/snackBar.dart';
 import 'package:shore_app/provider/Posts.dart';
@@ -74,10 +75,9 @@ class _UploadState extends State<Upload> {
                           "${tempFile.path.split('/').last}_${DateTime.now().toString()}";
                       final destination = "files/${user.id}/$fileName";
 
-                      bool res =
-                          await Provider.of<User>(context, listen: false)
-                              .postUpload(tempFile, _descriptionController.text,
-                                  fileName, destination);
+                      bool res = await Provider.of<User>(context, listen: false)
+                          .postUpload(tempFile, _descriptionController.text,
+                              fileName, destination);
 
                       if (res) {
                         snackBar(context, "Post Uploaded");
@@ -118,14 +118,18 @@ class _UploadState extends State<Upload> {
 
                     if (result == null) return;
 
-                    setState(() {
-                      if (["jpg", "jpeg", "png", "svg"]
-                          .contains(result.files[0].extension)) {
-                        isFile = "image";
-                        final path = result.files[0].path;
+                    isFile = "image";
+                    String path = result.files[0].path as String;
 
-                        tempFile = File(path as String);
-                      }
+                    File? compressedFile =
+                        await FlutterNativeImage.compressImage(
+                      path,
+                      quality: 30,
+                      percentage: 30,
+                    );
+
+                    setState(() {
+                      tempFile = compressedFile;
                     });
                   } catch (e) {
                     print(e);

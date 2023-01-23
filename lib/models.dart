@@ -9,10 +9,10 @@ class UserModel {
   final String joinedDate;
   final String phoneNumber;
   final List<String> posts;
-  final List<String> friends;
+  final List<String> followers;
+  final List<String> followings;
   final List<String> closeFriends;
   final List<Map<String, dynamic>> requestingFriends;
-  final List<String> requestedFriends;
   final List<String> postLiked;
   final List<String> commentLiked;
   final List<String> commented;
@@ -28,9 +28,9 @@ class UserModel {
       required this.joinedDate,
       required this.phoneNumber,
       required this.posts,
-      required this.friends,
+      required this.followers,
+      required this.followings,
       required this.closeFriends,
-      required this.requestedFriends,
       required this.requestingFriends,
       required this.postLiked,
       required this.commentLiked,
@@ -43,11 +43,36 @@ class PostModel {
   final String userId;
   final String description;
   final String url;
+  final String profileUrl;
+  final String profileName;
+  final String profileUserName;
   final String postedDate;
   final List<String> likes;
   final List<String> comments;
 
   PostModel(
+      {required this.id,
+      required this.userId,
+      required this.description,
+      required this.url,
+      required this.profileUrl,
+      required this.profileName,
+      required this.profileUserName,
+      required this.postedDate,
+      required this.likes,
+      required this.comments});
+}
+
+class UserPostModel {
+  final String id;
+  final String userId;
+  final String description;
+  final String url;
+  final String postedDate;
+  final List<String> likes;
+  final List<String> comments;
+
+  UserPostModel(
       {required this.id,
       required this.userId,
       required this.description,
