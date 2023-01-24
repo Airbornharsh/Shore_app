@@ -19,8 +19,8 @@ class EditProfileScreen extends StatefulWidget {
 }
 
 class _EditProfileScreenState extends State<EditProfileScreen> {
-  bool isFile = false;
-  late File tempFile;
+  bool _isFile = false;
+  late File _tempFile;
   final _nameController = TextEditingController();
   final _genderController = TextEditingController();
   final _emailIdController = TextEditingController();
@@ -51,7 +51,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
       _emailIdController.text = user.emailId;
       _phoneNumberController.text = user.phoneNumber;
       setState(() {
-        tempFile = File(user.imgUrl.isNotEmpty
+        _tempFile = File(user.imgUrl.isNotEmpty
             ? user.imgUrl
             : "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png");
       });
@@ -78,29 +78,29 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
 
                   if (result == null) return;
 
-                  isFile = true;
+                  _isFile = true;
                   String path = result.files[0].path as String;
 
                   File? compressedFile = await FlutterNativeImage.compressImage(
                       path,
-                      quality: 10,
-                      percentage: 20);
+                      quality: 20,
+                      percentage: 30);
 
                   setState(() {
-                    tempFile = compressedFile;
+                    _tempFile = compressedFile;
                   });
                 } catch (e) {
                   print(e);
-                  isFile = false;
+                  _isFile = false;
                 }
               },
               child: Stack(
                 children: [
                   ClipRRect(
                       borderRadius: BorderRadius.circular(10),
-                      child: isFile
+                      child: _isFile
                           ? Image.file(
-                              tempFile,
+                              _tempFile,
                               height: 90,
                               width: 90,
                               fit: BoxFit.cover,
@@ -112,6 +112,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                               height: 90,
                               width: 90,
                               fit: BoxFit.cover,
+                              filterQuality: FilterQuality.low,
                             )),
                   const Positioned(
                     right: 0,
@@ -208,15 +209,15 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                 try {
                   final user =
                       Provider.of<User>(context, listen: false).getUserDetails;
-                  final fileName = isFile
-                      ? "${tempFile.path.split('/').last}_${DateTime.now().toString()}"
+                  final fileName = _isFile
+                      ? "${_tempFile.path.split('/').last}_${DateTime.now().toString()}"
                       : "";
                   final destination = "profile/${user.id}/$fileName";
 
-                  String res = isFile
+                  String res = _isFile
                       ? await Provider.of<User>(context, listen: false)
                           .editProfileWithImg(
-                          file: tempFile,
+                          file: _tempFile,
                           fileName: fileName,
                           destination: destination,
                           name: _nameController.text,
@@ -243,7 +244,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                     _phoneNumberController.text = "";
                     setState(() {
                       // _descriptionController.clear();
-                      isFile = true;
+                      _isFile = true;
                     });
                   } else if (res == "withoutImg") {
                     snackBar(context, "Updated");

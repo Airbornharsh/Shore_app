@@ -1,3 +1,4 @@
+import 'dart:ffi';
 import "dart:io";
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
@@ -16,8 +17,10 @@ class Upload extends StatefulWidget {
 }
 
 class _UploadState extends State<Upload> {
-  late File tempFile;
-  String isFile = "";
+  late File _tempFile;
+  late File _originalFile;
+  String _isFile = "";
+  bool _isCroppped = false;
   late VideoPlayerController _controller;
   final _descriptionController = TextEditingController();
 
@@ -33,16 +36,165 @@ class _UploadState extends State<Upload> {
     return Container(
       decoration: const BoxDecoration(color: Colors.white),
       width: MediaQuery.of(context).size.width,
-      height: isFile == "image" ? 350 : 140,
-      padding: const EdgeInsets.only(top: 10, right: 20, bottom: 10, left: 20),
+      // height: _isFile == "image"
+      //     ? MediaQuery.of(context).size.width - 10 + 160
+      //     : 140,
+      padding:
+          const EdgeInsets.only(top: 10, right: 20, bottom: 10, left: 20),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: [
-          if (isFile == "image")
-            Image.file(
-              tempFile,
-              height: 190,
+          Container(
+            width: MediaQuery.of(context).size.width,
+            child: Stack(
+              children: [
+                if (_isFile == "image")
+                  Center(
+                    child: Image.file(
+                      _tempFile,
+                      height: MediaQuery.of(context).size.width,
+                      // width: MediaQuery.of(context).size.width - 10,
+                      fit: BoxFit.contain,
+                    ),
+                  ),
+                if (_isFile == "image")
+                  Positioned(
+                      right: 0,
+                      bottom: 0,
+                      child: Container(
+                        child: _isCroppped
+                            ? IconButton(
+                                onPressed: () async {
+                                  final fileHeight =
+                                      (await decodeImageFromList(
+                                              (_originalFile)
+                                                  .readAsBytesSync()))
+                                          .height;
+                                  final fileWidth =
+                                      (await decodeImageFromList(
+                                              (_originalFile)
+                                                  .readAsBytesSync()))
+                                          .width;
+    
+                                  final compressedtargetwidth =
+                                      (400 / fileHeight) * fileWidth;
+    
+                                  File? compressedFile =
+                                      400 / compressedtargetwidth != 4 / 3
+                                          ? await FlutterNativeImage
+                                              .compressImage(
+                                                  _originalFile.path,
+                                                  quality: 40,
+                                                  targetHeight: 400 * 2,
+                                                  targetWidth:
+                                                      compressedtargetwidth
+                                                              .toInt() *
+                                                          2)
+                                          : await FlutterNativeImage
+                                              .compressImage(
+                                                  _originalFile.path,
+                                                  quality: 40,
+                                                  targetHeight:
+                                                      compressedtargetwidth
+                                                              .toInt() *
+                                                          2,
+                                                  targetWidth: 400 * 2);
+    
+                                  setState(() {
+                                    _isCroppped = false;
+                                    _tempFile = compressedFile;
+                                    print(_tempFile.lengthSync());
+                                  });
+                                },
+                                icon: Icon(
+                                  Icons.crop_original,
+                                  color: Colors.grey.shade700,
+                                ))
+                            : IconButton(
+                                onPressed: () async {
+                                  var fileHeight = (await decodeImageFromList(
+                                          (_originalFile).readAsBytesSync()))
+                                      .height;
+                                  var fileWidth = (await decodeImageFromList(
+                                          (_originalFile).readAsBytesSync()))
+                                      .width;
+    
+                                  var offset = fileHeight > fileWidth
+                                      ? (fileHeight - fileWidth) / 2
+                                      : (fileWidth - fileHeight) / 2;
+    
+                                  File croppedFile = (fileHeight /
+                                              fileWidth) ==
+                                          (4 / 3)
+                                      ? await FlutterNativeImage.cropImage(
+                                          _originalFile.path,
+                                          offset.round(),
+                                          0,
+                                          fileHeight > fileWidth
+                                              ? fileWidth
+                                              : fileHeight,
+                                          fileHeight > fileWidth
+                                              ? fileWidth
+                                              : fileHeight)
+                                      : await FlutterNativeImage.cropImage(
+                                          _originalFile.path,
+                                          fileHeight > fileWidth
+                                              ? 0
+                                              : offset.round(),
+                                          fileHeight > fileWidth
+                                              ? offset.round()
+                                              : 0,
+                                          fileHeight > fileWidth
+                                              ? fileWidth
+                                              : fileHeight,
+                                          fileHeight > fileWidth
+                                              ? fileWidth
+                                              : fileHeight);
+    
+                                  final fileHeight1 =
+                                      (await decodeImageFromList((croppedFile)
+                                              .readAsBytesSync()))
+                                          .height;
+                                  final fileWidth1 =
+                                      (await decodeImageFromList((croppedFile)
+                                              .readAsBytesSync()))
+                                          .width;
+    
+                                  File? compressedFile =
+                                      await FlutterNativeImage.compressImage(
+                                          croppedFile.path,
+                                          quality: 40,
+                                          targetHeight: 800,
+                                          targetWidth: 800);
+    
+                                  setState(() {
+                                    _tempFile = compressedFile;
+                                    _isCroppped = true;
+                                    print(_tempFile.lengthSync());
+                                  });
+                                },
+                                icon: Icon(
+                                  Icons.crop,
+                                  color: Colors.grey.shade700,
+                                )),
+                      )),
+                if (_isFile == "image")
+                  Positioned(
+                      right: 0,
+                      top: 0,
+                      child: Container(
+                        child: IconButton(
+                            onPressed: () {
+                              setState(() {
+                                _isFile = "";
+                                _isCroppped = false;
+                              });
+                            },
+                            icon: Icon(Icons.delete)),
+                      ))
+              ],
             ),
+          ),
           const SizedBox(
             height: 10,
           ),
@@ -72,18 +224,23 @@ class _UploadState extends State<Upload> {
                       final user = Provider.of<User>(context, listen: false)
                           .getUserDetails;
                       final fileName =
-                          "${tempFile.path.split('/').last}_${DateTime.now().toString()}";
+                          "${_tempFile.path.split('/').last}_${DateTime.now().toString()}";
                       final destination = "files/${user.id}/$fileName";
-
-                      bool res = await Provider.of<User>(context, listen: false)
-                          .postUpload(tempFile, _descriptionController.text,
-                              fileName, destination);
-
+    
+                      bool res =
+                          await Provider.of<User>(context, listen: false)
+                              .postUpload(
+                                  _isFile,
+                                  _tempFile,
+                                  _descriptionController.text,
+                                  fileName,
+                                  destination);
+    
                       if (res) {
                         snackBar(context, "Post Uploaded");
                         setState(() {
                           _descriptionController.clear();
-                          isFile = "";
+                          _isFile = "";
                         });
                       } else {
                         snackBar(context, "Try Again");
@@ -107,33 +264,55 @@ class _UploadState extends State<Upload> {
               )
             ],
           ),
+          const SizedBox(
+            height: 10,
+          ),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
               GestureDetector(
                 onTap: () async {
                   try {
-                    FilePickerResult? result = await FilePicker.platform
-                        .pickFiles(type: FileType.image, allowMultiple: false);
-
-                    if (result == null) return;
-
-                    isFile = "image";
-                    String path = result.files[0].path as String;
-
-                    File? compressedFile =
-                        await FlutterNativeImage.compressImage(
-                      path,
-                      quality: 30,
-                      percentage: 30,
-                    );
-
                     setState(() {
-                      tempFile = compressedFile;
+                      _isCroppped = false;
+                    });
+                    FilePickerResult? result = await FilePicker.platform
+                        .pickFiles(
+                            type: FileType.image, allowMultiple: false);
+    
+                    if (result == null) return;
+    
+                    _isFile = "image";
+                    String path = result.files[0].path as String;
+    
+                    final fileHeight = (await decodeImageFromList(
+                            (File(path)).readAsBytesSync()))
+                        .height;
+                    final fileWidth = (await decodeImageFromList(
+                            (File(path)).readAsBytesSync()))
+                        .width;
+    
+                    final compressedtargetwidth =
+                        (400 / fileHeight) * fileWidth;
+    
+                    File? compressedFile = 400 / compressedtargetwidth !=
+                            4 / 3
+                        ? await FlutterNativeImage.compressImage(path,
+                            quality: 40,
+                            targetHeight: 400 * 5,
+                            targetWidth: compressedtargetwidth.toInt() * 5)
+                        : await FlutterNativeImage.compressImage(path,
+                            quality: 40,
+                            targetHeight: compressedtargetwidth.toInt() * 5,
+                            targetWidth: 400 * 5);
+    
+                    setState(() {
+                      _tempFile = compressedFile;
+                      _originalFile = compressedFile;
                     });
                   } catch (e) {
                     print(e);
-                    isFile = "";
+                    _isFile = "";
                   }
                 },
                 child: Row(children: const [
@@ -159,21 +338,22 @@ class _UploadState extends State<Upload> {
                 onTap: () async {
                   try {
                     FilePickerResult? result = await FilePicker.platform
-                        .pickFiles(type: FileType.video, allowMultiple: false);
-
+                        .pickFiles(
+                            type: FileType.video, allowMultiple: false);
+    
                     if (result == null) return;
-
+    
                     setState(() {
-                      isFile = "video";
+                      _isFile = "video";
                       final path = result.files[0].path;
-
-                      tempFile = File(path as String);
-
-                      _controller = VideoPlayerController.file(tempFile);
+    
+                      _tempFile = File(path as String);
+    
+                      _controller = VideoPlayerController.file(_tempFile);
                     });
                   } catch (e) {
                     print(e);
-                    isFile = "";
+                    _isFile = "";
                   }
                 },
                 child: Row(children: const [
@@ -212,7 +392,10 @@ class _UploadState extends State<Upload> {
                 ]),
               ),
             ],
-          )
+          ),
+          const SizedBox(
+            height: 10,
+          ),
         ],
       ),
     );

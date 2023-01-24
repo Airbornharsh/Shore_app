@@ -7,6 +7,7 @@ import 'package:shore_app/provider/User.dart';
 import 'package:shore_app/screens/AuthScreen.dart';
 import 'package:shore_app/screens/EditProfileScreen.dart';
 import 'package:shore_app/screens/HomeScreen.dart';
+import 'package:shore_app/screens/PostEditScreen.dart';
 
 Future main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -41,7 +42,8 @@ class MyApp extends StatelessWidget {
         home: HomeScreen(),
         routes: {
           AuthScreen.routeName: (ctx) => const AuthScreen(),
-          EditProfileScreen.routeName: (ctx) =>  EditProfileScreen()
+          EditProfileScreen.routeName: (ctx) => EditProfileScreen(),
+          PostEditScreen.routeName: (ctx) => const PostEditScreen()
         },
       ),
     );

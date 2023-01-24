@@ -1,8 +1,10 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:shore_app/Components/HomeScreen/PostList.dart';
 import 'package:shore_app/Components/HomeScreen/Upload.dart';
 import 'package:shore_app/models.dart';
+import 'package:shore_app/provider/User.dart';
 
 class Home extends StatefulWidget {
   List<PostModel> postList;
@@ -24,13 +26,14 @@ class _HomeState extends State<Home> {
         width: MediaQuery.of(context).size.width,
         decoration:
             const BoxDecoration(color: Color.fromARGB(31, 121, 121, 121)),
-        height: MediaQuery.of(context).size.height - 130,
+        // height: MediaQuery.of(context).size.height - 130,
         child: Column(
           children: [
             const SizedBox(
               height: 12,
             ),
-            const Upload(),
+            // if (Provider.of<User>(context).getIsAuth) const Upload(),
+            // const Upload(),
             const SizedBox(
               height: 8,
             ),

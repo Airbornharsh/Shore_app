@@ -198,13 +198,14 @@ class User with ChangeNotifier {
     }
   }
 
-  Future<bool> postUpload(File file, String description, String fileName,
-      String destination) async {
+  Future<bool> postUpload(String isFile, File file, String description,
+      String fileName, String destination) async {
     var client = Client();
     final prefs = await SharedPreferences.getInstance();
     String domainUri = prefs.get("shore_backend_uri") as String;
     try {
-      final fileUrl = await fileUpload(file, destination);
+      final fileUrl =
+          isFile == "image" ? await fileUpload(file, destination) : "";
 
       if (fileUrl == "") {
         return false;

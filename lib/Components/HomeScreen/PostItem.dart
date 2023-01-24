@@ -39,7 +39,7 @@ class _PostItemState extends State<PostItem> {
     return Column(
       children: [
         Container(
-          height: 360,
+          height: MediaQuery.of(context).size.width + 120,
           color: Colors.white,
           child: SizedBox(
               height: 300,
@@ -59,6 +59,7 @@ class _PostItemState extends State<PostItem> {
                               height: 50,
                               width: 50,
                               fit: BoxFit.cover,
+                              filterQuality: FilterQuality.low,
                             )),
                         const SizedBox(
                           width: 7,
@@ -115,7 +116,10 @@ class _PostItemState extends State<PostItem> {
                       child: Image.network(
                         widget.post.url,
                         width: MediaQuery.of(context).size.width,
-                        height: 240,
+                        height: MediaQuery.of(context).size.width,
+                        filterQuality: FilterQuality.low,
+                        // cacheHeight: MediaQuery.of(context).size.width.toInt(),
+                        // cacheWidth: MediaQuery.of(context).size.width.toInt(),
                       ),
                     ),
                   ),

@@ -40,6 +40,7 @@ class _ProfileDetailsState extends State<ProfileDetails> {
                     height: 90,
                     width: 90,
                     fit: BoxFit.cover,
+                    filterQuality: FilterQuality.low,
                   )),
               const SizedBox(
                 height: 50,
