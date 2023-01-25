@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/container.dart';
-import 'package:flutter/src/widgets/framework.dart';
 import 'package:shore_app/models.dart';
 import 'package:shore_app/screens/PostEditScreen.dart';
 
@@ -15,19 +13,23 @@ class UserPostItem extends StatelessWidget {
         Navigator.of(context)
             .pushNamed(PostEditScreen.routeName, arguments: userPostItem);
       },
-      child: Card(
-        child: Stack(
-          children: [
-            Center(
-              child: Image.network(
-                userPostItem.url,
-                filterQuality: FilterQuality.low,
-              ),
-            ),
-            // Positioned(
-            //   child: Container(child: Text(userPostItem.likes.length.toString())),
-            // )
-          ],
+      child: Container(
+        width: MediaQuery.of(context).size.width / 3,
+        // margin: EdgeInsets.all(1),
+        decoration:
+            BoxDecoration(border: Border.all(color: Colors.white, width: 1)),
+        child: Hero(
+          tag: userPostItem.id,
+          child: Image.network(userPostItem.url,
+              filterQuality: FilterQuality.low,
+              fit: BoxFit.cover, errorBuilder: (BuildContext context,
+                  Object exception, StackTrace? stackTrace) {
+            return Container(
+                width: MediaQuery.of(context).size.width / 3,
+                decoration: BoxDecoration(),
+                child:
+                    Center(child: Image.asset("lib/assets/images/error.png")));
+          }),
         ),
       ),
     );

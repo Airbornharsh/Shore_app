@@ -1,6 +1,8 @@
 import 'dart:convert';
 import 'dart:io';
+import 'dart:math';
 
+import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:http/http.dart';
@@ -41,6 +43,58 @@ class User with ChangeNotifier {
   }
 
   void logout() {}
+
+  Future<bool> onLoad() async {
+    var client = Client();
+    final prefs = await SharedPreferences.getInstance();
+    String domainUri = prefs.get("shore_backend_uri") as String;
+
+    try {
+      String accessToken = prefs.get("shore_accessToken") as String;
+
+      if (accessToken.isEmpty) return false;
+
+      var userRes = await client.get(Uri.parse("$domainUri/api/user/get"),
+          headers: {"authorization": "Bearer $accessToken"});
+
+      if (userRes.statusCode != 200) {
+        throw userRes.body;
+      }
+
+      var parsedUserBody = json.decode(userRes.body);
+
+      _isAuth = true;
+      _accessToken = accessToken;
+
+      _user = UserModel(
+          id: parsedUserBody["_id"].toString(),
+          name: parsedUserBody["name"].toString(),
+          emailId: parsedUserBody["emailId"].toString(),
+          gender: parsedUserBody["gender"].toString(),
+          userName: parsedUserBody["userName"].toString(),
+          imgUrl: parsedUserBody["imgUrl"].toString(),
+          joinedDate: parsedUserBody["joinedDate"].toString(),
+          phoneNumber: parsedUserBody["phoneNumber"].toString(),
+          posts: List<String>.from(parsedUserBody["posts"]),
+          followers: List<String>.from(parsedUserBody["followers"]),
+          followings: List<String>.from(parsedUserBody["followings"]),
+          closeFriends: List<String>.from(parsedUserBody["closeFriends"]),
+          requestingFriends: List<Map<String, dynamic>>.from(
+              parsedUserBody["requestingFriends"]),
+          postLiked: List<String>.from(parsedUserBody["postLiked"]),
+          commentLiked: List<String>.from(parsedUserBody["commentLiked"]),
+          commented: List<String>.from(parsedUserBody["commented"]),
+          fav: List<String>.from(parsedUserBody["fav"]));
+
+      return true;
+    } catch (e) {
+      print(e);
+      return false;
+    } finally {
+      client.close();
+      notifyListeners();
+    }
+  }
 
   Future<UserModel> reloadUser() async {
     var client = Client();
@@ -90,7 +144,7 @@ class User with ChangeNotifier {
     }
   }
 
-  Future<bool> signIn(String emailId, String password) async {
+  Future<String> signIn(String emailId, String password) async {
     var client = Client();
     final prefs = await SharedPreferences.getInstance();
     String domainUri = prefs.get("shore_backend_uri") as String;
@@ -117,7 +171,7 @@ class User with ChangeNotifier {
           headers: {"authorization": "Bearer $_accessToken"});
 
       if (userRes.statusCode != 200) {
-        throw userRes.body;
+        return json.decode(userRes.body)["message"];
       }
 
       var parsedUserBody = json.decode(userRes.body);
@@ -144,17 +198,17 @@ class User with ChangeNotifier {
           commented: List<String>.from(parsedUserBody["commented"]),
           fav: List<String>.from(parsedUserBody["fav"]));
 
-      return true;
+      return "Done";
     } catch (e) {
       print(e);
-      return false;
+      return "Error";
     } finally {
       client.close();
       notifyListeners();
     }
   }
 
-  Future<bool> signUp(
+  Future<String> signUp(
     String name,
     String userName,
     int phoneNumber,
@@ -165,9 +219,11 @@ class User with ChangeNotifier {
     var client = Client();
     final prefs = await SharedPreferences.getInstance();
     String domainUri = prefs.get("shore_backend_uri") as String;
+
     if (password != confirmPasssword) {
-      return false;
+      return "Password are Different";
     }
+
     try {
       var res = await client.post(Uri.parse("$domainUri/api/user/register"),
           body: json.encode({
@@ -180,18 +236,15 @@ class User with ChangeNotifier {
           headers: {"Content-Type": "application/json"});
 
       if (res.statusCode != 200) {
-        print(res.body);
-        return false;
+        return json.decode(res.body)["message"];
       }
 
       var parsedBody = json.decode(res.body);
 
-      print(parsedBody);
-
-      return true;
+      return "Done";
     } catch (e) {
       print(e);
-      return false;
+      return "Error";
     } finally {
       client.close();
       notifyListeners();
@@ -235,6 +288,8 @@ class User with ChangeNotifier {
       notifyListeners();
     }
   }
+
+  // files/63ce582198aafbd60d76f6be/IMG-20230124-WA0003_compressed6825376798441975810.jpg_2023-01-25 20:25:51.726868
 
   Future<String> fileUpload(File file, String destination) async {
     try {
@@ -452,36 +507,15 @@ class User with ChangeNotifier {
           headers: {"authorization": "Bearer $accessToken"});
 
       if (res.statusCode != 200) {
-        throw res.body;
+        return json.decode(res.body)["message"];
       }
 
-      var resBody = json.decode(res.body);
-
-      print(resBody);
-
-      _user = UserModel(
-          id: _user.id,
-          name: _user.name,
-          emailId: _user.emailId,
-          gender: _user.gender,
-          userName: _user.userName,
-          imgUrl: _user.imgUrl,
-          joinedDate: _user.joinedDate,
-          phoneNumber: _user.phoneNumber,
-          posts: _user.posts,
-          followers: _user.followers,
-          followings: _user.followings,
-          closeFriends: _user.closeFriends,
-          requestingFriends: _user.requestingFriends,
-          postLiked: _user.postLiked,
-          commentLiked: _user.commentLiked,
-          commented: _user.commented,
-          fav: _user.fav);
+      await reloadUser();
 
       return "withoutImg";
     } catch (e) {
       print(e);
-      return "";
+      return "Error";
     } finally {
       notifyListeners();
     }
@@ -539,40 +573,146 @@ class User with ChangeNotifier {
           headers: {"authorization": "Bearer $accessToken"});
 
       if (res.statusCode != 200) {
-        throw res.body;
+        return json.decode(res.body)["message"];
       }
 
-      var resBody = json.decode(res.body);
+      final tempdestination = _user.imgUrl
+          .split("?alt")[0]
+          .split("appspot.com/o/")[1]
+          .replaceAll("%2F", "/");
 
-      print(resBody);
+      final ref = FirebaseStorage.instance.ref(tempdestination);
 
-      _user = UserModel(
-          id: _user.id,
-          name: _user.name,
-          emailId: _user.emailId,
-          gender: _user.gender,
-          userName: _user.userName,
-          imgUrl: imgUrl,
-          joinedDate: _user.joinedDate,
-          phoneNumber: _user.phoneNumber,
-          posts: _user.posts,
-          followers: _user.followers,
-          followings: _user.followings,
-          closeFriends: _user.closeFriends,
-          requestingFriends: _user.requestingFriends,
-          postLiked: _user.postLiked,
-          commentLiked: _user.commentLiked,
-          commented: _user.commented,
-          fav: _user.fav);
+      await ref.delete();
+
+      await reloadUser();
 
       return "withImg";
     } catch (e) {
       print(e);
-      return "";
+      return "Error";
     } finally {
       notifyListeners();
     }
   }
 
-  // List<PostModel> loadPosts
+  Future<String> editPost(
+      {required String description, required UserPostModel post}) async {
+    var client = Client();
+    final prefs = await SharedPreferences.getInstance();
+    String domainUri = prefs.get("shore_backend_uri") as String;
+    try {
+      final accessToken = prefs.get("shore_accessToken") as String;
+
+      Map<String, String> data = {
+        "description": "",
+      };
+
+      if (description.trim() != post.description) {
+        data["description"] = description;
+      }
+
+      var res = await client.post(Uri.parse("$domainUri/api/user/post/edit"),
+          body: json.encode(data),
+          headers: {"authorization": "Bearer $accessToken"});
+
+      if (res.statusCode != 200) {
+        return json.decode(res.body)["message"];
+      }
+
+      return "withoutImg";
+    } catch (e) {
+      print(e);
+      return "Error";
+    } finally {
+      notifyListeners();
+    }
+  }
+
+  Future<String> editPostWithImg(
+      {required File file,
+      required String fileName,
+      required String destination,
+      required String description,
+      required UserPostModel post}) async {
+    var client = Client();
+    final prefs = await SharedPreferences.getInstance();
+    String domainUri = prefs.get("shore_backend_uri") as String;
+    try {
+      final accessToken = prefs.get("shore_accessToken") as String;
+
+      String imgUrl =
+          file.path.isNotEmpty ? await fileUpload(file, destination) : "";
+
+      Map<String, String> data = {
+        "url": file.path.isNotEmpty ? imgUrl : post.url,
+        "description": "",
+        "postId": post.id
+      };
+
+      if (description.trim() != post.description) {
+        data["description"] = description;
+      }
+
+      var res = await client.post(Uri.parse("$domainUri/api/user/post/edit"),
+          body: json.encode(data),
+          headers: {"authorization": "Bearer $accessToken"});
+
+      if (res.statusCode != 200) {
+        return json.decode(res.body)["message"];
+      }
+
+      final tempdestination = post.url
+          .split("?alt")[0]
+          .split("appspot.com/o/")[1]
+          .replaceAll("%2F", "/");
+
+      final ref = FirebaseStorage.instance.ref(tempdestination);
+
+      await ref.delete();
+
+      return "withImg";
+    } catch (e) {
+      print(e);
+      return "Error";
+    } finally {
+      notifyListeners();
+    }
+  }
+
+  Future<String> deletePost(
+      {required String description, required UserPostModel post}) async {
+    var client = Client();
+    final prefs = await SharedPreferences.getInstance();
+    String domainUri = prefs.get("shore_backend_uri") as String;
+    try {
+      final accessToken = prefs.get("shore_accessToken") as String;
+
+      Map<String, String> data = {"postId": post.id};
+
+      var res = await client.post(Uri.parse("$domainUri/api/user/post/delete"),
+          body: json.encode(data),
+          headers: {"authorization": "Bearer $accessToken"});
+
+      if (res.statusCode != 200) {
+        return json.decode(res.body)["message"];
+      }
+
+      final tempdestination = post.url
+          .split("?alt")[0]
+          .split("appspot.com/o/")[1]
+          .replaceAll("%2F", "/");
+
+      final ref = FirebaseStorage.instance.ref(tempdestination);
+
+      await ref.delete();
+
+      return "withImg";
+    } catch (e) {
+      print(e);
+      return "Error";
+    } finally {
+      notifyListeners();
+    }
+  }
 }

@@ -1,8 +1,27 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:shore_app/Components/HomeScreen/Upload.dart';
 import 'package:shore_app/provider/User.dart';
 import 'package:shore_app/screens/AuthScreen.dart';
+import 'package:shore_app/screens/NewPostScreen.dart';
+
+Route _createRoute() {
+  return PageRouteBuilder(
+    pageBuilder: (context, animation, secondaryAnimation) =>
+        const NewPostScreen(),
+    transitionsBuilder: (context, animation, secondaryAnimation, child) {
+      const begin = Offset(0.0, 1.0);
+      const end = Offset.zero;
+      const curve = Curves.easeInOutSine;
+
+      var tween = Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
+
+      return SlideTransition(
+        position: animation.drive(tween),
+        child: child,
+      );
+    },
+  );
+}
 
 AppBar CustomAppBar(BuildContext context) {
   return AppBar(
@@ -16,14 +35,16 @@ AppBar CustomAppBar(BuildContext context) {
       IconButton(
           onPressed: () {
             if (Provider.of<User>(context, listen: false).getIsAuth) {
-              showModalBottomSheet(
-                  context: context,
-                  builder: (BuildContext ctx) {
-                    return Container(
-                      color: Colors.white,
-                      child: const SingleChildScrollView(child: Upload()),
-                    );
-                  });
+              // showModalBottomSheet(
+              //     context: context,
+              //     builder: (BuildContext ctx) {
+              //       return Container(
+              //         color: Colors.white,
+              //         child: const SingleChildScrollView(child: Upload()),
+              //       );
+              //     });
+              // Navigator.of(context).pushNamed(NewPostScreen.routeName);
+              Navigator.of(context).push(_createRoute());
             } else {
               Navigator.of(context).popAndPushNamed(AuthScreen.routeName);
             }

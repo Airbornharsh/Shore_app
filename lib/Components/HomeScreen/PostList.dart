@@ -27,10 +27,10 @@ class _PostListState extends State<PostList> {
               DateTime date = DateTime.fromMillisecondsSinceEpoch(
                       int.parse(widget.postList[i].postedDate))
                   .toLocal();
-
+        
               String newDate =
                   "${date.hour}:${date.minute} ${date.day}/${date.month}/${date.year}";
-
+        
               return PostItem(newDate: newDate, post: widget.postList[i]);
             })));
   }

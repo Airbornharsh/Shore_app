@@ -1,24 +1,21 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
-import 'package:flutter/src/widgets/container.dart';
-import 'package:flutter/src/widgets/framework.dart';
 import 'package:provider/provider.dart';
 import 'package:shore_app/models.dart';
 import 'package:shore_app/provider/Posts.dart';
 import 'package:shore_app/provider/User.dart';
 import 'package:shore_app/screens/AuthScreen.dart';
 
-class PostItem extends StatefulWidget {
+class UserPostListItem extends StatefulWidget {
   String newDate;
-  PostModel post;
-  PostItem({required this.newDate, required this.post, super.key});
+  UserPostModel post;
+  UserPostListItem({required this.newDate, required this.post, super.key});
   int start = 1;
 
   @override
-  State<PostItem> createState() => _PostItemState();
+  State<UserPostListItem> createState() => _UserPostListItemState();
 }
 
-class _PostItemState extends State<PostItem> {
+class _UserPostListItemState extends State<UserPostListItem> {
   bool isLiked = false;
   bool isFav = false;
   int _likes = 0;
@@ -28,16 +25,18 @@ class _PostItemState extends State<PostItem> {
     UserModel userDetails =
         Provider.of<User>(context, listen: false).getUserDetails;
 
+        print(userDetails.imgUrl);
+
     if (widget.start == 1) {
-      setState(() {
-        isLiked = Provider.of<Posts>(context, listen: false)
-            .isUserLiked(widget.post, userDetails.id);
-        isFav = Provider.of<Posts>(context, listen: false)
-            .isUserFav(userDetails, widget.post.id);
-        setState(() {
-          _likes = widget.post.likes.length;
-        });
-      });
+      // setState(() {
+      //   isLiked = Provider.of<Posts>(context, listen: false)
+      //       .isUserLiked(widget.post, userDetails.id);
+      //   isFav = Provider.of<Posts>(context, listen: false)
+      //       .isUserFav(userDetails, widget.post.id);
+      //   setState(() {
+      //     _likes = widget.post.likes.length;
+      //   });
+      // });
       widget.start = 0;
     }
 
@@ -58,8 +57,8 @@ class _PostItemState extends State<PostItem> {
                         ClipRRect(
                             borderRadius: BorderRadius.circular(10),
                             child: Image.network(
-                                widget.post.profileUrl.isNotEmpty
-                                    ? widget.post.profileUrl
+                                userDetails.imgUrl.isNotEmpty
+                                    ? userDetails.imgUrl
                                     : "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png",
                                 height: 50,
                                 width: 50,
@@ -81,7 +80,7 @@ class _PostItemState extends State<PostItem> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              widget.post.profileName,
+                              userDetails.name,
                               style: const TextStyle(
                                   fontWeight: FontWeight.w600, fontSize: 15),
                             ),
@@ -133,25 +132,28 @@ class _PostItemState extends State<PostItem> {
                       decoration: const BoxDecoration(
                           color: Color.fromARGB(31, 165, 165, 165)),
                       child: widget.post.url.isNotEmpty
-                          ? Image.network(widget.post.url,
-                              width: MediaQuery.of(context).size.width,
-                              height: MediaQuery.of(context).size.width,
-                              filterQuality: FilterQuality.low,
-                              cacheHeight:
-                                  MediaQuery.of(context).size.width.toInt(),
-                              errorBuilder: (BuildContext context,
-                                  Object exception, StackTrace? stackTrace) {
-                              return Container(
-                                  width: MediaQuery.of(context).size.width,
-                                  height: MediaQuery.of(context).size.width,
-                                  decoration: BoxDecoration(),
-                                  child: Center(
-                                      child: Image.asset(
-                                          "lib/assets/images/error.png")));
-                            }
-                              // cacheHeight: MediaQuery.of(context).size.width.toInt(),
-                              // cacheWidth: MediaQuery.of(context).size.width.toInt(),
-                              )
+                          ? Hero(
+                            tag: widget.post.id,
+                            child: Image.network(widget.post.url,
+                                width: MediaQuery.of(context).size.width,
+                                height: MediaQuery.of(context).size.width,
+                                filterQuality: FilterQuality.low,
+                                cacheHeight:
+                                    MediaQuery.of(context).size.width.toInt(),
+                                errorBuilder: (BuildContext context,
+                                    Object exception, StackTrace? stackTrace) {
+                                return Container(
+                                    width: MediaQuery.of(context).size.width,
+                                    height: MediaQuery.of(context).size.width,
+                                    decoration: BoxDecoration(),
+                                    child: Center(
+                                        child: Image.asset(
+                                            "lib/assets/images/error.png")));
+                              }
+                                // cacheHeight: MediaQuery.of(context).size.width.toInt(),
+                                // cacheWidth: MediaQuery.of(context).size.width.toInt(),
+                                ),
+                          )
                           : null,
                     ),
                   ),

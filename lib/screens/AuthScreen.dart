@@ -88,10 +88,10 @@ class _AuthScreenState extends State<AuthScreen> {
               setState(() {
                 isLoading = true;
               });
-              var loginRes = await Provider.of<User>(context, listen: false)
+              String loginRes = await Provider.of<User>(context, listen: false)
                   .signIn(_emailIdController.text, _passwordController.text);
 
-              if (loginRes) {
+              if (loginRes == "Done") {
                 var snackBar = SnackBar(
                   content: const Text('Logged In'),
                   action: SnackBarAction(
@@ -101,11 +101,10 @@ class _AuthScreenState extends State<AuthScreen> {
                     },
                   ),
                 );
-                Navigator.of(context)
-                    .popAndPushNamed(HomeScreen.routeName);
+                Navigator.of(context).popAndPushNamed(HomeScreen.routeName);
               } else {
-                var snackBar = const SnackBar(
-                  content: Text('Try Again'),
+                var snackBar = SnackBar(
+                  content: Text(loginRes),
                   // action: SnackBarAction(
                   //   label: 'Undo',
                   //   onPressed: () {
@@ -253,7 +252,7 @@ class _AuthScreenState extends State<AuthScreen> {
                 isLoading = true;
               });
               try {
-                var Res = await Provider.of<User>(context, listen: false)
+                String Res = await Provider.of<User>(context, listen: false)
                     .signUp(
                         _nameController.text,
                         _userNameController.text,
@@ -262,12 +261,12 @@ class _AuthScreenState extends State<AuthScreen> {
                         _passwordController.text,
                         _confirmPasswordController.text);
 
-                if (Res) {
+                if (Res == "Done") {
                   setState(() {
                     isLogin = true;
                   });
                 } else {
-                  var snackBar = const SnackBar(content: Text("Try Again"));
+                  var snackBar = SnackBar(content: Text(Res));
                   ScaffoldMessenger.of(context).showSnackBar(snackBar);
                   setState(() {
                     isLoading = false;
