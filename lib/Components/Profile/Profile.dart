@@ -38,18 +38,18 @@ class _ProfileState extends State<Profile> {
 
         widget.reloadUserPosts();
       },
-      child: SingleChildScrollView(
-        child: Container(
-          width: MediaQuery.of(context).size.width,
-          decoration:
-              const BoxDecoration(color: Color.fromARGB(31, 121, 121, 121)),
-          height: MediaQuery.of(context).size.height - 220,
-          child: Column(
-            children: [
-              ProfileDetails(user: user),
-              UserPostList(userPostList: widget.userPostList),
-            ],
-          ),
+      child: Container(
+        width: MediaQuery.of(context).size.width,
+        decoration:
+            const BoxDecoration(color: Color.fromARGB(31, 121, 121, 121)),
+        height: MediaQuery.of(context).size.height - 220,
+        child: Column(
+          children: [
+            ProfileDetails(user: user),
+            UserPostList(
+                userPostList: widget.userPostList,
+                reloadUserPosts: widget.reloadUserPosts),
+          ],
         ),
       ),
     );

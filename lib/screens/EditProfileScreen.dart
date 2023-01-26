@@ -126,7 +126,6 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                                     return Container(
                                         width: 90,
                                         height: 90,
-                                        decoration: BoxDecoration(),
                                         child: Center(
                                             child: Image.asset(
                                                 "lib/assets/images/error.png")));

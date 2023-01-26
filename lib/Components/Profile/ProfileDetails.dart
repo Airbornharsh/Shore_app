@@ -36,24 +36,22 @@ class _ProfileDetailsState extends State<ProfileDetails> {
                   child: Hero(
                     tag: widget.user.id,
                     child: Image.network(
-                      widget.user.imgUrl.isNotEmpty
-                          ? widget.user.imgUrl
-                          : "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png",
-                      height: 90,
-                      width: 90,
-                      fit: BoxFit.cover,
-                      filterQuality: FilterQuality.low,
-                        errorBuilder: (BuildContext context,
-                                    Object exception, StackTrace? stackTrace) {
-                                return Container(
-                                    width: 90,
-                                    height: 90,
-                                    decoration: BoxDecoration(),
-                                    child: Center(
-                                        child: Image.asset(
-                                            "lib/assets/images/error.png")));
-                              }
-                    ),
+                        widget.user.imgUrl.isNotEmpty
+                            ? widget.user.imgUrl
+                            : "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png",
+                        height: 90,
+                        width: 90,
+                        fit: BoxFit.cover,
+                        filterQuality: FilterQuality.low, errorBuilder:
+                            (BuildContext context, Object exception,
+                                StackTrace? stackTrace) {
+                      return Container(
+                          width: 90,
+                          height: 90,
+                          child: Center(
+                              child:
+                                  Image.asset("lib/assets/images/error.png")));
+                    }),
                   )),
               const SizedBox(
                 height: 50,

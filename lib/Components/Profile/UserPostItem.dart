@@ -26,7 +26,6 @@ class UserPostItem extends StatelessWidget {
                   Object exception, StackTrace? stackTrace) {
             return Container(
                 width: MediaQuery.of(context).size.width / 3,
-                decoration: BoxDecoration(),
                 child:
                     Center(child: Image.asset("lib/assets/images/error.png")));
           }),

@@ -129,7 +129,6 @@ class _PostEditScreenState extends State<PostEditScreen> {
                                                     .size
                                                     .width,
                                                 height: 400,
-                                                decoration: BoxDecoration(),
                                                 child: Center(
                                                     child: Image.asset(
                                                         "lib/assets/images/error.png")));
