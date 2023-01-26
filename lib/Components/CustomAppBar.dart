@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:shore_app/provider/User.dart';
 import 'package:shore_app/screens/AuthScreen.dart';
 import 'package:shore_app/screens/NewPostScreen.dart';
+import 'package:shore_app/screens/SearchScreen.dart';
 
 Route _createRoute() {
   return PageRouteBuilder(
@@ -35,15 +36,6 @@ AppBar CustomAppBar(BuildContext context) {
       IconButton(
           onPressed: () {
             if (Provider.of<User>(context, listen: false).getIsAuth) {
-              // showModalBottomSheet(
-              //     context: context,
-              //     builder: (BuildContext ctx) {
-              //       return Container(
-              //         color: Colors.white,
-              //         child: const SingleChildScrollView(child: Upload()),
-              //       );
-              //     });
-              // Navigator.of(context).pushNamed(NewPostScreen.routeName);
               Navigator.of(context).push(_createRoute());
             } else {
               Navigator.of(context).popAndPushNamed(AuthScreen.routeName);
@@ -53,22 +45,29 @@ AppBar CustomAppBar(BuildContext context) {
     ],
     toolbarHeight: 130,
     title: Center(
-      child: Container(
-          width: MediaQuery.of(context).size.width * 80 / 100,
-          padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 3),
-          decoration: BoxDecoration(
-              color: const Color.fromARGB(255, 1, 214, 207),
-              borderRadius: BorderRadius.circular(60)),
-          child: const TextField(
-            style: TextStyle(color: Colors.white),
-            cursorColor: Colors.white,
-            decoration: InputDecoration(
-                border: InputBorder.none,
-                hintText: "Search",
-                icon: Icon(Icons.search, color: Colors.white),
-                iconColor: Colors.white,
-                suffixIconColor: Colors.white),
-          )),
+      child: GestureDetector(
+        onTap: () {
+          Navigator.of(context).pushNamed(SearchScreen.routeName);
+        },
+        child: Container(
+            width: MediaQuery.of(context).size.width * 80 / 100,
+            padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 3),
+            decoration: BoxDecoration(
+                color: const Color.fromARGB(255, 1, 214, 207),
+                borderRadius: BorderRadius.circular(60)),
+            child: const IgnorePointer(
+              child: TextField(
+                style: TextStyle(color: Colors.white),
+                cursorColor: Colors.white,
+                decoration: InputDecoration(
+                    border: InputBorder.none,
+                    hintText: "Search",
+                    icon: Icon(Icons.search, color: Colors.white),
+                    iconColor: Colors.white,
+                    suffixIconColor: Colors.white),
+              ),
+            )),
+      ),
     ),
   );
 }

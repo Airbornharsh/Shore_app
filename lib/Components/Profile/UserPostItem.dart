@@ -24,7 +24,7 @@ class UserPostItem extends StatelessWidget {
               filterQuality: FilterQuality.low,
               fit: BoxFit.cover, errorBuilder: (BuildContext context,
                   Object exception, StackTrace? stackTrace) {
-            return Container(
+            return SizedBox(
                 width: MediaQuery.of(context).size.width / 3,
                 child:
                     Center(child: Image.asset("lib/assets/images/error.png")));

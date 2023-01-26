@@ -6,7 +6,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:shore_app/models.dart';
 
 class Posts with ChangeNotifier {
-  late List<PostModel> _posts = [];
+  final List<PostModel> _posts = [];
 
   List<PostModel> get getPosts {
     return _posts;
@@ -17,7 +17,10 @@ class Posts with ChangeNotifier {
     final prefs = await SharedPreferences.getInstance();
     String domainUri = prefs.get("shore_backend_uri") as String;
     try {
-      var postRes = await client.post(Uri.parse("$domainUri/api/post/get"));
+      var postRes = await client.post(
+        Uri.parse("$domainUri/api/post/get"),
+        body: json.encode({"limit": 20,"page": 2}),
+      );
 
       var postResBody = json.decode(postRes.body);
 

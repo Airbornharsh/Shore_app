@@ -18,26 +18,24 @@ class UserPostList extends StatefulWidget {
 class _UserPostListState extends State<UserPostList> {
   @override
   Widget build(BuildContext context) {
-    return Container(
-      child: Expanded(
-        child: GridView.builder(
-            scrollDirection: Axis.vertical,
-            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 3,
-            ),
-            itemCount: widget.userPostList.length,
-            itemBuilder: ((ctx, i) {
-              return GestureDetector(
-                  onTap: () {
-                    Navigator.of(ctx).pushNamed(UserPostListScreen.routeName,
-                        arguments: UserPostListScreenArgs(
-                            userPostList: widget.userPostList,
-                            reloadUserPosts: widget.reloadUserPosts,
-                            index: i));
-                  },
-                  child: UserPostItem(userPostItem: widget.userPostList[i]));
-            })),
-      ),
+    return Expanded(
+      child: GridView.builder(
+          scrollDirection: Axis.vertical,
+          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: 3,
+          ),
+          itemCount: widget.userPostList.length,
+          itemBuilder: ((ctx, i) {
+            return GestureDetector(
+                onTap: () {
+                  Navigator.of(ctx).pushNamed(UserPostListScreen.routeName,
+                      arguments: UserPostListScreenArgs(
+                          userPostList: widget.userPostList,
+                          reloadUserPosts: widget.reloadUserPosts,
+                          index: i));
+                },
+                child: UserPostItem(userPostItem: widget.userPostList[i]));
+          })),
     );
   }
 }

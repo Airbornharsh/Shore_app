@@ -8,7 +8,6 @@ import 'package:shore_app/Components/HomeScreen/Requests.dart';
 import 'package:shore_app/models.dart';
 import 'package:shore_app/provider/Posts.dart';
 import 'package:shore_app/provider/User.dart';
-import 'package:shore_app/screens/AuthScreen.dart';
 
 class HomeScreen extends StatefulWidget {
   HomeScreen({super.key});

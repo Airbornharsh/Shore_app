@@ -65,7 +65,7 @@ class _PostItemState extends State<PostItem> {
                             filterQuality: FilterQuality.low, errorBuilder:
                                 (BuildContext context, Object exception,
                                     StackTrace? stackTrace) {
-                          return Container(
+                          return SizedBox(
                               height: 50,
                               width: 50,
                               child: const Center(child: Text('😊')));
@@ -143,7 +143,7 @@ class _PostItemState extends State<PostItem> {
                               ));
                         }, errorBuilder: (BuildContext context,
                               Object exception, StackTrace? stackTrace) {
-                          return Container(
+                          return SizedBox(
                               width: MediaQuery.of(context).size.width,
                               height: MediaQuery.of(context).size.width,
                               child: Center(

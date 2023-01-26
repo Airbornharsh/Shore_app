@@ -193,6 +193,7 @@ class _AuthScreenState extends State<AuthScreen> {
               filled: true,
             ),
             controller: _phoneNumberController,
+            keyboardType: TextInputType.number,
           ),
         ),
         Container(

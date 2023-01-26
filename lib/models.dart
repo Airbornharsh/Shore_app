@@ -38,6 +38,25 @@ class UserModel {
       required this.fav});
 }
 
+class UnsignedUserModel {
+  final String id;
+  final String name;
+  final String gender;
+  final String userName;
+  final String imgUrl;
+  final String joinedDate;
+  final String phoneNumber;
+
+  UnsignedUserModel(
+      {required this.id,
+      required this.name,
+      required this.gender,
+      required this.userName,
+      required this.imgUrl,
+      required this.joinedDate,
+      required this.phoneNumber});
+}
+
 class PostModel {
   final String id;
   final String userId;
