@@ -28,12 +28,10 @@ class _PostItemState extends State<PostItem> {
     if (widget.start) {
       setState(() {
         isLiked = Provider.of<Posts>(context, listen: false)
-            .isUserLiked(widget.post, userDetails.id);
+            .isUserLiked(widget.post.likes, userDetails.id);
         isFav = Provider.of<Posts>(context, listen: false)
             .isUserFav(userDetails, widget.post.id);
-        setState(() {
-          _likes = widget.post.likes.length;
-        });
+        _likes = widget.post.likes.length;
       });
       widget.start = false;
     }

@@ -48,7 +48,7 @@ class UnsignUser with ChangeNotifier {
     return _users;
   }
 
-  Future<UnsignUserModel> loadUser(String userId) async {
+  Future<UnsignUserModel> reloadUser(String userId) async {
     late UnsignUserModel newUser;
     var client = Client();
     final prefs = await SharedPreferences.getInstance();
@@ -60,6 +60,8 @@ class UnsignUser with ChangeNotifier {
       );
 
       var parsedUserBody = json.decode(res.body);
+
+      print(parsedUserBody);
 
       newUser = UnsignUserModel(
         id: parsedUserBody["id"].toString(),
@@ -79,5 +81,46 @@ class UnsignUser with ChangeNotifier {
       notifyListeners();
     }
     return newUser;
+  }
+
+  Future<List<UserPostModel>> loadUnsignUserPosts(String userId) async {
+    List<UserPostModel> unsignUserPosts = [];
+    var client = Client();
+    final prefs = await SharedPreferences.getInstance();
+    String domainUri = prefs.get("shore_backend_uri") as String;
+    try {
+      final accessToken = prefs.get("shore_accessToken") as String;
+
+      var postRes = await client.post(
+          Uri.parse("$domainUri/api/unsignuser/post/list"),
+          body: json.encode({"userId": userId}),
+          headers: {"authorization": "Bearer $accessToken"});
+
+      if (postRes.statusCode != 200) {
+        throw postRes.body;
+      }
+
+      var postResBody = json.decode(postRes.body);
+
+      print(postResBody);
+
+      await postResBody.forEach((post) {
+        UserPostModel newPost = UserPostModel(
+            id: post["_id"].toString(),
+            userId: post["userId"].toString(),
+            description: post["description"].toString(),
+            url: post["url"].toString(),
+            postedDate: post["postedDate"].toString(),
+            likes: List<String>.from(post["likes"]),
+            comments: List<String>.from(post["comments"]));
+
+        unsignUserPosts.add(newPost);
+      });
+    } catch (e) {
+      print(e);
+    } finally {
+      notifyListeners();
+    }
+    return unsignUserPosts;
   }
 }

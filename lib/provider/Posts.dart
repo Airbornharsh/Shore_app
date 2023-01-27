@@ -19,7 +19,7 @@ class Posts with ChangeNotifier {
     try {
       var postRes = await client.post(
         Uri.parse("$domainUri/api/post/get"),
-        body: json.encode({"limit": 20,"page": 2}),
+        body: json.encode({"limit": 20, "page": 2}),
       );
 
       var postResBody = json.decode(postRes.body);
@@ -48,8 +48,8 @@ class Posts with ChangeNotifier {
     return _posts;
   }
 
-  bool isUserLiked(PostModel post, String id) {
-    return post.likes.contains(id);
+  bool isUserLiked(List<String> postLikes, String id) {
+    return postLikes.contains(id);
   }
 
   bool isUserFav(UserModel user, String id) {

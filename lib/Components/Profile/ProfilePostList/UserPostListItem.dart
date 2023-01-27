@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shore_app/models.dart';
+import 'package:shore_app/provider/Posts.dart';
 import 'package:shore_app/provider/User.dart';
 import 'package:shore_app/screens/AuthScreen.dart';
 
@@ -27,15 +28,13 @@ class _UserPostListItemState extends State<UserPostListItem> {
     print(userDetails.imgUrl);
 
     if (widget.start) {
-      // setState(() {
-      //   isLiked = Provider.of<Posts>(context, listen: false)
-      //       .isUserLiked(widget.post, userDetails.id);
-      //   isFav = Provider.of<Posts>(context, listen: false)
-      //       .isUserFav(userDetails, widget.post.id);
-      //   setState(() {
-      //     _likes = widget.post.likes.length;
-      //   });
-      // });
+      setState(() {
+        isLiked = Provider.of<Posts>(context, listen: false)
+            .isUserLiked(widget.post.likes, userDetails.id);
+        isFav = Provider.of<Posts>(context, listen: false)
+            .isUserFav(userDetails, widget.post.id);
+        _likes = widget.post.likes.length;
+      });
       widget.start = false;
     }
 

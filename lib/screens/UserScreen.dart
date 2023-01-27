@@ -4,11 +4,13 @@ import 'package:shore_app/Components/Profile/ProfileDetails.dart';
 import 'package:shore_app/Components/Profile/UserPostList.dart';
 import 'package:shore_app/Components/UserScreen/UserDetails.dart';
 import 'package:shore_app/models.dart';
+import 'package:shore_app/provider/UnsignUser.dart';
 import 'package:shore_app/provider/User.dart';
 
 class UserScreen extends StatefulWidget {
   static String routeName = "unsign-user";
-  const UserScreen({super.key});
+  UserScreen({super.key});
+  bool start = true;
 
   @override
   State<UserScreen> createState() => _UserScreenState();
@@ -21,8 +23,19 @@ class _UserScreenState extends State<UserScreen> {
 
   @override
   Widget build(BuildContext context) {
-    user = ModalRoute.of(context)?.settings.arguments as UnsignUserModel;
     final UserModel profileDetails = Provider.of<User>(context).getUserDetails;
+
+    if (widget.start) {
+      user = ModalRoute.of(context)?.settings.arguments as UnsignUserModel;
+      Provider.of<UnsignUser>(context, listen: false)
+          .loadUnsignUserPosts(user.id)
+          .then((el) {
+        setState(() {
+          unsignUserPostList = el;
+        });
+      });
+      widget.start = false;
+    }
 
     void reloadUserPosts() {}
 
@@ -34,11 +47,13 @@ class _UserScreenState extends State<UserScreen> {
           ),
           body: RefreshIndicator(
             onRefresh: () async {
-              // Provider.of<UnsignedUser>(context, listen: false).reloadUser().then((el) {
-              //   setState(() {
-              //     user = el;
-              //   });
-              // });
+              Provider.of<UnsignUser>(context, listen: false)
+                  .reloadUser(user.id)
+                  .then((el) {
+                setState(() {
+                  user = el;
+                });
+              });
             },
             child: Container(
               width: MediaQuery.of(context).size.width,
