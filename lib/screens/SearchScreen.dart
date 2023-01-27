@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shore_app/Components/Search/UserItem.dart';
+import 'package:shore_app/Utils/snackBar.dart';
 import 'package:shore_app/models.dart';
 import 'package:shore_app/provider/UnsignUser.dart';
+import 'package:shore_app/provider/User.dart';
 
 class SearchScreen extends StatefulWidget {
   static String routeName = "search";
@@ -67,7 +69,11 @@ class _SearchScreenState extends State<SearchScreen> {
                     autofocus: true,
                     autocorrect: true,
                     onSubmitted: (value) async {
-                      await searchFun();
+                      if (Provider.of<User>(context).getIsAuth) {
+                        await searchFun();
+                      } else {
+                        snackBar(context, "Please Log In");
+                      }
                     },
                     // onSubmitted: _searchController.text.isNotEmpty
                     //     ? (value) async {
