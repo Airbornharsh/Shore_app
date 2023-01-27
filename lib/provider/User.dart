@@ -788,4 +788,92 @@ class User with ChangeNotifier {
       notifyListeners();
     }
   }
+
+  Future<List<UnsignUserModel>> loadFollowingsUsers(
+      {required String userId}) async {
+    List<UnsignUserModel> users = [];
+    var client = Client();
+    final prefs = await SharedPreferences.getInstance();
+    String domainUri = prefs.get("shore_backend_uri") as String;
+    try {
+      var res;
+
+      userId.isEmpty
+          ? res = await client.post(
+              Uri.parse("$domainUri/api/user/followings/list"),
+              headers: {"authorization": "Bearer $_accessToken"})
+          : res = await client.post(
+              Uri.parse("$domainUri/api/unsignuser/followings/list"),
+              body: json.encode({"userId": userId}),
+              headers: {"authorization": "Bearer $_accessToken"});
+
+      var parsedUserBody = json.decode(res.body);
+
+      await parsedUserBody.forEach((user) {
+        UnsignUserModel newUser = UnsignUserModel(
+          id: user["id"].toString(),
+          name: user["name"].toString(),
+          gender: user["gender"].toString(),
+          userName: user["userName"].toString(),
+          imgUrl: user["imgUrl"].toString(),
+          joinedDate: user["joinedDate"].toString(),
+          phoneNumber: user["phoneNumber"].toString(),
+          posts: List<String>.from(user["posts"]),
+          followers: List<String>.from(user["followers"]),
+          followings: List<String>.from(user["followings"]),
+        );
+
+        users.add(newUser);
+      });
+    } catch (e) {
+      print(e);
+    } finally {
+      notifyListeners();
+    }
+    return users;
+  }
+
+  Future<List<UnsignUserModel>> loadFollowersUsers(
+      {required String userId}) async {
+    List<UnsignUserModel> users = [];
+    var client = Client();
+    final prefs = await SharedPreferences.getInstance();
+    String domainUri = prefs.get("shore_backend_uri") as String;
+    try {
+      var res;
+
+      userId.isEmpty
+          ? res = await client.post(
+              Uri.parse("$domainUri/api/user/followers/list"),
+              headers: {"authorization": "Bearer $_accessToken"})
+          : res = await client.post(
+              Uri.parse("$domainUri/api/unsignuser/followers/list"),
+              body: json.encode({"userId": userId}),
+              headers: {"authorization": "Bearer $_accessToken"});
+
+      var parsedUserBody = json.decode(res.body);
+
+      await parsedUserBody.forEach((user) {
+        UnsignUserModel newUser = UnsignUserModel(
+          id: user["id"].toString(),
+          name: user["name"].toString(),
+          gender: user["gender"].toString(),
+          userName: user["userName"].toString(),
+          imgUrl: user["imgUrl"].toString(),
+          joinedDate: user["joinedDate"].toString(),
+          phoneNumber: user["phoneNumber"].toString(),
+          posts: List<String>.from(user["posts"]),
+          followers: List<String>.from(user["followers"]),
+          followings: List<String>.from(user["followings"]),
+        );
+
+        users.add(newUser);
+      });
+    } catch (e) {
+      print(e);
+    } finally {
+      notifyListeners();
+    }
+    return users;
+  }
 }

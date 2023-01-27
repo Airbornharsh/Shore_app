@@ -1,8 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:shore_app/Components/UserListBuilder.dart';
+import 'package:shore_app/models.dart';
+import 'package:shore_app/provider/User.dart';
 
 class FollowersScreen extends StatefulWidget {
   static String routeName = "followers";
-  const FollowersScreen({super.key});
+  FollowersScreen({super.key});
+  bool start = true;
 
   @override
   State<FollowersScreen> createState() => _FollowersScreenState();
@@ -10,15 +15,38 @@ class FollowersScreen extends StatefulWidget {
 
 class _FollowersScreenState extends State<FollowersScreen> {
   bool _isLoading = false;
+  List<UnsignUserModel> followersUsers = [];
+  late String userId;
 
   @override
   Widget build(BuildContext context) {
+    setState(() {
+      userId = ModalRoute.of(context)?.settings.arguments as String;
+    });
+
+    if (widget.start) {
+      setState(() {
+        _isLoading = true;
+      });
+      Provider.of<User>(context, listen: false)
+          .loadFollowersUsers(userId: userId)
+          .then((el) {
+        setState(() {
+          _isLoading = false;
+          followersUsers = el;
+        });
+      });
+
+      widget.start = false;
+    }
+
     return Stack(
       children: [
         Scaffold(
           appBar: AppBar(
             title: Text("Followers"),
           ),
+          body: UserListBuilder(users: followersUsers),
         ),
         if (_isLoading)
           Positioned(

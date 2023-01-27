@@ -125,7 +125,8 @@ class _ProfileDetailsState extends State<ProfileDetails> {
             ),
             GestureDetector(
               onTap: () {
-                Navigator.of(context).pushNamed(FollowersScreen.routeName);
+                Navigator.of(context)
+                    .pushNamed(FollowersScreen.routeName, arguments: "");
               },
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -149,7 +150,8 @@ class _ProfileDetailsState extends State<ProfileDetails> {
             ),
             GestureDetector(
               onTap: () {
-                Navigator.of(context).pushNamed(FollowingsScreen.routeName);
+                Navigator.of(context)
+                    .pushNamed(FollowingsScreen.routeName, arguments: "");
               },
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,

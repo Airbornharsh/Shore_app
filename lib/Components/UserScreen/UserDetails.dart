@@ -3,6 +3,8 @@ import 'package:provider/provider.dart';
 import 'package:shore_app/models.dart';
 import 'package:shore_app/provider/User.dart';
 import 'package:shore_app/screens/AuthScreen.dart';
+import 'package:shore_app/screens/FollowersScreen.dart';
+import 'package:shore_app/screens/FollowingsScreen.dart';
 
 class UserDetails extends StatefulWidget {
   final UnsignUserModel user;
@@ -186,38 +188,50 @@ class _UserDetailsState extends State<UserDetails> {
               height: 20,
               decoration: const BoxDecoration(color: Colors.grey),
             ),
-            Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text(
-                  widget.user.followers.length.toString(),
-                  style: const TextStyle(
-                      fontWeight: FontWeight.w400, fontSize: 24),
-                ),
-                const Text(
-                  "Followers",
-                  style: TextStyle(fontSize: 12),
-                )
-              ],
+            GestureDetector(
+              onTap: () {
+                Navigator.of(context).pushNamed(FollowersScreen.routeName,
+                    arguments: widget.user.id);
+              },
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    widget.user.followers.length.toString(),
+                    style: const TextStyle(
+                        fontWeight: FontWeight.w400, fontSize: 24),
+                  ),
+                  const Text(
+                    "Followers",
+                    style: TextStyle(fontSize: 12),
+                  )
+                ],
+              ),
             ),
             Container(
               width: 2,
               height: 20,
               decoration: const BoxDecoration(color: Colors.grey),
             ),
-            Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text(
-                  widget.user.followings.length.toString(),
-                  style: const TextStyle(
-                      fontWeight: FontWeight.w400, fontSize: 24),
-                ),
-                const Text(
-                  "Following",
-                  style: TextStyle(fontSize: 12),
-                )
-              ],
+            GestureDetector(
+              onTap: () {
+                Navigator.of(context).pushNamed(FollowingsScreen.routeName,
+                    arguments: widget.user.id);
+              },
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    widget.user.followings.length.toString(),
+                    style: const TextStyle(
+                        fontWeight: FontWeight.w400, fontSize: 24),
+                  ),
+                  const Text(
+                    "Following",
+                    style: TextStyle(fontSize: 12),
+                  )
+                ],
+              ),
             ),
           ],
         ),

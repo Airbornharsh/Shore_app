@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shore_app/Components/Search/UserItem.dart';
+import 'package:shore_app/Components/UserListBuilder.dart';
 import 'package:shore_app/Utils/snackBar.dart';
 import 'package:shore_app/models.dart';
 import 'package:shore_app/provider/UnsignUser.dart';
@@ -69,7 +70,7 @@ class _SearchScreenState extends State<SearchScreen> {
                     autofocus: true,
                     autocorrect: true,
                     onSubmitted: (value) async {
-                      if (Provider.of<User>(context).getIsAuth) {
+                      if (Provider.of<User>(context,listen: false).getIsAuth) {
                         await searchFun();
                       } else {
                         snackBar(context, "Please Log In");
@@ -84,14 +85,7 @@ class _SearchScreenState extends State<SearchScreen> {
             ),
             body: Container(
               decoration: BoxDecoration(color: Colors.grey.shade200),
-              child: ListView.builder(
-                itemCount: _users.length,
-                itemBuilder: (ctx, i) {
-                  return UserItem(
-                    user: _users[i],
-                  );
-                },
-              ),
+              child: UserListBuilder(users: _users),
             )),
         if (_isLoading)
           Positioned(

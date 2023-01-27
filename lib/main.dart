@@ -57,8 +57,8 @@ class MyApp extends StatelessWidget {
           UserPostListScreen.routeName: (ctx) => UserPostListScreen(),
           SearchScreen.routeName: (ctx) => const SearchScreen(),
           UserScreen.routeName: (ctx) => UserScreen(),
-          FollowersScreen.routeName: (ctx) => const FollowersScreen(),
-          FollowingsScreen.routeName: (ctx) => const FollowingsScreen(),
+          FollowersScreen.routeName: (ctx) => FollowersScreen(),
+          FollowingsScreen.routeName: (ctx) => FollowingsScreen(),
         },
       ),
     );
