@@ -1,6 +1,5 @@
 import 'dart:io';
 import 'dart:math';
-import 'package:http/http.dart' as http;
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_native_image/flutter_native_image.dart';
@@ -12,7 +11,7 @@ import 'package:shore_app/provider/User.dart';
 class EditProfileScreen extends StatefulWidget {
   static String routeName = "/edit-profile";
   EditProfileScreen({super.key});
-  var start = 1;
+  bool start = true;
 
   @override
   State<EditProfileScreen> createState() => _EditProfileScreenState();
@@ -45,7 +44,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   Widget build(BuildContext context) {
     UserModel user = Provider.of<User>(context).getUserDetails;
 
-    if (widget.start == 1) {
+    if (widget.start) {
       _nameController.text = user.name;
       _genderController.text = user.gender;
       _userNameController.text = user.userName;
@@ -57,7 +56,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
             : "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png");
       });
 
-      widget.start = 0;
+      widget.start = false;
     }
 
     return Stack(

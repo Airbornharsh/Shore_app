@@ -12,7 +12,7 @@ import 'package:shore_app/provider/User.dart';
 class HomeScreen extends StatefulWidget {
   HomeScreen({super.key});
   static const routeName = "/";
-  int start = 1;
+  bool start = true;
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
@@ -59,7 +59,7 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     setState(() {
-      if (widget.start == 1) {
+      if (widget.start) {
         Provider.of<User>(context, listen: false).onLoad().then((el) {
           if (el) {
             Provider.of<User>(context, listen: false)
@@ -67,7 +67,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 .then((el) {
               setState(() {
                 userPostList = el;
-                widget.start = 0;
+                widget.start = false;
               });
             });
           }
@@ -76,7 +76,7 @@ class _HomeScreenState extends State<HomeScreen> {
         Provider.of<Posts>(context, listen: false).loadPosts().then((el) {
           setState(() {
             postList = el;
-            widget.start = 0;
+            widget.start = false;
           });
         });
       }

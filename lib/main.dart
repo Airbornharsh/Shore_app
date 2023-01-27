@@ -4,7 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:shore_app/Components/Profile/UserPostList.dart';
 import 'package:shore_app/firebase_options.dart';
 import 'package:shore_app/provider/Posts.dart';
-import 'package:shore_app/provider/UnsignedUser.dart';
+import 'package:shore_app/provider/UnsignUser.dart';
 import 'package:shore_app/provider/User.dart';
 import 'package:shore_app/screens/AuthScreen.dart';
 import 'package:shore_app/screens/EditProfileScreen.dart';
@@ -13,6 +13,7 @@ import 'package:shore_app/screens/NewPostScreen.dart';
 import 'package:shore_app/screens/PostEditScreen.dart';
 import 'package:shore_app/screens/SearchScreen.dart';
 import 'package:shore_app/screens/UserPostListScreen.dart';
+import 'package:shore_app/screens/UserScreen.dart';
 
 Future main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -32,7 +33,7 @@ class MyApp extends StatelessWidget {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider.value(value: User()),
-        ChangeNotifierProvider.value(value: UnsignedUser()),
+        ChangeNotifierProvider.value(value: UnsignUser()),
         ChangeNotifierProvider.value(value: Posts()),
         // ChangeNotifierProvider.value(value: Expenses()),
         // ChangeNotifierProvider.value(value: OfflineExpenses()),
@@ -52,7 +53,8 @@ class MyApp extends StatelessWidget {
           PostEditScreen.routeName: (ctx) => PostEditScreen(),
           NewPostScreen.routeName: (ctx) => const NewPostScreen(),
           UserPostListScreen.routeName: (ctx) => UserPostListScreen(),
-          SearchScreen.routeName: (ctx) => SearchScreen()
+          SearchScreen.routeName: (ctx) => SearchScreen(),
+          UserScreen.routeName: (ctx) => UserScreen(),
         },
       ),
     );

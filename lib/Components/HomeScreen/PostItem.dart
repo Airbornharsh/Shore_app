@@ -1,7 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
-import 'package:flutter/src/widgets/container.dart';
-import 'package:flutter/src/widgets/framework.dart';
 import 'package:provider/provider.dart';
 import 'package:shore_app/models.dart';
 import 'package:shore_app/provider/Posts.dart';
@@ -12,7 +9,7 @@ class PostItem extends StatefulWidget {
   String newDate;
   PostModel post;
   PostItem({required this.newDate, required this.post, super.key});
-  int start = 1;
+  bool start = true;
 
   @override
   State<PostItem> createState() => _PostItemState();
@@ -28,7 +25,7 @@ class _PostItemState extends State<PostItem> {
     UserModel userDetails =
         Provider.of<User>(context, listen: false).getUserDetails;
 
-    if (widget.start == 1) {
+    if (widget.start) {
       setState(() {
         isLiked = Provider.of<Posts>(context, listen: false)
             .isUserLiked(widget.post, userDetails.id);
@@ -38,7 +35,7 @@ class _PostItemState extends State<PostItem> {
           _likes = widget.post.likes.length;
         });
       });
-      widget.start = 0;
+      widget.start = false;
     }
 
     return Column(
@@ -65,10 +62,10 @@ class _PostItemState extends State<PostItem> {
                             filterQuality: FilterQuality.low, errorBuilder:
                                 (BuildContext context, Object exception,
                                     StackTrace? stackTrace) {
-                          return SizedBox(
+                          return const SizedBox(
                               height: 50,
                               width: 50,
-                              child: const Center(child: Text('😊')));
+                              child: Center(child: Text('😊')));
                         })),
                     const SizedBox(
                       width: 7,

@@ -12,7 +12,7 @@ import 'package:shore_app/provider/User.dart';
 class PostEditScreen extends StatefulWidget {
   static String routeName = "/edit-post";
   PostEditScreen({super.key});
-  int start = 1;
+  bool start = true;
 
   @override
   State<PostEditScreen> createState() => _PostEditScreenState();
@@ -39,9 +39,9 @@ class _PostEditScreenState extends State<PostEditScreen> {
     UserPostModel post =
         ModalRoute.of(context)?.settings.arguments as UserPostModel;
 
-    if (widget.start == 1) {
+    if (widget.start) {
       _descriptionController.text = post.description;
-      widget.start = 0;
+      widget.start = false;
     }
 
     return Stack(

@@ -147,7 +147,6 @@ class User with ChangeNotifier {
     final prefs = await SharedPreferences.getInstance();
     String domainUri = prefs.get("shore_backend_uri") as String;
 
-    print(domainUri);
     try {
       var tokenRes = await client.post(Uri.parse("$domainUri/api/user/login"),
           body: json.encode({"emailId": emailId, "password": password}),
@@ -709,6 +708,82 @@ class User with ChangeNotifier {
     } catch (e) {
       print(e);
       return "Error";
+    } finally {
+      notifyListeners();
+    }
+  }
+
+  bool isFollowing(String userId) {
+    if (_user.followings.isNotEmpty) {
+      final res = _user.followings
+          .firstWhere((user) => userId.toString() == user.toString());
+
+      if (res.isEmpty) {
+        return false;
+      } else {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  Future<bool> follow(String userId) async {
+    var client = Client();
+    final prefs = await SharedPreferences.getInstance();
+    String domainUri = prefs.get("shore_backend_uri") as String;
+    try {
+      final accessToken = prefs.get("shore_accessToken") as String;
+
+      var res = await client.post(
+          Uri.parse("$domainUri/api/user/unsign-user/follow"),
+          body: json.encode({"userId": userId}),
+          headers: {"authorization": "Bearer $accessToken"});
+
+      if (res.statusCode != 200) {
+        throw res.body;
+      }
+
+      var resBody = json.decode(res.body);
+
+      _user.followings.add(userId);
+
+      print(resBody);
+
+      return true;
+    } catch (e) {
+      print(e);
+      return false;
+    } finally {
+      notifyListeners();
+    }
+  }
+
+  Future<bool> unfollow(String userId) async {
+    var client = Client();
+    final prefs = await SharedPreferences.getInstance();
+    String domainUri = prefs.get("shore_backend_uri") as String;
+    try {
+      final accessToken = prefs.get("shore_accessToken") as String;
+
+      var res = await client.post(
+          Uri.parse("$domainUri/api/user/unsign-user/unfollow"),
+          body: json.encode({"userId": userId}),
+          headers: {"authorization": "Bearer $accessToken"});
+
+      if (res.statusCode != 200) {
+        throw res.body;
+      }
+
+      var resBody = json.decode(res.body);
+
+      _user.followings.remove(userId);
+
+      print(resBody);
+
+      return true;
+    } catch (e) {
+      print(e);
+      return false;
     } finally {
       notifyListeners();
     }

@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:shore_app/Components/Search/UserItem.dart';
 import 'package:shore_app/models.dart';
-import 'package:shore_app/provider/UnsignedUser.dart';
+import 'package:shore_app/provider/UnsignUser.dart';
 
 class SearchScreen extends StatefulWidget {
   static String routeName = "search";
@@ -14,7 +15,7 @@ class SearchScreen extends StatefulWidget {
 class _SearchScreenState extends State<SearchScreen> {
   final TextEditingController _searchController = TextEditingController();
   bool _isLoading = false;
-  List<UnsignedUserModel> _users = [];
+  List<UnsignUserModel> _users = [];
 
   @override
   void dispose() {
@@ -31,7 +32,7 @@ class _SearchScreenState extends State<SearchScreen> {
           _isLoading = true;
         });
 
-        final users = await Provider.of<UnsignedUser>(context, listen: false)
+        final users = await Provider.of<UnsignUser>(context, listen: false)
             .loadUsers(_searchController.text);
         setState(() {
           _users = users;
@@ -41,6 +42,7 @@ class _SearchScreenState extends State<SearchScreen> {
         setState(() {
           _isLoading = false;
         });
+        print("ok");
         print(e);
       }
     }
@@ -55,32 +57,35 @@ class _SearchScreenState extends State<SearchScreen> {
                     controller: _searchController,
                     style: const TextStyle(color: Colors.white),
                     cursorColor: Colors.white,
-                    decoration: InputDecoration(
+                    decoration: const InputDecoration(
                         border: InputBorder.none,
                         hintText: "Search",
                         // icon: Icon(Icons.search, color: Colors.white),
-                        suffixIcon: IconButton(
-                            onPressed: _searchController.text.isNotEmpty
-                                ? searchFun
-                                : null,
-                            icon:
-                                const Icon(Icons.search, color: Colors.white)),
+                        suffixIcon: Icon(Icons.search, color: Colors.white),
                         iconColor: Colors.white,
                         suffixIconColor: Colors.white),
                     autofocus: true,
                     autocorrect: true,
-                    onSubmitted: _searchController.text.isNotEmpty
-                        ? (value) async {
-                            await searchFun();
-                          }
-                        : null,
+                    onSubmitted: (value) async {
+                      await searchFun();
+                    },
+                    // onSubmitted: _searchController.text.isNotEmpty
+                    //     ? (value) async {
+                    //         await searchFun();
+                    //       }
+                    //     : null,
                   )),
             ),
-            body: ListView.builder(
-              itemCount: _users.length,
-              itemBuilder: (ctx, i) {
-                return Text(_users[i].name);
-              },
+            body: Container(
+              decoration: BoxDecoration(color: Colors.grey.shade200),
+              child: ListView.builder(
+                itemCount: _users.length,
+                itemBuilder: (ctx, i) {
+                  return UserItem(
+                    user: _users[i],
+                  );
+                },
+              ),
             )),
         if (_isLoading)
           Positioned(

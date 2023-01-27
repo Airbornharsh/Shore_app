@@ -38,7 +38,7 @@ class UserModel {
       required this.fav});
 }
 
-class UnsignedUserModel {
+class UnsignUserModel {
   final String id;
   final String name;
   final String gender;
@@ -46,15 +46,22 @@ class UnsignedUserModel {
   final String imgUrl;
   final String joinedDate;
   final String phoneNumber;
+  final List<String> posts;
+  final List<String> followers;
+  final List<String> followings;
 
-  UnsignedUserModel(
-      {required this.id,
-      required this.name,
-      required this.gender,
-      required this.userName,
-      required this.imgUrl,
-      required this.joinedDate,
-      required this.phoneNumber});
+  UnsignUserModel({
+    required this.id,
+    required this.name,
+    required this.gender,
+    required this.userName,
+    required this.imgUrl,
+    required this.joinedDate,
+    required this.phoneNumber,
+    required this.posts,
+    required this.followers,
+    required this.followings,
+  });
 }
 
 class PostModel {

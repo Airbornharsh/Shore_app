@@ -1,18 +1,30 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:shore_app/models.dart';
-import 'package:shore_app/screens/EditProfileScreen.dart';
+import 'package:shore_app/provider/User.dart';
+import 'package:shore_app/screens/AuthScreen.dart';
 
-class ProfileDetails extends StatefulWidget {
-  final UserModel user;
-  const ProfileDetails({required this.user, super.key});
+class UserDetails extends StatefulWidget {
+  final UnsignUserModel user;
+  UserDetails({required this.user, super.key});
+  bool start = true;
 
   @override
-  State<ProfileDetails> createState() => _ProfileDetailsState();
+  State<UserDetails> createState() => _UserDetailsState();
 }
 
-class _ProfileDetailsState extends State<ProfileDetails> {
+class _UserDetailsState extends State<UserDetails> {
+  bool isFollowing = false;
+
   @override
   Widget build(BuildContext context) {
+    if (widget.start) {
+      setState(() {
+        isFollowing = Provider.of<User>(context).isFollowing(widget.user.id);
+      });
+      widget.start = false;
+    }
+
     return Column(children: [
       // Image.network(
       //     "https://cdn.pixabay.com/photo/2015/04/23/22/00/tree-736885__480.jpg",
@@ -73,19 +85,72 @@ class _ProfileDetailsState extends State<ProfileDetails> {
                       )
                     ],
                   ),
-                  TextButton(
-                      onPressed: () {
-                        Navigator.of(context)
-                            .pushNamed(EditProfileScreen.routeName);
-                      },
-                      style: const ButtonStyle(
+                  if (!isFollowing)
+                    TextButton(
+                        onPressed: () async {
+                          if (Provider.of<User>(context, listen: false)
+                              .getIsAuth) {
+                            try {
+                              if (!isFollowing) {
+                                setState(() {
+                                  isFollowing = true;
+                                });
+                                await Provider.of<User>(context, listen: false)
+                                    .follow(widget.user.id);
+                                widget.user.followers.add(
+                                    Provider.of<User>(context, listen: false)
+                                        .getUserDetails
+                                        .id);
+                              }
+                            } catch (e) {
+                              print(e);
+                            }
+                          } else {
+                            Navigator.of(context)
+                                .popAndPushNamed(AuthScreen.routeName);
+                          }
+                        },
+                        style: const ButtonStyle(
+                            backgroundColor: MaterialStatePropertyAll<Color>(
+                          Color.fromARGB(255, 0, 190, 184),
+                        )),
+                        child: const Text(
+                          "Follow",
+                          style: TextStyle(color: Colors.white, fontSize: 14),
+                        )),
+                  if (isFollowing)
+                    TextButton(
+                        onPressed: () async {
+                          if (Provider.of<User>(context, listen: false)
+                              .getIsAuth) {
+                            try {
+                              if (isFollowing) {
+                                setState(() {
+                                  isFollowing = false;
+                                });
+                                await Provider.of<User>(context, listen: false)
+                                    .unfollow(widget.user.id);
+                                widget.user.followers.remove(
+                                    Provider.of<User>(context, listen: false)
+                                        .getUserDetails
+                                        .id);
+                              }
+                            } catch (e) {
+                              print(e);
+                            }
+                          } else {
+                            Navigator.of(context)
+                                .popAndPushNamed(AuthScreen.routeName);
+                          }
+                        },
+                        style: ButtonStyle(
                           backgroundColor: MaterialStatePropertyAll<Color>(
-                        Color.fromARGB(255, 0, 190, 184),
-                      )),
-                      child: const Text(
-                        "  Edit Profile  ",
-                        style: TextStyle(color: Colors.white, fontSize: 14),
-                      ))
+                              Colors.grey.shade400),
+                        ),
+                        child: const Text(
+                          "Following",
+                          style: TextStyle(color: Colors.white, fontSize: 14),
+                        )),
                 ],
               ),
             )

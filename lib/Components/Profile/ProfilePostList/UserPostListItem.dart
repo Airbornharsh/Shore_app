@@ -8,7 +8,7 @@ class UserPostListItem extends StatefulWidget {
   String newDate;
   UserPostModel post;
   UserPostListItem({required this.newDate, required this.post, super.key});
-  int start = 1;
+  bool start = true;
 
   @override
   State<UserPostListItem> createState() => _UserPostListItemState();
@@ -26,7 +26,7 @@ class _UserPostListItemState extends State<UserPostListItem> {
 
     print(userDetails.imgUrl);
 
-    if (widget.start == 1) {
+    if (widget.start) {
       // setState(() {
       //   isLiked = Provider.of<Posts>(context, listen: false)
       //       .isUserLiked(widget.post, userDetails.id);
@@ -36,7 +36,7 @@ class _UserPostListItemState extends State<UserPostListItem> {
       //     _likes = widget.post.likes.length;
       //   });
       // });
-      widget.start = 0;
+      widget.start = false;
     }
 
     return Column(

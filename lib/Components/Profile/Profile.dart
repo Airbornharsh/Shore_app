@@ -10,7 +10,7 @@ class Profile extends StatefulWidget {
   final Function reloadUserPosts;
   Profile(
       {required this.userPostList, required this.reloadUserPosts, super.key});
-  int start = 1;
+  bool start = true;
 
   @override
   State<Profile> createState() => _ProfileState();
@@ -26,7 +26,7 @@ class _ProfileState extends State<Profile> {
       user = Provider.of<User>(context).getUserDetails;
     });
 
-    if (widget.start == 1) {}
+    if (widget.start) {}
 
     return RefreshIndicator(
       onRefresh: () async {
