@@ -2,12 +2,14 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shore_app/Components/Profile/UserPostList.dart';
-import 'package:shore_app/firebase_options.dart';
+import 'package:shore_app/Utils/firebase_options.dart';
 import 'package:shore_app/provider/Posts.dart';
 import 'package:shore_app/provider/UnsignUser.dart';
 import 'package:shore_app/provider/User.dart';
 import 'package:shore_app/screens/AuthScreen.dart';
 import 'package:shore_app/screens/EditProfileScreen.dart';
+import 'package:shore_app/screens/FollowersScreen.dart';
+import 'package:shore_app/screens/FollowingsScreen.dart';
 import 'package:shore_app/screens/HomeScreen.dart';
 import 'package:shore_app/screens/NewPostScreen.dart';
 import 'package:shore_app/screens/PostEditScreen.dart';
@@ -53,8 +55,10 @@ class MyApp extends StatelessWidget {
           PostEditScreen.routeName: (ctx) => PostEditScreen(),
           NewPostScreen.routeName: (ctx) => const NewPostScreen(),
           UserPostListScreen.routeName: (ctx) => UserPostListScreen(),
-          SearchScreen.routeName: (ctx) => SearchScreen(),
+          SearchScreen.routeName: (ctx) => const SearchScreen(),
           UserScreen.routeName: (ctx) => UserScreen(),
+          FollowersScreen.routeName: (ctx) => const FollowersScreen(),
+          FollowingsScreen.routeName: (ctx) => const FollowingsScreen(),
         },
       ),
     );
