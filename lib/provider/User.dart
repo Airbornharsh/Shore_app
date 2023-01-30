@@ -52,8 +52,10 @@ class User with ChangeNotifier {
     var client = Client();
     final prefs = await SharedPreferences.getInstance();
     String domainUri = prefs.get("shore_backend_uri") as String;
-
     try {
+      if (!prefs.containsKey("shore_accessToken")) {
+        return false;
+      }
       String accessToken = prefs.get("shore_accessToken") as String;
 
       if (accessToken.isEmpty) return false;
@@ -754,21 +756,31 @@ class User with ChangeNotifier {
     }
   }
 
-  bool isFollowing(String userId) {
+  String isFollowing(String userId) {
+    String res;
     if (_user.followings.isNotEmpty) {
-      final res = _user.followings
+      res = _user.followings
           .firstWhere((user) => userId.toString() == user.toString());
 
-      if (res.isEmpty) {
-        return false;
-      } else {
-        return true;
+      if (res.isNotEmpty) {
+        return "Following";
       }
     }
-    return false;
+
+    if (_user.requestingFollowing.isNotEmpty) {
+      res = _user.requestingFollowing
+          .firstWhere((user) => userId.toString() == user.toString());
+      if (res.isNotEmpty) {
+        return "Requested";
+      } else {
+        return "Follow";
+      }
+    } else {
+      return "Follow";
+    }
   }
 
-  Future<bool> follow(String userId) async {
+  Future<String> follow(String userId) async {
     var client = Client();
     final prefs = await SharedPreferences.getInstance();
     String domainUri = prefs.get("shore_backend_uri") as String;
@@ -790,10 +802,10 @@ class User with ChangeNotifier {
 
       print(resBody);
 
-      return true;
+      return resBody["message"];
     } catch (e) {
       print(e);
-      return false;
+      return "Server Error";
     } finally {
       notifyListeners();
     }
@@ -837,7 +849,7 @@ class User with ChangeNotifier {
     final prefs = await SharedPreferences.getInstance();
     String domainUri = prefs.get("shore_backend_uri") as String;
     try {
-      var res;
+      Response res;
 
       userId.isEmpty
           ? res = await client.post(
@@ -881,7 +893,7 @@ class User with ChangeNotifier {
     final prefs = await SharedPreferences.getInstance();
     String domainUri = prefs.get("shore_backend_uri") as String;
     try {
-      var res;
+      Response res;
 
       userId.isEmpty
           ? res = await client.post(
@@ -916,5 +928,106 @@ class User with ChangeNotifier {
       notifyListeners();
     }
     return users;
+  }
+
+  Future<List<UnsignUserModel>> loadRequestingFollowers() async {
+    List<UnsignUserModel> users = [];
+    var client = Client();
+    final prefs = await SharedPreferences.getInstance();
+    String domainUri = prefs.get("shore_backend_uri") as String;
+    try {
+      var res = await client.post(
+          Uri.parse("$domainUri/api/user/requesting/list"),
+          headers: {"authorization": "Bearer $_accessToken"});
+      var parsedUserBody = json.decode(res.body);
+
+      await parsedUserBody.forEach((user) {
+        UnsignUserModel newUser = UnsignUserModel(
+          id: user["id"].toString(),
+          name: user["name"].toString(),
+          gender: user["gender"].toString(),
+          userName: user["userName"].toString(),
+          imgUrl: user["imgUrl"].toString(),
+          joinedDate: user["joinedDate"].toString(),
+          phoneNumber: user["phoneNumber"].toString(),
+          posts: List<String>.from(user["posts"]),
+          followers: List<String>.from(user["followers"]),
+          followings: List<String>.from(user["followings"]),
+        );
+
+        users.add(newUser);
+      });
+    } catch (e) {
+      print(e);
+    } finally {
+      notifyListeners();
+    }
+    return users;
+  }
+
+  Future<bool> acceptFollowRequest(String userId) async {
+    var client = Client();
+    final prefs = await SharedPreferences.getInstance();
+    String domainUri = prefs.get("shore_backend_uri") as String;
+    try {
+      final accessToken = prefs.get("shore_accessToken") as String;
+
+      var res = await client.post(
+          Uri.parse("$domainUri/api/user/requesting/accept"),
+          body: json.encode({"userId": userId}),
+          headers: {"authorization": "Bearer $accessToken"});
+
+      if (res.statusCode != 200) {
+        throw res.body;
+      }
+
+      var resBody = json.decode(res.body);
+
+      _user.acceptedFollowerRequests.add(userId);
+      _user.followers.add(userId);
+      _user.requestingFollowers.remove(userId);
+
+      print(resBody);
+
+      return true;
+    } catch (e) {
+      print(e);
+      return false;
+    } finally {
+      notifyListeners();
+    }
+  }
+
+  Future<bool> declineFollowRequest(String userId) async {
+    var client = Client();
+    final prefs = await SharedPreferences.getInstance();
+    String domainUri = prefs.get("shore_backend_uri") as String;
+    try {
+      final accessToken = prefs.get("shore_accessToken") as String;
+
+      var res = await client.post(
+          Uri.parse("$domainUri/api/user/requesting/decline"),
+          body: json.encode({"userId": userId}),
+          headers: {"authorization": "Bearer $accessToken"});
+
+      if (res.statusCode != 200) {
+        throw res.body;
+      }
+
+      var resBody = json.decode(res.body);
+
+      _user.declinedFollowingRequests.add(userId);
+      _user.followers.add(userId);
+      _user.requestingFollowers.remove(userId);
+
+      print(resBody);
+
+      return true;
+    } catch (e) {
+      print(e);
+      return false;
+    } finally {
+      notifyListeners();
+    }
   }
 }

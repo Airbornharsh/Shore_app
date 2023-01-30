@@ -16,16 +16,24 @@ class UserDetails extends StatefulWidget {
 }
 
 class _UserDetailsState extends State<UserDetails> {
-  bool isFollowing = false;
+  String isFollowing = "Follow";
 
   @override
   Widget build(BuildContext context) {
-    if (widget.start) {
-      setState(() {
-        isFollowing = Provider.of<User>(context).isFollowing(widget.user.id);
-      });
-      widget.start = false;
-    }
+    setState(() {
+      if (widget.start) {
+        final res = Provider.of<User>(context, listen: false)
+            .isFollowing(widget.user.id);
+        print(res);
+        if (res.isEmpty) {
+          isFollowing = "";
+        } else {
+          isFollowing = res;
+        }
+
+        widget.start = false;
+      }
+    });
 
     return Column(children: [
       // Image.network(
@@ -87,23 +95,22 @@ class _UserDetailsState extends State<UserDetails> {
                       )
                     ],
                   ),
-                  if (!isFollowing)
+                  if (isFollowing == "Follow")
                     TextButton(
                         onPressed: () async {
                           if (Provider.of<User>(context, listen: false)
                               .getIsAuth) {
                             try {
-                              if (!isFollowing) {
-                                setState(() {
-                                  isFollowing = true;
-                                });
-                                await Provider.of<User>(context, listen: false)
-                                    .follow(widget.user.id);
-                                widget.user.followers.add(
-                                    Provider.of<User>(context, listen: false)
-                                        .getUserDetails
-                                        .id);
-                              }
+                              final res = await Provider.of<User>(context,
+                                      listen: false)
+                                  .follow(widget.user.id);
+                              widget.user.followers.add(
+                                  Provider.of<User>(context, listen: false)
+                                      .getUserDetails
+                                      .id);
+                              setState(() {
+                                isFollowing = res;
+                              });
                             } catch (e) {
                               print(e);
                             }
@@ -116,27 +123,25 @@ class _UserDetailsState extends State<UserDetails> {
                             backgroundColor: MaterialStatePropertyAll<Color>(
                           Color.fromARGB(255, 0, 190, 184),
                         )),
-                        child: const Text(
-                          "Follow",
+                        child: Text(
+                          isFollowing,
                           style: TextStyle(color: Colors.white, fontSize: 14),
                         )),
-                  if (isFollowing)
+                  if (isFollowing == "Requested")
                     TextButton(
                         onPressed: () async {
                           if (Provider.of<User>(context, listen: false)
                               .getIsAuth) {
                             try {
-                              if (isFollowing) {
-                                setState(() {
-                                  isFollowing = false;
-                                });
-                                await Provider.of<User>(context, listen: false)
-                                    .unfollow(widget.user.id);
-                                widget.user.followers.remove(
-                                    Provider.of<User>(context, listen: false)
-                                        .getUserDetails
-                                        .id);
-                              }
+                              await Provider.of<User>(context, listen: false)
+                                  .unfollow(widget.user.id);
+                              widget.user.followers.remove(
+                                  Provider.of<User>(context, listen: false)
+                                      .getUserDetails
+                                      .id);
+                              setState(() {
+                                isFollowing = "Follow";
+                              });
                             } catch (e) {
                               print(e);
                             }
@@ -149,8 +154,39 @@ class _UserDetailsState extends State<UserDetails> {
                           backgroundColor: MaterialStatePropertyAll<Color>(
                               Colors.grey.shade400),
                         ),
-                        child: const Text(
-                          "Following",
+                        child: Text(
+                          isFollowing,
+                          style: TextStyle(color: Colors.white, fontSize: 14),
+                        )),
+                  if (isFollowing == "Following")
+                    TextButton(
+                        onPressed: () async {
+                          if (Provider.of<User>(context, listen: false)
+                              .getIsAuth) {
+                            try {
+                              await Provider.of<User>(context, listen: false)
+                                  .unfollow(widget.user.id);
+                              widget.user.followers.remove(
+                                  Provider.of<User>(context, listen: false)
+                                      .getUserDetails
+                                      .id);
+                              setState(() {
+                                isFollowing = "Follow";
+                              });
+                            } catch (e) {
+                              print(e);
+                            }
+                          } else {
+                            Navigator.of(context)
+                                .popAndPushNamed(AuthScreen.routeName);
+                          }
+                        },
+                        style: ButtonStyle(
+                          backgroundColor: MaterialStatePropertyAll<Color>(
+                              Colors.grey.shade400),
+                        ),
+                        child: Text(
+                          isFollowing,
                           style: TextStyle(color: Colors.white, fontSize: 14),
                         )),
                 ],

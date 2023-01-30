@@ -4,7 +4,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:shore_app/Components/CustomAppBar.dart';
 import 'package:shore_app/Components/HomeScreen/Home.dart';
 import 'package:shore_app/Components/Profile/Profile.dart';
-import 'package:shore_app/Components/HomeScreen/Requests.dart';
+import 'package:shore_app/Components/Requests/Requests.dart';
 import 'package:shore_app/models.dart';
 import 'package:shore_app/provider/Posts.dart';
 import 'package:shore_app/provider/User.dart';
@@ -24,6 +24,7 @@ class _HomeScreenState extends State<HomeScreen> {
   List<PostModel> postList = [];
   List<UserPostModel> userPostList = [];
   PageController _pageController = PageController();
+  bool _isLoading = false;
 
   @override
   void initState() {
@@ -50,7 +51,8 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   void _onItemTapped(int index) {
-    if (index == 2 && !Provider.of<User>(context, listen: false).getIsAuth) {
+    if ((index == 2 || index == 1) &&
+        !Provider.of<User>(context, listen: false).getIsAuth) {
       Navigator.of(context).popAndPushNamed(AuthScreen.routeName);
     }
     setState(() {
@@ -104,41 +106,64 @@ class _HomeScreenState extends State<HomeScreen> {
       }
     }
 
+    void setIsLoading(bool val) {
+      setState(() {
+        _isLoading = val;
+      });
+    }
+
     List<Widget> selectedWidget = [
       Home(postList: postList, reloadPosts: reloadPosts),
-      const Requests(),
+      Requests(isLoading: _isLoading, setIsLoading: setIsLoading),
       Profile(userPostList: userPostList, reloadUserPosts: reloadUserPosts)
     ];
 
-    return Scaffold(
-      appBar: CustomAppBar(context),
-      bottomNavigationBar: BottomNavigationBar(
-          currentIndex: _selectedIndex,
-          selectedFontSize: 0,
-          iconSize: 30,
-          unselectedItemColor: Colors.grey,
-          items: const [
-            BottomNavigationBarItem(icon: Icon(Icons.home), label: ""),
-            BottomNavigationBarItem(icon: Icon(Icons.favorite), label: ""),
-            BottomNavigationBarItem(icon: Icon(Icons.person), label: ""),
-          ],
-          // onTap: (value) {
-          //   if (value == 2 &&
-          //       !Provider.of<User>(context, listen: false).getIsAuth) {
-          //     Navigator.of(context).popAndPushNamed(AuthScreen.routeName);
-          //   } else {
-          //     setState(() {
-          //       _selectedIndex = value;
-          //     });
-          //   }
-          // },
-          onTap: _onItemTapped),
-      body: SizedBox.expand(
-          child: PageView(
-        controller: _pageController,
-        onPageChanged: ((i) => setState(() => _selectedIndex = i)),
-        children: selectedWidget,
-      )),
+    return Stack(
+      children: [
+        Scaffold(
+          appBar: CustomAppBar(context),
+          bottomNavigationBar: BottomNavigationBar(
+              currentIndex: _selectedIndex,
+              selectedFontSize: 0,
+              iconSize: 30,
+              unselectedItemColor: Colors.grey,
+              items: const [
+                BottomNavigationBarItem(icon: Icon(Icons.home), label: ""),
+                BottomNavigationBarItem(icon: Icon(Icons.favorite), label: ""),
+                BottomNavigationBarItem(icon: Icon(Icons.person), label: ""),
+              ],
+              // onTap: (value) {
+              //   if (value == 2 &&
+              //       !Provider.of<User>(context, listen: false).getIsAuth) {
+              //     Navigator.of(context).popAndPushNamed(AuthScreen.routeName);
+              //   } else {
+              //     setState(() {
+              //       _selectedIndex = value;
+              //     });
+              //   }
+              // },
+              onTap: _onItemTapped),
+          body: SizedBox.expand(
+              child: PageView(
+            controller: _pageController,
+            onPageChanged: ((i) => setState(() => _selectedIndex = i)),
+            children: selectedWidget,
+          )),
+        ),
+        if (_isLoading)
+          Positioned(
+            top: 0,
+            left: 0,
+            height: MediaQuery.of(context).size.height,
+            width: MediaQuery.of(context).size.width,
+            child: Container(
+              color: const Color.fromRGBO(80, 80, 80, 0.3),
+              width: MediaQuery.of(context).size.width,
+              height: MediaQuery.of(context).size.height,
+              child: const Center(child: CircularProgressIndicator()),
+            ),
+          ),
+      ],
     );
   }
 }
