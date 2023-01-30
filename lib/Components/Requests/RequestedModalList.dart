@@ -1,22 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:shore_app/Components/Requests/RequestProfileItem.dart';
+import 'package:shore_app/Components/Requests/RequestedProfileItem.dart';
 import 'package:shore_app/models.dart';
 
-class RequestModalList extends StatefulWidget {
-  List<UnsignUserModel> unsignuserRequestingList;
+class RequestedModalList extends StatefulWidget {
+  List<UnsignUserModel> unsignuserRequestedList;
   bool isLoading;
   Function setIsLoading;
-  RequestModalList(
-      {required this.unsignuserRequestingList,
+  RequestedModalList(
+      {required this.unsignuserRequestedList,
       required this.isLoading,
       required this.setIsLoading,
       super.key});
 
   @override
-  State<RequestModalList> createState() => _RequestModalListState();
+  State<RequestedModalList> createState() => _RequestedModalListState();
 }
 
-class _RequestModalListState extends State<RequestModalList> {
+class _RequestedModalListState extends State<RequestedModalList> {
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -25,10 +26,10 @@ class _RequestModalListState extends State<RequestModalList> {
       child: Stack(
         children: [
           ListView.builder(
-              itemCount: widget.unsignuserRequestingList.length,
+              itemCount: widget.unsignuserRequestedList.length,
               itemBuilder: (context, i) {
-                return RequestProfileItem(
-                    user: widget.unsignuserRequestingList[i],
+                return RequestedProfileItem(
+                    user: widget.unsignuserRequestedList[i],
                     isLoading: widget.isLoading,
                     setIsLoading: widget.setIsLoading);
               }),

@@ -57,6 +57,7 @@ class User with ChangeNotifier {
         return false;
       }
       String accessToken = prefs.get("shore_accessToken") as String;
+      _accessToken = accessToken;
 
       if (accessToken.isEmpty) return false;
 
@@ -70,7 +71,6 @@ class User with ChangeNotifier {
       var parsedUserBody = json.decode(userRes.body);
 
       _isAuth = true;
-      _accessToken = accessToken;
 
       _user = UserModel(
           id: parsedUserBody["_id"].toString(),
@@ -798,7 +798,11 @@ class User with ChangeNotifier {
 
       var resBody = json.decode(res.body);
 
-      _user.followings.add(userId);
+      if (resBody["message"] == "Requested") {
+        _user.requestingFollowing.add(userId);
+      } else {
+        _user.followings.add(userId);
+      }
 
       print(resBody);
 
@@ -1029,5 +1033,40 @@ class User with ChangeNotifier {
     } finally {
       notifyListeners();
     }
+  }
+
+  Future<List<UnsignUserModel>> loadRequestingFollowing() async {
+    List<UnsignUserModel> users = [];
+    var client = Client();
+    final prefs = await SharedPreferences.getInstance();
+    String domainUri = prefs.get("shore_backend_uri") as String;
+    try {
+      var res = await client.post(
+          Uri.parse("$domainUri/api/user/requested/list"),
+          headers: {"authorization": "Bearer $_accessToken"});
+      var parsedUserBody = json.decode(res.body);
+
+      await parsedUserBody.forEach((user) {
+        UnsignUserModel newUser = UnsignUserModel(
+          id: user["id"].toString(),
+          name: user["name"].toString(),
+          gender: user["gender"].toString(),
+          userName: user["userName"].toString(),
+          imgUrl: user["imgUrl"].toString(),
+          joinedDate: user["joinedDate"].toString(),
+          phoneNumber: user["phoneNumber"].toString(),
+          posts: List<String>.from(user["posts"]),
+          followers: List<String>.from(user["followers"]),
+          followings: List<String>.from(user["followings"]),
+        );
+
+        users.add(newUser);
+      });
+    } catch (e) {
+      print(e);
+    } finally {
+      notifyListeners();
+    }
+    return users;
   }
 }

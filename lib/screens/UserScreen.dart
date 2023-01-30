@@ -26,15 +26,15 @@ class _UserScreenState extends State<UserScreen> {
     final UserModel profileDetails = Provider.of<User>(context).getUserDetails;
 
     if (widget.start) {
-      user = ModalRoute.of(context)?.settings.arguments as UnsignUserModel;
-      Provider.of<UnsignUser>(context, listen: false)
-          .loadUnsignUserPosts(user.id)
-          .then((el) {
-        setState(() {
+      setState(() {
+        user = ModalRoute.of(context)?.settings.arguments as UnsignUserModel;
+        Provider.of<UnsignUser>(context, listen: false)
+            .loadUnsignUserPosts(user.id)
+            .then((el) {
           unsignUserPostList = el;
         });
+        widget.start = false;
       });
-      widget.start = false;
     }
 
     void reloadUserPosts() {}

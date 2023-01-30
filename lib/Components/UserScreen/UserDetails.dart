@@ -20,20 +20,18 @@ class _UserDetailsState extends State<UserDetails> {
 
   @override
   Widget build(BuildContext context) {
-    setState(() {
-      if (widget.start) {
+    if (widget.start) {
+      setState(() {
         final res = Provider.of<User>(context, listen: false)
             .isFollowing(widget.user.id);
-        print(res);
         if (res.isEmpty) {
           isFollowing = "";
         } else {
           isFollowing = res;
         }
-
         widget.start = false;
-      }
-    });
+      });
+    }
 
     return Column(children: [
       // Image.network(

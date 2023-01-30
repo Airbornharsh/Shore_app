@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shore_app/Components/Requests/RequestModalList.dart';
+import 'package:shore_app/Components/Requests/RequestedModalList.dart';
 import 'package:shore_app/models.dart';
 import 'package:shore_app/provider/User.dart';
 
@@ -15,7 +16,8 @@ class Requests extends StatefulWidget {
 }
 
 class _RequestsState extends State<Requests> {
-  List<UnsignUserModel> unsignuserList = [];
+  List<UnsignUserModel> unsignuserRequestingList = [];
+  List<UnsignUserModel> unsignuserRequestedList = [];
 
   @override
   void dispose() {
@@ -30,7 +32,13 @@ class _RequestsState extends State<Requests> {
         Provider.of<User>(context, listen: false)
             .loadRequestingFollowers()
             .then((el) {
-          unsignuserList = el;
+          unsignuserRequestingList = el;
+          widget.start = false;
+        });
+        Provider.of<User>(context, listen: false)
+            .loadRequestingFollowing()
+            .then((el) {
+          unsignuserRequestedList = el;
           widget.start = false;
         });
       }
@@ -42,7 +50,7 @@ class _RequestsState extends State<Requests> {
           Provider.of<User>(context, listen: false)
               .loadRequestingFollowers()
               .then((el) {
-            unsignuserList = el;
+            unsignuserRequestingList = el;
             widget.start = false;
           });
         });
@@ -61,7 +69,7 @@ class _RequestsState extends State<Requests> {
                     context: context,
                     builder: (context) {
                       return RequestModalList(
-                          unsignuserList: unsignuserList,
+                          unsignuserRequestingList: unsignuserRequestingList,
                           isLoading: widget.isLoading,
                           setIsLoading: widget.setIsLoading);
                     },
@@ -76,7 +84,32 @@ class _RequestsState extends State<Requests> {
                     trailing: Icon(Icons.expand_more),
                   ),
                 ),
-              )
+              ),
+              const SizedBox(
+                height: 1,
+              ),
+              GestureDetector(
+                onTap: () {
+                  showBottomSheet(
+                    context: context,
+                    builder: (context) {
+                      return RequestedModalList(
+                          unsignuserRequestedList: unsignuserRequestedList,
+                          isLoading: widget.isLoading,
+                          setIsLoading: widget.setIsLoading);
+                    },
+                  );
+                },
+                child: Container(
+                  padding: const EdgeInsets.symmetric(vertical: 5),
+                  decoration: const BoxDecoration(color: Colors.white),
+                  child: const ListTile(
+                    leading: Icon(Icons.people_rounded),
+                    title: Text("Follow Requested"),
+                    trailing: Icon(Icons.expand_more),
+                  ),
+                ),
+              ),
             ],
           ),
         ),
