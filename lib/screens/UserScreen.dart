@@ -20,6 +20,7 @@ class _UserScreenState extends State<UserScreen> {
   bool _isLoading = false;
   late UnsignUserModel user;
   List<UserPostModel> unsignUserPostList = [];
+  bool isPrivate = true;
 
   @override
   Widget build(BuildContext context) {
@@ -27,14 +28,23 @@ class _UserScreenState extends State<UserScreen> {
 
     if (widget.start) {
       setState(() {
+        _isLoading = true;
         user = ModalRoute.of(context)?.settings.arguments as UnsignUserModel;
         Provider.of<UnsignUser>(context, listen: false)
             .loadUnsignUserPosts(user.id)
             .then((el) {
           unsignUserPostList = el;
+          setState(() {
+            _isLoading = false;
+          });
         });
-        widget.start = false;
+
+        isPrivate = !Provider.of<User>(context)
+            .getUserDetails
+            .followings
+            .contains(user.id);
       });
+      widget.start = false;
     }
 
     void reloadUserPosts() {}
@@ -65,9 +75,10 @@ class _UserScreenState extends State<UserScreen> {
                   if (user.id != profileDetails.id) UserDetails(user: user),
                   if (user.id == profileDetails.id)
                     ProfileDetails(user: profileDetails),
-                  UserPostList(
-                      userPostList: unsignUserPostList,
-                      reloadUserPosts: reloadUserPosts),
+                  if (!isPrivate)
+                    UserPostList(
+                        userPostList: unsignUserPostList,
+                        reloadUserPosts: reloadUserPosts),
                 ],
               ),
             ),

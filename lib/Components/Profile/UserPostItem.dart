@@ -9,7 +9,6 @@ import 'package:shore_app/screens/PostEditScreen.dart';
 class UserPostItem extends StatefulWidget {
   UserPostModel userPostItem;
   UserPostItem({required this.userPostItem, super.key});
-  bool start = true;
 
   @override
   State<UserPostItem> createState() => _UserPostItemState();

@@ -58,6 +58,7 @@ class UnsignUserModel {
   final String imgUrl;
   final String joinedDate;
   final String phoneNumber;
+  final bool isPrivate;
   final List<String> posts;
   final List<String> followers;
   final List<String> followings;
@@ -70,6 +71,7 @@ class UnsignUserModel {
     required this.imgUrl,
     required this.joinedDate,
     required this.phoneNumber,
+    required this.isPrivate,
     required this.posts,
     required this.followers,
     required this.followings,
