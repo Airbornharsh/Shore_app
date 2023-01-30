@@ -8,11 +8,17 @@ class UserModel {
   final String imgUrl;
   final String joinedDate;
   final String phoneNumber;
+  final bool isPrivate;
   final List<String> posts;
   final List<String> followers;
   final List<String> followings;
   final List<String> closeFriends;
-  final List<Map<String, dynamic>> requestingFriends;
+  final List<String> acceptedFollowerRequests;
+  final List<String> declinedFollowerRequests;
+  final List<String> requestingFollowers;
+  final List<String> acceptedFollowingRequests;
+  final List<String> declinedFollowingRequests;
+  final List<String> requestingFollowing;
   final List<String> postLiked;
   final List<String> commentLiked;
   final List<String> commented;
@@ -27,11 +33,17 @@ class UserModel {
       required this.imgUrl,
       required this.joinedDate,
       required this.phoneNumber,
+      required this.isPrivate,
       required this.posts,
       required this.followers,
       required this.followings,
       required this.closeFriends,
-      required this.requestingFriends,
+      required this.acceptedFollowerRequests,
+      required this.declinedFollowerRequests,
+      required this.requestingFollowers,
+      required this.acceptedFollowingRequests,
+      required this.declinedFollowingRequests,
+      required this.requestingFollowing,
       required this.postLiked,
       required this.commentLiked,
       required this.commented,

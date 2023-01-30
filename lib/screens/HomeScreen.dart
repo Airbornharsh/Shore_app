@@ -8,6 +8,7 @@ import 'package:shore_app/Components/HomeScreen/Requests.dart';
 import 'package:shore_app/models.dart';
 import 'package:shore_app/provider/Posts.dart';
 import 'package:shore_app/provider/User.dart';
+import 'package:shore_app/screens/AuthScreen.dart';
 
 class HomeScreen extends StatefulWidget {
   HomeScreen({super.key});
@@ -49,6 +50,9 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   void _onItemTapped(int index) {
+    if (index == 2 && !Provider.of<User>(context, listen: false).getIsAuth) {
+      Navigator.of(context).popAndPushNamed(AuthScreen.routeName);
+    }
     setState(() {
       _selectedIndex = index;
       _pageController.animateToPage(index,

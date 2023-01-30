@@ -9,19 +9,25 @@ import 'package:shore_app/models.dart';
 
 class User with ChangeNotifier {
   UserModel _user = UserModel(
-      id: "69",
-      name: "Harsh",
-      emailId: "admin@example.com",
-      gender: "Male",
-      userName: "airbornharsh",
+      id: "1",
+      name: "",
+      emailId: "",
+      gender: "",
+      userName: "",
       imgUrl: "",
       joinedDate: DateTime.now().toString(),
       phoneNumber: "000000000",
+      isPrivate: false,
       posts: [],
       followers: [],
       followings: [],
       closeFriends: [],
-      requestingFriends: [],
+      acceptedFollowerRequests: [],
+      declinedFollowerRequests: [],
+      requestingFollowers: [],
+      acceptedFollowingRequests: [],
+      declinedFollowingRequests: [],
+      requestingFollowing: [],
       postLiked: [],
       commentLiked: [],
       commented: [],
@@ -73,12 +79,23 @@ class User with ChangeNotifier {
           imgUrl: parsedUserBody["imgUrl"].toString(),
           joinedDate: parsedUserBody["joinedDate"].toString(),
           phoneNumber: parsedUserBody["phoneNumber"].toString(),
+          isPrivate: parsedUserBody["isPrivate"],
           posts: List<String>.from(parsedUserBody["posts"]),
           followers: List<String>.from(parsedUserBody["followers"]),
           followings: List<String>.from(parsedUserBody["followings"]),
           closeFriends: List<String>.from(parsedUserBody["closeFriends"]),
-          requestingFriends: List<Map<String, dynamic>>.from(
-              parsedUserBody["requestingFriends"]),
+          acceptedFollowerRequests:
+              List<String>.from(parsedUserBody["acceptedFollowerRequests"]),
+          declinedFollowerRequests:
+              List<String>.from(parsedUserBody["declinedFollowerRequests"]),
+          requestingFollowers:
+              List<String>.from(parsedUserBody["requestingFollowers"]),
+          acceptedFollowingRequests:
+              List<String>.from(parsedUserBody["acceptedFollowingRequests"]),
+          declinedFollowingRequests:
+              List<String>.from(parsedUserBody["declinedFollowingRequests"]),
+          requestingFollowing:
+              List<String>.from(parsedUserBody["requestingFollowing"]),
           postLiked: List<String>.from(parsedUserBody["postLiked"]),
           commentLiked: List<String>.from(parsedUserBody["commentLiked"]),
           commented: List<String>.from(parsedUserBody["commented"]),
@@ -121,12 +138,23 @@ class User with ChangeNotifier {
           imgUrl: parsedUserBody["imgUrl"].toString(),
           joinedDate: parsedUserBody["joinedDate"].toString(),
           phoneNumber: parsedUserBody["phoneNumber"].toString(),
+          isPrivate: parsedUserBody["isPrivate"],
           posts: List<String>.from(parsedUserBody["posts"]),
           followers: List<String>.from(parsedUserBody["followers"]),
           followings: List<String>.from(parsedUserBody["followings"]),
           closeFriends: List<String>.from(parsedUserBody["closeFriends"]),
-          requestingFriends: List<Map<String, dynamic>>.from(
-              parsedUserBody["requestingFriends"]),
+          acceptedFollowerRequests:
+              List<String>.from(parsedUserBody["acceptedFollowerRequests"]),
+          declinedFollowerRequests:
+              List<String>.from(parsedUserBody["declinedFollowerRequests"]),
+          requestingFollowers:
+              List<String>.from(parsedUserBody["requestingFollowers"]),
+          acceptedFollowingRequests:
+              List<String>.from(parsedUserBody["acceptedFollowingRequests"]),
+          declinedFollowingRequests:
+              List<String>.from(parsedUserBody["declinedFollowingRequests"]),
+          requestingFollowing:
+              List<String>.from(parsedUserBody["requestingFollowing"]),
           postLiked: List<String>.from(parsedUserBody["postLiked"]),
           commentLiked: List<String>.from(parsedUserBody["commentLiked"]),
           commented: List<String>.from(parsedUserBody["commented"]),
@@ -184,12 +212,23 @@ class User with ChangeNotifier {
           imgUrl: parsedUserBody["imgUrl"].toString(),
           joinedDate: parsedUserBody["joinedDate"].toString(),
           phoneNumber: parsedUserBody["phoneNumber"].toString(),
+          isPrivate: parsedUserBody["isPrivate"],
           posts: List<String>.from(parsedUserBody["posts"]),
           followers: List<String>.from(parsedUserBody["followers"]),
           followings: List<String>.from(parsedUserBody["followings"]),
           closeFriends: List<String>.from(parsedUserBody["closeFriends"]),
-          requestingFriends: List<Map<String, dynamic>>.from(
-              parsedUserBody["requestingFriends"]),
+          acceptedFollowerRequests:
+              List<String>.from(parsedUserBody["acceptedFollowerRequests"]),
+          declinedFollowerRequests:
+              List<String>.from(parsedUserBody["declinedFollowerRequests"]),
+          requestingFollowers:
+              List<String>.from(parsedUserBody["requestingFollowers"]),
+          acceptedFollowingRequests:
+              List<String>.from(parsedUserBody["acceptedFollowingRequests"]),
+          declinedFollowingRequests:
+              List<String>.from(parsedUserBody["declinedFollowingRequests"]),
+          requestingFollowing:
+              List<String>.from(parsedUserBody["requestingFollowing"]),
           postLiked: List<String>.from(parsedUserBody["postLiked"]),
           commentLiked: List<String>.from(parsedUserBody["commentLiked"]),
           commented: List<String>.from(parsedUserBody["commented"]),
@@ -573,14 +612,16 @@ class User with ChangeNotifier {
         return json.decode(res.body)["message"];
       }
 
-      final tempdestination = _user.imgUrl
-          .split("?alt")[0]
-          .split("appspot.com/o/")[1]
-          .replaceAll("%2F", "/");
+      if (_user.imgUrl.isNotEmpty) {
+        final tempdestination = _user.imgUrl
+            .split("?alt")[0]
+            .split("appspot.com/o/")[1]
+            .replaceAll("%2F", "/");
 
-      final ref = FirebaseStorage.instance.ref(tempdestination);
+        final ref = FirebaseStorage.instance.ref(tempdestination);
 
-      await ref.delete();
+        await ref.delete();
+      }
 
       await reloadUser();
 
