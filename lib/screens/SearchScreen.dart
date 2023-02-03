@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:shore_app/Components/Search/UserItem.dart';
 import 'package:shore_app/Components/UserListBuilder.dart';
 import 'package:shore_app/Utils/snackBar.dart';
 import 'package:shore_app/models.dart';
@@ -19,12 +18,20 @@ class _SearchScreenState extends State<SearchScreen> {
   final TextEditingController _searchController = TextEditingController();
   bool _isLoading = false;
   List<UnsignUserModel> _users = [];
+  int _page = 1;
+  bool _isLoadingMore = false;
 
   @override
   void dispose() {
     // TODO: implement dispose
     _searchController.dispose();
     super.dispose();
+  }
+
+  void setIsLoadingMore(bool val) {
+    setState(() {
+      _isLoadingMore = val;
+    });
   }
 
   @override
@@ -36,7 +43,7 @@ class _SearchScreenState extends State<SearchScreen> {
         });
 
         final users = await Provider.of<UnsignUser>(context, listen: false)
-            .loadUsers(_searchController.text);
+            .loadUsers(_searchController.text, _page);
         setState(() {
           _users = users;
           _isLoading = false;
@@ -45,8 +52,25 @@ class _SearchScreenState extends State<SearchScreen> {
         setState(() {
           _isLoading = false;
         });
-        print("ok");
         print(e);
+      }
+    }
+
+    Future<void> addMoreUser() async {
+      if (!_isLoadingMore) {
+        try {
+          setIsLoadingMore(true);
+          var el = await Provider.of<UnsignUser>(context, listen: false)
+              .loadMoreUsers(_searchController.text, _page + 1);
+
+          setState(() {
+            _users.addAll(el);
+            _page += 1;
+          });
+          setIsLoadingMore(false);
+        } catch (e) {
+          print(e);
+        }
       }
     }
 
@@ -70,7 +94,7 @@ class _SearchScreenState extends State<SearchScreen> {
                     autofocus: true,
                     autocorrect: true,
                     onSubmitted: (value) async {
-                      if (Provider.of<User>(context,listen: false).getIsAuth) {
+                      if (Provider.of<User>(context, listen: false).getIsAuth) {
                         await searchFun();
                       } else {
                         snackBar(context, "Please Log In");
@@ -85,7 +109,14 @@ class _SearchScreenState extends State<SearchScreen> {
             ),
             body: Container(
               decoration: BoxDecoration(color: Colors.grey.shade200),
-              child: UserListBuilder(users: _users),
+              child: Column(children: [
+                UserListBuilder(users: _users, addMoreUser: addMoreUser),
+                if (_isLoadingMore)
+                  Container(
+                    margin: const EdgeInsets.symmetric(vertical: 10),
+                    child: const CircularProgressIndicator(),
+                  )
+              ]),
             )),
         if (_isLoading)
           Positioned(

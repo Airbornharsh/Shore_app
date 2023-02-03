@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shore_app/provider/User.dart';
 import 'package:shore_app/screens/AuthScreen.dart';
+import 'package:shore_app/screens/ChatScreen.dart';
 import 'package:shore_app/screens/NewPostScreen.dart';
 import 'package:shore_app/screens/SearchScreen.dart';
 
@@ -41,7 +42,12 @@ AppBar CustomAppBar(BuildContext context) {
               Navigator.of(context).popAndPushNamed(AuthScreen.routeName);
             }
           },
-          icon: const Icon(Icons.post_add))
+          icon: const Icon(Icons.post_add)),
+      // IconButton(
+      //     onPressed: () {
+      //       Navigator.of(context).pushNamed(ChatScreen.routeName);
+      //     },
+      //     icon: const Icon(Icons.chat))
     ],
     toolbarHeight: 130,
     title: Center(

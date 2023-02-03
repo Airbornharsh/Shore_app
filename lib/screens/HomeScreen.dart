@@ -21,10 +21,18 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   int _selectedIndex = 0;
+  int _postPage = 1;
   List<PostModel> postList = [];
   List<UserPostModel> userPostList = [];
   PageController _pageController = PageController();
   bool _isLoading = false;
+  bool _isPostLoadingMore = false;
+
+  void setIsPostLoadingMore(bool val) {
+    setState(() {
+      _isPostLoadingMore = val;
+    });
+  }
 
   @override
   void initState() {
@@ -91,7 +99,9 @@ class _HomeScreenState extends State<HomeScreen> {
     void reloadPosts() {
       Provider.of<Posts>(context, listen: false).loadPosts().then((el) {
         setState(() {
-          postList = el;
+          _postPage = 1;
+          postList.clear();
+          postList.addAll(el);
         });
       });
     }
@@ -112,8 +122,30 @@ class _HomeScreenState extends State<HomeScreen> {
       });
     }
 
+    Future<void> addLoad() async {
+      if (!_isPostLoadingMore) {
+        try {
+          setIsPostLoadingMore(true);
+          var el = await Provider.of<Posts>(context, listen: false)
+              .loadNewPosts(_postPage + 1);
+
+          setState(() {
+            postList.addAll(el);
+            _postPage += 1;
+          });
+          setIsPostLoadingMore(false);
+        } catch (e) {
+          print(e);
+        }
+      }
+    }
+
     List<Widget> selectedWidget = [
-      Home(postList: postList, reloadPosts: reloadPosts),
+      Home(
+          postList: postList,
+          reloadPosts: reloadPosts,
+          addLoad: addLoad,
+          isLoadingMore: _isPostLoadingMore),
       Requests(isLoading: _isLoading, setIsLoading: setIsLoading),
       Profile(userPostList: userPostList, reloadUserPosts: reloadUserPosts)
     ];

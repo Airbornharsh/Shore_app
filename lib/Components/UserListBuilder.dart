@@ -2,24 +2,51 @@ import 'package:flutter/cupertino.dart';
 import 'package:shore_app/Components/Search/UserItem.dart';
 import 'package:shore_app/models.dart';
 
-class UserListBuilder extends StatelessWidget {
-  const UserListBuilder({
-    Key? key,
-    required List<UnsignUserModel> users,
-  })  : _users = users,
+class UserListBuilder extends StatefulWidget {
+  Function addMoreUser;
+  UserListBuilder(
+      {Key? key,
+      required List<UnsignUserModel> users,
+      required this.addMoreUser})
+      : _users = users,
         super(key: key);
 
   final List<UnsignUserModel> _users;
 
   @override
+  State<UserListBuilder> createState() => _UserListBuilderState();
+}
+
+class _UserListBuilderState extends State<UserListBuilder> {
+  final ScrollController _controller = ScrollController();
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+
+    _controller.addListener(() async {
+      if (_controller.position.atEdge) {
+        bool isTop = _controller.position.pixels == 0;
+        if (!isTop) {
+          await widget.addMoreUser();
+        }
+      }
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return ListView.builder(
-      itemCount: _users.length,
-      itemBuilder: (ctx, i) {
-        return UserItem(
-          user: _users[i],
-        );
-      },
+    return Expanded(
+      child: ListView.builder(
+        itemCount: widget._users.length,
+        controller: _controller,
+        itemBuilder: (ctx, i) {
+          return UserItem(
+            user: widget._users[i],
+          );
+        },
+      ),
     );
   }
 }

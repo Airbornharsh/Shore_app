@@ -7,6 +7,7 @@ import 'package:shore_app/provider/Posts.dart';
 import 'package:shore_app/provider/UnsignUser.dart';
 import 'package:shore_app/provider/User.dart';
 import 'package:shore_app/screens/AuthScreen.dart';
+import 'package:shore_app/screens/ChatScreen.dart';
 import 'package:shore_app/screens/EditProfileScreen.dart';
 import 'package:shore_app/screens/FollowersScreen.dart';
 import 'package:shore_app/screens/FollowingsScreen.dart';
@@ -59,6 +60,7 @@ class MyApp extends StatelessWidget {
           UserScreen.routeName: (ctx) => UserScreen(),
           FollowersScreen.routeName: (ctx) => FollowersScreen(),
           FollowingsScreen.routeName: (ctx) => FollowingsScreen(),
+          ChatScreen.routeName: (ctx) => const ChatScreen(),
         },
       ),
     );

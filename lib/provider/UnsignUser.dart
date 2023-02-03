@@ -6,22 +6,23 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:shore_app/models.dart';
 
 class UnsignUser with ChangeNotifier {
-  List<UnsignUserModel> _users = [];
-  List<UnsignUserModel> _tempUsers = [];
+  // final List<UnsignUserModel> _users = [];
 
-  Future<List<UnsignUserModel>> loadUsers(String userName) async {
+  Future<List<UnsignUserModel>> loadUsers(String userName, int page) async {
+    List<UnsignUserModel> users = [];
     var client = Client();
     final prefs = await SharedPreferences.getInstance();
     String domainUri = prefs.get("shore_backend_uri") as String;
     try {
       var res = await client.post(
         Uri.parse("$domainUri/api/unsignuser/get-users"),
-        body: json.encode({"limit": 15, "userName": userName}),
+        body: json.encode({"limit": 15, "userName": userName, "page": page}),
       );
 
       var parsedUserBody = json.decode(res.body);
 
-      _users.clear();
+      print(parsedUserBody);
+
       await parsedUserBody.forEach((user) {
         UnsignUserModel newUser = UnsignUserModel(
           id: user["id"].toString(),
@@ -37,16 +38,52 @@ class UnsignUser with ChangeNotifier {
           followings: List<String>.from(user["followings"]),
         );
 
-        _users.add(newUser);
+        users.add(newUser);
       });
-
-      _tempUsers = [..._users];
     } catch (e) {
       print(e);
     } finally {
       notifyListeners();
     }
-    return _users;
+    return users;
+  }
+
+  Future<List<UnsignUserModel>> loadMoreUsers(String userName, int page) async {
+    List<UnsignUserModel> users = [];
+    var client = Client();
+    final prefs = await SharedPreferences.getInstance();
+    String domainUri = prefs.get("shore_backend_uri") as String;
+    try {
+      var res = await client.post(
+        Uri.parse("$domainUri/api/unsignuser/get-users"),
+        body: json.encode({"limit": 15, "userName": userName, "page": page}),
+      );
+
+      var parsedUserBody = json.decode(res.body);
+
+      await parsedUserBody.forEach((user) {
+        UnsignUserModel newUser = UnsignUserModel(
+          id: user["id"].toString(),
+          name: user["name"].toString(),
+          gender: user["gender"].toString(),
+          userName: user["userName"].toString(),
+          imgUrl: user["imgUrl"].toString(),
+          joinedDate: user["joinedDate"].toString(),
+          phoneNumber: user["phoneNumber"].toString(),
+          isPrivate: user["isPrivate"],
+          posts: List<String>.from(user["posts"]),
+          followers: List<String>.from(user["followers"]),
+          followings: List<String>.from(user["followings"]),
+        );
+
+        users.add(newUser);
+      });
+    } catch (e) {
+      print(e);
+    } finally {
+      notifyListeners();
+    }
+    return users;
   }
 
   Future<UnsignUserModel> reloadUser(String userId) async {
@@ -61,8 +98,6 @@ class UnsignUser with ChangeNotifier {
       );
 
       var parsedUserBody = json.decode(res.body);
-
-      print(parsedUserBody);
 
       newUser = UnsignUserModel(
         id: parsedUserBody["id"].toString(),
@@ -103,8 +138,6 @@ class UnsignUser with ChangeNotifier {
       }
 
       var postResBody = json.decode(postRes.body);
-
-      print(postResBody);
 
       await postResBody.forEach((post) {
         UserPostModel newPost = UserPostModel(

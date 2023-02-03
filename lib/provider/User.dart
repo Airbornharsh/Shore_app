@@ -118,7 +118,6 @@ class User with ChangeNotifier {
     final prefs = await SharedPreferences.getInstance();
     String domainUri = prefs.get("shore_backend_uri") as String;
 
-    print(domainUri);
     try {
       var userRes = await client.get(Uri.parse("$domainUri/api/user/get"),
           headers: {"authorization": "Bearer $_accessToken"});
@@ -128,8 +127,6 @@ class User with ChangeNotifier {
       }
 
       var parsedUserBody = json.decode(userRes.body);
-
-      print(parsedUserBody);
 
       _user = UserModel(
           id: parsedUserBody["_id"].toString(),
@@ -202,8 +199,6 @@ class User with ChangeNotifier {
       }
 
       var parsedUserBody = json.decode(userRes.body);
-
-      print(parsedUserBody);
 
       _user = UserModel(
           id: parsedUserBody["_id"].toString(),
@@ -302,8 +297,6 @@ class User with ChangeNotifier {
         return false;
       }
 
-      print(fileUrl);
-
       final accessToken = prefs.get("shore_accessToken") as String;
 
       var postRes = await client.post(Uri.parse("$domainUri/api/user/post/add"),
@@ -315,8 +308,6 @@ class User with ChangeNotifier {
       }
 
       var postResBody = json.decode(postRes.body);
-
-      print(postResBody);
 
       return true;
     } catch (e) {
@@ -364,8 +355,6 @@ class User with ChangeNotifier {
 
       var resBody = json.decode(res.body);
 
-      print(resBody);
-
       return true;
     } catch (e) {
       print(e);
@@ -393,8 +382,6 @@ class User with ChangeNotifier {
 
       var resBody = json.decode(res.body);
 
-      print(resBody);
-
       return true;
     } catch (e) {
       print(e);
@@ -420,8 +407,6 @@ class User with ChangeNotifier {
       }
 
       var resBody = json.decode(res.body);
-
-      print(resBody);
 
       return true;
     } catch (e) {
@@ -450,8 +435,6 @@ class User with ChangeNotifier {
 
       var resBody = json.decode(res.body);
 
-      print(resBody);
-
       return true;
     } catch (e) {
       print(e);
@@ -476,8 +459,6 @@ class User with ChangeNotifier {
       }
 
       var postResBody = json.decode(postRes.body);
-
-      print(postResBody);
 
       _userPosts.clear();
       await postResBody.forEach((post) {
@@ -804,8 +785,6 @@ class User with ChangeNotifier {
         _user.followings.add(userId);
       }
 
-      print(resBody);
-
       return resBody["message"];
     } catch (e) {
       print(e);
@@ -834,8 +813,6 @@ class User with ChangeNotifier {
       var resBody = json.decode(res.body);
 
       _user.followings.remove(userId);
-
-      print(resBody);
 
       return true;
     } catch (e) {
@@ -994,8 +971,6 @@ class User with ChangeNotifier {
       _user.followers.add(userId);
       _user.requestingFollowers.remove(userId);
 
-      print(resBody);
-
       return true;
     } catch (e) {
       print(e);
@@ -1026,8 +1001,6 @@ class User with ChangeNotifier {
       _user.declinedFollowingRequests.add(userId);
       _user.followers.add(userId);
       _user.requestingFollowers.remove(userId);
-
-      print(resBody);
 
       return true;
     } catch (e) {

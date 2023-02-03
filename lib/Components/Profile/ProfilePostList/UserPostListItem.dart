@@ -25,8 +25,6 @@ class _UserPostListItemState extends State<UserPostListItem> {
     UserModel userDetails =
         Provider.of<User>(context, listen: false).getUserDetails;
 
-    print(userDetails.imgUrl);
-
     if (widget.start) {
       setState(() {
         isLiked = Provider.of<Posts>(context, listen: false)

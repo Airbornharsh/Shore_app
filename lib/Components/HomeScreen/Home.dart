@@ -5,7 +5,14 @@ import 'package:shore_app/models.dart';
 class Home extends StatefulWidget {
   List<PostModel> postList;
   Function reloadPosts;
-  Home({required this.postList, required this.reloadPosts, super.key});
+  Function addLoad;
+  bool isLoadingMore;
+  Home(
+      {required this.postList,
+      required this.reloadPosts,
+      required this.addLoad,
+      required this.isLoadingMore,
+      super.key});
 
   @override
   State<Home> createState() => _HomeState();
@@ -31,8 +38,15 @@ class _HomeState extends State<Home> {
             //   height: 8,
             // ),
             PostList(
+              addLoad: widget.addLoad,
               postList: widget.postList,
             ),
+
+            if (widget.isLoadingMore)
+              Container(
+                margin: const EdgeInsets.symmetric(vertical: 10),
+                child: const CircularProgressIndicator(),
+              )
           ],
         ),
       ),

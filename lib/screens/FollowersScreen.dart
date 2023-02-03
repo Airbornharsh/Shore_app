@@ -46,7 +46,7 @@ class _FollowersScreenState extends State<FollowersScreen> {
           appBar: AppBar(
             title: Text("Followers"),
           ),
-          body: UserListBuilder(users: followersUsers),
+          body: UserListBuilder(users: followersUsers, addMoreUser: () {}),
         ),
         if (_isLoading)
           Positioned(

@@ -104,7 +104,6 @@ class _NewPostScreenState extends State<NewPostScreen> {
                                           setState(() {
                                             _isCroppped = false;
                                             _tempFile = compressedFile;
-                                            print(_tempFile.lengthSync());
                                           });
                                         },
                                         icon: Icon(
@@ -180,7 +179,6 @@ class _NewPostScreenState extends State<NewPostScreen> {
                                           setState(() {
                                             _tempFile = compressedFile;
                                             _isCroppped = true;
-                                            print(_tempFile.lengthSync());
                                           });
                                         },
                                         icon: Icon(
