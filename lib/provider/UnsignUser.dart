@@ -21,8 +21,6 @@ class UnsignUser with ChangeNotifier {
 
       var parsedUserBody = json.decode(res.body);
 
-      print(parsedUserBody);
-
       await parsedUserBody.forEach((user) {
         UnsignUserModel newUser = UnsignUserModel(
           id: user["id"].toString(),

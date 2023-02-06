@@ -46,7 +46,37 @@ class User with ChangeNotifier {
     return _user;
   }
 
-  void logout() {}
+  void logout() async {
+    final prefs = await SharedPreferences.getInstance();
+    prefs.setString("shore_accessToken", "");
+    _accessToken = "";
+    _isAuth = false;
+    _user = UserModel(
+        id: "1",
+        name: "",
+        emailId: "",
+        gender: "",
+        userName: "",
+        imgUrl: "",
+        joinedDate: DateTime.now().toString(),
+        phoneNumber: "000000000",
+        isPrivate: false,
+        posts: [],
+        followers: [],
+        followings: [],
+        closeFriends: [],
+        acceptedFollowerRequests: [],
+        declinedFollowerRequests: [],
+        requestingFollowers: [],
+        acceptedFollowingRequests: [],
+        declinedFollowingRequests: [],
+        requestingFollowing: [],
+        postLiked: [],
+        commentLiked: [],
+        commented: [],
+        fav: []);
+    notifyListeners();
+  }
 
   Future<bool> onLoad() async {
     var client = Client();
@@ -169,14 +199,29 @@ class User with ChangeNotifier {
     }
   }
 
-  Future<String> signIn(String emailId, String password) async {
+  Future<String> signIn(String authDetail, String password) async {
     var client = Client();
     final prefs = await SharedPreferences.getInstance();
     String domainUri = prefs.get("shore_backend_uri") as String;
+    String authType = "";
 
     try {
+      String emailPattern =
+          r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$';
+      RegExp emailRegex = RegExp(emailPattern);
+      String phoneNumberPatttern = r'(^(?:[+0]9)?[0-9]{10,12}$)';
+      RegExp phoneNumberRegExp = RegExp(phoneNumberPatttern);
+
+      if (emailRegex.hasMatch(authDetail)) {
+        authType = "emailId";
+      } else if (phoneNumberRegExp.hasMatch(authDetail)) {
+        authType = "phoneNumber";
+      } else {
+        authType = "userName";
+      }
+
       var tokenRes = await client.post(Uri.parse("$domainUri/api/user/login"),
-          body: json.encode({"emailId": emailId, "password": password}),
+          body: json.encode({authType: authDetail, "password": password}),
           // body: json.encode({
           //   "emailId": "harshkeshri1234567@gmail.com",
           //   "password": "Password1!"
@@ -738,20 +783,18 @@ class User with ChangeNotifier {
   }
 
   String isFollowing(String userId) {
-    String res;
+    bool res;
     if (_user.followings.isNotEmpty) {
-      res = _user.followings
-          .firstWhere((user) => userId.toString() == user.toString());
+      res = _user.followings.contains(userId);
 
-      if (res.isNotEmpty) {
+      if (res) {
         return "Following";
       }
     }
 
     if (_user.requestingFollowing.isNotEmpty) {
-      res = _user.requestingFollowing
-          .firstWhere((user) => userId.toString() == user.toString());
-      if (res.isNotEmpty) {
+      res = _user.requestingFollowing.contains(userId);
+      if (res) {
         return "Requested";
       } else {
         return "Follow";

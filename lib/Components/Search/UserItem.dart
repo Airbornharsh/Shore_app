@@ -1,15 +1,20 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:shore_app/models.dart';
+import 'package:shore_app/provider/AppSetting.dart';
 import 'package:shore_app/screens/UserScreen.dart';
 
 class UserItem extends StatelessWidget {
-  final UnsignUserModel user;
-  const UserItem({required this.user, super.key});
+  UnsignUserModel user;
+  UserItem({required this.user, super.key});
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      decoration: const BoxDecoration(color: Colors.white),
+      decoration: BoxDecoration(
+          color: Provider.of<AppSetting>(context).getdarkMode
+              ? Colors.grey.shade900
+              : Colors.white),
       margin: const EdgeInsets.only(bottom: 1),
       child: ListTile(
         leading: Hero(
@@ -30,8 +35,20 @@ class UserItem extends StatelessWidget {
                     height: 50, width: 50, child: Center(child: Text('😊')));
               })),
         ),
-        title: Text(user.name),
-        subtitle: Text("@${user.userName}"),
+        title: Text(
+          user.name,
+          style: TextStyle(
+              color: Provider.of<AppSetting>(context).getdarkMode
+                  ? Colors.grey.shade200
+                  : Colors.black),
+        ),
+        subtitle: Text(
+          "@${user.userName}",
+          style: TextStyle(
+              color: Provider.of<AppSetting>(context).getdarkMode
+                  ? Colors.grey.shade200
+                  : Colors.black),
+        ),
         onTap: () {
           Navigator.of(context)
               .pushNamed(UserScreen.routeName, arguments: user);

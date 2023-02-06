@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shore_app/models.dart';
+import 'package:shore_app/provider/AppSetting.dart';
 import 'package:shore_app/provider/Posts.dart';
 import 'package:shore_app/provider/User.dart';
 import 'package:shore_app/screens/AuthScreen.dart';
@@ -39,7 +40,9 @@ class _UserPostListItemState extends State<UserPostListItem> {
     return Column(
       children: [
         Container(
-          color: Colors.white,
+          color: Provider.of<AppSetting>(context).getdarkMode
+              ? Color.fromARGB(255, 32, 32, 32)
+              : Colors.white,
           child: SizedBox(
               child: Column(
             children: [
@@ -75,15 +78,25 @@ class _UserPostListItemState extends State<UserPostListItem> {
                       children: [
                         Text(
                           userDetails.name,
-                          style: const TextStyle(
-                              fontWeight: FontWeight.w600, fontSize: 15),
+                          style: TextStyle(
+                              fontWeight: FontWeight.w600,
+                              fontSize: 15,
+                              color:
+                                  Provider.of<AppSetting>(context).getdarkMode
+                                      ? Colors.grey.shade300
+                                      : Colors.grey.shade800),
                         ),
                         const SizedBox(
                           height: 3,
                         ),
                         Text(
                           widget.newDate,
-                          style: const TextStyle(fontSize: 12),
+                          style: TextStyle(
+                              fontSize: 12,
+                              color:
+                                  Provider.of<AppSetting>(context).getdarkMode
+                                      ? Colors.grey.shade300
+                                      : Colors.grey.shade800),
                         )
                       ],
                     )
@@ -98,7 +111,13 @@ class _UserPostListItemState extends State<UserPostListItem> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(widget.post.description),
+                      Text(
+                        widget.post.description,
+                        style: TextStyle(
+                            color: Provider.of<AppSetting>(context).getdarkMode
+                                ? Colors.grey.shade300
+                                : Colors.grey.shade800),
+                      ),
                     ],
                   ),
                 ),
@@ -188,7 +207,10 @@ class _UserPostListItemState extends State<UserPostListItem> {
                     height: 50,
                     width: MediaQuery.of(context).size.width / 3,
                     decoration: BoxDecoration(
-                      border: Border.all(color: Colors.grey),
+                      border: Border.all(
+                          color: Provider.of<AppSetting>(context).getdarkMode
+                              ? Colors.grey.shade800
+                              : Colors.grey),
                     ),
                     child: Center(
                         child: Row(
@@ -206,14 +228,22 @@ class _UserPostListItemState extends State<UserPostListItem> {
                         const SizedBox(
                           width: 4,
                         ),
-                        Text(_likes.toString())
+                        Text(_likes.toString(),
+                            style: TextStyle(
+                                color:
+                                    Provider.of<AppSetting>(context).getdarkMode
+                                        ? Colors.grey.shade300
+                                        : Colors.black))
                       ],
                     )),
                   ),
                 ),
                 Container(
-                  decoration:
-                      BoxDecoration(border: Border.all(color: Colors.grey)),
+                  decoration: BoxDecoration(
+                      border: Border.all(
+                          color: Provider.of<AppSetting>(context).getdarkMode
+                              ? Colors.grey.shade800
+                              : Colors.grey)),
                   width: MediaQuery.of(context).size.width / 3,
                   child: Center(
                     child: IconButton(
@@ -253,7 +283,10 @@ class _UserPostListItemState extends State<UserPostListItem> {
                     height: 50,
                     width: MediaQuery.of(context).size.width / 3,
                     decoration: BoxDecoration(
-                      border: Border.all(color: Colors.grey),
+                      border: Border.all(
+                          color: Provider.of<AppSetting>(context).getdarkMode
+                              ? Colors.grey.shade800
+                              : Colors.grey),
                     ),
                     child: Center(
                         child: isFav
@@ -271,8 +304,11 @@ class _UserPostListItemState extends State<UserPostListItem> {
             ],
           )),
         ),
-        const SizedBox(
+        Container(
           height: 10,
+          color: Provider.of<AppSetting>(context).getdarkMode
+              ? Colors.grey.shade800
+              : Colors.grey.shade300,
         )
       ],
     );

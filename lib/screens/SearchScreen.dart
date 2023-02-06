@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:shore_app/Components/UserListBuilder.dart';
 import 'package:shore_app/Utils/snackBar.dart';
 import 'package:shore_app/models.dart';
+import 'package:shore_app/provider/AppSetting.dart';
 import 'package:shore_app/provider/UnsignUser.dart';
 import 'package:shore_app/provider/User.dart';
 
@@ -78,6 +79,9 @@ class _SearchScreenState extends State<SearchScreen> {
       children: [
         Scaffold(
             appBar: AppBar(
+              backgroundColor: Provider.of<AppSetting>(context).getdarkMode
+                  ? const Color.fromARGB(255, 0, 99, 95)
+                  : const Color.fromARGB(255, 0, 190, 184),
               title: Hero(
                   tag: "search-bar",
                   child: TextField(
@@ -110,7 +114,9 @@ class _SearchScreenState extends State<SearchScreen> {
             body: Container(
               decoration: BoxDecoration(color: Colors.grey.shade200),
               child: Column(children: [
-                UserListBuilder(users: _users, addMoreUser: addMoreUser),
+                Expanded(
+                    child: UserListBuilder(
+                        users: _users, addMoreUser: addMoreUser)),
                 if (_isLoadingMore)
                   Container(
                     margin: const EdgeInsets.symmetric(vertical: 10),

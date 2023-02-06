@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:shore_app/Components/Requests/RequestModalList.dart';
 import 'package:shore_app/Components/Requests/RequestedModalList.dart';
 import 'package:shore_app/models.dart';
+import 'package:shore_app/provider/AppSetting.dart';
 import 'package:shore_app/provider/User.dart';
 
 class Requests extends StatefulWidget {
@@ -55,63 +56,64 @@ class _RequestsState extends State<Requests> {
           });
         });
       },
-      child: SingleChildScrollView(
-        child: Container(
-          width: MediaQuery.of(context).size.width,
-          decoration:
-              const BoxDecoration(color: Color.fromARGB(31, 121, 121, 121)),
-          height: MediaQuery.of(context).size.height,
-          child: Column(
-            children: [
-              GestureDetector(
-                onTap: () {
-                  showBottomSheet(
-                    context: context,
-                    builder: (context) {
-                      return RequestModalList(
-                          unsignuserRequestingList: unsignuserRequestingList,
-                          isLoading: widget.isLoading,
-                          setIsLoading: widget.setIsLoading);
-                    },
-                  );
-                },
-                child: Container(
-                  padding: const EdgeInsets.symmetric(vertical: 5),
-                  decoration: const BoxDecoration(color: Colors.white),
-                  child: const ListTile(
-                    leading: Icon(Icons.people_rounded),
-                    title: Text("Follow Requests"),
-                    trailing: Icon(Icons.expand_more),
-                  ),
-                ),
+      child: Container(
+        decoration: BoxDecoration(
+            color: Provider.of<AppSetting>(context).getdarkMode
+                ? Colors.grey.shade900
+                : Colors.white),
+        child: Column(
+          children: [
+            ExpansionTile(
+              iconColor: Provider.of<AppSetting>(context).getdarkMode
+                  ? Colors.grey.shade200
+                  : Colors.black,
+              backgroundColor: Provider.of<AppSetting>(context).getdarkMode
+                  ? Colors.grey.shade600
+                  : Colors.white,
+              leading: Icon(Icons.people_rounded,
+                  color: Provider.of<AppSetting>(context).getdarkMode
+                      ? Colors.grey.shade200
+                      : Colors.black),
+              title: Text("Follow Requesting",
+                  style: TextStyle(
+                    color: Provider.of<AppSetting>(context).getdarkMode
+                        ? Colors.grey.shade200
+                        : Colors.black,
+                  )),
+              children: [
+                RequestModalList(
+                    unsignuserRequestingList: unsignuserRequestingList,
+                    isLoading: widget.isLoading,
+                    setIsLoading: widget.setIsLoading),
+              ],
+            ),
+            ExpansionTile(
+              iconColor: Provider.of<AppSetting>(context).getdarkMode
+                  ? Colors.grey.shade200
+                  : Colors.black,
+              backgroundColor: Provider.of<AppSetting>(context).getdarkMode
+                  ? Colors.grey.shade600
+                  : Colors.white,
+              leading: Icon(
+                Icons.people_rounded,
+                color: Provider.of<AppSetting>(context).getdarkMode
+                    ? Colors.grey.shade200
+                    : Colors.black,
               ),
-              const SizedBox(
-                height: 1,
-              ),
-              GestureDetector(
-                onTap: () {
-                  showBottomSheet(
-                    context: context,
-                    builder: (context) {
-                      return RequestedModalList(
-                          unsignuserRequestedList: unsignuserRequestedList,
-                          isLoading: widget.isLoading,
-                          setIsLoading: widget.setIsLoading);
-                    },
-                  );
-                },
-                child: Container(
-                  padding: const EdgeInsets.symmetric(vertical: 5),
-                  decoration: const BoxDecoration(color: Colors.white),
-                  child: const ListTile(
-                    leading: Icon(Icons.people_rounded),
-                    title: Text("Follow Requested"),
-                    trailing: Icon(Icons.expand_more),
-                  ),
-                ),
-              ),
-            ],
-          ),
+              title: Text("Follow Requested",
+                  style: TextStyle(
+                    color: Provider.of<AppSetting>(context).getdarkMode
+                        ? Colors.grey.shade200
+                        : Colors.black,
+                  )),
+              children: [
+                RequestedModalList(
+                    unsignuserRequestedList: unsignuserRequestedList,
+                    isLoading: widget.isLoading,
+                    setIsLoading: widget.setIsLoading)
+              ],
+            ),
+          ],
         ),
       ),
     );

@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import "dart:io";
 
+import 'package:provider/provider.dart';
+import 'package:shore_app/provider/AppSetting.dart';
+
 class ChatScreen extends StatefulWidget {
   static const String routeName = "/chat";
   const ChatScreen({super.key});
@@ -60,9 +63,11 @@ class _ChatScreenState extends State<ChatScreen> {
       body: Center(
           child: TextButton(
               onPressed: () {},
-              style: const ButtonStyle(
+              style:  ButtonStyle(
                 backgroundColor: MaterialStatePropertyAll<Color>(
-                    Color.fromARGB(255, 0, 190, 184)),
+                    Provider.of<AppSetting>(context).getdarkMode
+                        ? const Color.fromARGB(255, 0, 99, 95)
+                        : const Color.fromARGB(255, 0, 190, 184)),
               ),
               child: const Text(
                 "Click Me",

@@ -1,6 +1,8 @@
-import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:shore_app/Components/Search/UserItem.dart';
 import 'package:shore_app/models.dart';
+import 'package:shore_app/provider/AppSetting.dart';
 
 class UserListBuilder extends StatefulWidget {
   Function addMoreUser;
@@ -37,15 +39,25 @@ class _UserListBuilderState extends State<UserListBuilder> {
 
   @override
   Widget build(BuildContext context) {
-    return Expanded(
-      child: ListView.builder(
-        itemCount: widget._users.length,
-        controller: _controller,
-        itemBuilder: (ctx, i) {
-          return UserItem(
-            user: widget._users[i],
-          );
-        },
+    return Container(
+      decoration: BoxDecoration(
+          color: Provider.of<AppSetting>(context).getdarkMode
+              ? Colors.grey.shade700
+              : Colors.white),
+      child: Column(
+        children: [
+          Expanded(
+            child: ListView.builder(
+              itemCount: widget._users.length,
+              controller: _controller,
+              itemBuilder: (ctx, i) {
+                return UserItem(
+                  user: widget._users[i],
+                );
+              },
+            ),
+          ),
+        ],
       ),
     );
   }

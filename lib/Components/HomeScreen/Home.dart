@@ -44,7 +44,7 @@ class _HomeState extends State<Home> {
 
             if (widget.isLoadingMore)
               Container(
-                margin: const EdgeInsets.symmetric(vertical: 10),
+                padding: const EdgeInsets.symmetric(vertical: 10),
                 child: const CircularProgressIndicator(),
               )
           ],

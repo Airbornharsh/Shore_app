@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shore_app/models.dart';
+import 'package:shore_app/provider/AppSetting.dart';
 import 'package:shore_app/provider/User.dart';
 import 'package:shore_app/screens/AuthScreen.dart';
 import 'package:shore_app/screens/FollowersScreen.dart';
 import 'package:shore_app/screens/FollowingsScreen.dart';
 
 class UserDetails extends StatefulWidget {
-  final UnsignUserModel user;
+  UnsignUserModel user;
   UserDetails({required this.user, super.key});
   bool start = true;
 
@@ -21,9 +22,8 @@ class _UserDetailsState extends State<UserDetails> {
   @override
   Widget build(BuildContext context) {
     if (widget.start) {
+      final res = Provider.of<User>(context).isFollowing(widget.user.id);
       setState(() {
-        final res = Provider.of<User>(context, listen: false)
-            .isFollowing(widget.user.id);
         if (res.isEmpty) {
           isFollowing = "";
         } else {
@@ -34,14 +34,12 @@ class _UserDetailsState extends State<UserDetails> {
     }
 
     return Column(children: [
-      // Image.network(
-      //     "https://cdn.pixabay.com/photo/2015/04/23/22/00/tree-736885__480.jpg",
-      //     height: 130,
-      //     width: MediaQuery.of(context).size.width,
-      //     fit: BoxFit.cover),
       Container(
         height: 260,
-        decoration: const BoxDecoration(color: Colors.white),
+        decoration: BoxDecoration(
+            color: Provider.of<AppSetting>(context).getdarkMode
+                ? Colors.grey.shade900
+                : Colors.white),
         child: Column(
           children: [
             const SizedBox(
@@ -81,15 +79,23 @@ class _UserDetailsState extends State<UserDetails> {
                     children: [
                       Text(
                         widget.user.name,
-                        style: const TextStyle(
-                            fontWeight: FontWeight.w400, fontSize: 18),
+                        style: TextStyle(
+                            fontWeight: FontWeight.w400,
+                            fontSize: 18,
+                            color: Provider.of<AppSetting>(context).getdarkMode
+                                ? Colors.grey.shade300
+                                : Colors.black),
                       ),
                       const SizedBox(
                         height: 3,
                       ),
                       Text(
                         "@${widget.user.userName}",
-                        style: const TextStyle(fontSize: 12),
+                        style: TextStyle(
+                            fontSize: 12,
+                            color: Provider.of<AppSetting>(context).getdarkMode
+                                ? Colors.grey.shade300
+                                : Colors.black),
                       )
                     ],
                   ),
@@ -117,9 +123,11 @@ class _UserDetailsState extends State<UserDetails> {
                                 .popAndPushNamed(AuthScreen.routeName);
                           }
                         },
-                        style: const ButtonStyle(
+                        style: ButtonStyle(
                             backgroundColor: MaterialStatePropertyAll<Color>(
-                          Color.fromARGB(255, 0, 190, 184),
+                          Provider.of<AppSetting>(context).getdarkMode
+                              ? const Color.fromARGB(255, 0, 99, 95)
+                              : const Color.fromARGB(255, 0, 190, 184),
                         )),
                         child: Text(
                           isFollowing,
@@ -197,7 +205,10 @@ class _UserDetailsState extends State<UserDetails> {
         height: 2,
       ),
       Container(
-        decoration: const BoxDecoration(color: Colors.white),
+        decoration: BoxDecoration(
+            color: Provider.of<AppSetting>(context).getdarkMode
+                ? Colors.grey.shade900
+                : Colors.white),
         height: 90,
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.center,
@@ -208,12 +219,20 @@ class _UserDetailsState extends State<UserDetails> {
               children: [
                 Text(
                   widget.user.posts.length.toString(),
-                  style: const TextStyle(
-                      fontWeight: FontWeight.w400, fontSize: 24),
+                  style: TextStyle(
+                      fontWeight: FontWeight.w400,
+                      fontSize: 24,
+                      color: Provider.of<AppSetting>(context).getdarkMode
+                          ? Colors.grey.shade200
+                          : Colors.black),
                 ),
-                const Text(
+                Text(
                   "Posts",
-                  style: TextStyle(fontSize: 12),
+                  style: TextStyle(
+                      fontSize: 12,
+                      color: Provider.of<AppSetting>(context).getdarkMode
+                          ? Colors.grey.shade200
+                          : Colors.black),
                 )
               ],
             ),
@@ -232,12 +251,20 @@ class _UserDetailsState extends State<UserDetails> {
                 children: [
                   Text(
                     widget.user.followers.length.toString(),
-                    style: const TextStyle(
-                        fontWeight: FontWeight.w400, fontSize: 24),
+                    style: TextStyle(
+                        fontWeight: FontWeight.w400,
+                        fontSize: 24,
+                        color: Provider.of<AppSetting>(context).getdarkMode
+                            ? Colors.grey.shade200
+                            : Colors.black),
                   ),
-                  const Text(
+                  Text(
                     "Followers",
-                    style: TextStyle(fontSize: 12),
+                    style: TextStyle(
+                        fontSize: 12,
+                        color: Provider.of<AppSetting>(context).getdarkMode
+                            ? Colors.grey.shade200
+                            : Colors.black),
                   )
                 ],
               ),
@@ -257,12 +284,20 @@ class _UserDetailsState extends State<UserDetails> {
                 children: [
                   Text(
                     widget.user.followings.length.toString(),
-                    style: const TextStyle(
-                        fontWeight: FontWeight.w400, fontSize: 24),
+                    style: TextStyle(
+                        fontWeight: FontWeight.w400,
+                        fontSize: 24,
+                        color: Provider.of<AppSetting>(context).getdarkMode
+                            ? Colors.grey.shade200
+                            : Colors.black),
                   ),
-                  const Text(
+                  Text(
                     "Following",
-                    style: TextStyle(fontSize: 12),
+                    style: TextStyle(
+                        fontSize: 12,
+                        color: Provider.of<AppSetting>(context).getdarkMode
+                            ? Colors.grey.shade200
+                            : Colors.black),
                   )
                 ],
               ),

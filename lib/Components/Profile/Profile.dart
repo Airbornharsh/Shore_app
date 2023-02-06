@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:shore_app/Components/Profile/ProfileDetails.dart';
 import 'package:shore_app/Components/Profile/UserPostList.dart';
 import 'package:shore_app/models.dart';
+import 'package:shore_app/provider/AppSetting.dart';
 import 'package:shore_app/provider/User.dart';
 
 class Profile extends StatefulWidget {
@@ -38,19 +39,27 @@ class _ProfileState extends State<Profile> {
 
         widget.reloadUserPosts();
       },
-      child: Container(
-        width: MediaQuery.of(context).size.width,
-        decoration:
-            const BoxDecoration(color: Color.fromARGB(31, 121, 121, 121)),
-        height: MediaQuery.of(context).size.height - 220,
-        child: Column(
-          children: [
-            ProfileDetails(user: user),
-            UserPostList(
-                userPostList: widget.userPostList,
-                reloadUserPosts: widget.reloadUserPosts),
-          ],
-        ),
+      child: Column(
+        children: [
+          Expanded(
+            child: Container(
+              width: MediaQuery.of(context).size.width,
+              decoration: BoxDecoration(
+                  color: Provider.of<AppSetting>(context).getdarkMode
+                      ? Colors.grey.shade800
+                      : const Color.fromARGB(31, 121, 121, 121)),
+              // height: MediaQuery.of(context).size.height - 220,
+              child: Column(
+                children: [
+                  ProfileDetails(user: user),
+                  UserPostList(
+                      userPostList: widget.userPostList,
+                      reloadUserPosts: widget.reloadUserPosts),
+                ],
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }

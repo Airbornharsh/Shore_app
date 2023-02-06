@@ -20,30 +20,14 @@ class RequestedModalList extends StatefulWidget {
 class _RequestedModalListState extends State<RequestedModalList> {
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(color: Colors.grey.shade100),
-      width: MediaQuery.of(context).size.width,
-      child: Stack(
-        children: [
-          ListView.builder(
-              itemCount: widget.unsignuserRequestedList.length,
-              itemBuilder: (context, i) {
-                return RequestedProfileItem(
-                    user: widget.unsignuserRequestedList[i],
-                    isLoading: widget.isLoading,
-                    setIsLoading: widget.setIsLoading);
-              }),
-          Positioned(
-              bottom: 10,
-              left: (MediaQuery.of(context).size.width / 2) - 40,
-              child: ElevatedButton.icon(
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
-                  icon: const Icon(Icons.close),
-                  label: const Text("Close")))
-        ],
-      ),
-    );
+    return ListView.builder(
+      shrinkWrap: true,
+        itemCount: widget.unsignuserRequestedList.length,
+        itemBuilder: (context, i) {
+          return RequestedProfileItem(
+              user: widget.unsignuserRequestedList[i],
+              isLoading: widget.isLoading,
+              setIsLoading: widget.setIsLoading);
+        });
   }
 }

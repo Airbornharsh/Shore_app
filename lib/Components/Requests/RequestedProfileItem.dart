@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shore_app/Utils/snackBar.dart';
 import 'package:shore_app/models.dart';
+import 'package:shore_app/provider/AppSetting.dart';
 import 'package:shore_app/provider/User.dart';
 import 'package:shore_app/screens/UserScreen.dart';
 
@@ -26,7 +27,9 @@ class _RequestedProfileItemState extends State<RequestedProfileItem> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: Colors.white,
+      color: Provider.of<AppSetting>(context).getdarkMode
+          ? Colors.grey.shade800
+          : Colors.white,
       margin: const EdgeInsets.only(bottom: 2),
       child: ListTile(
         style: ListTileStyle.list,
@@ -48,8 +51,20 @@ class _RequestedProfileItemState extends State<RequestedProfileItem> {
                     height: 50, width: 50, child: Center(child: Text('😊')));
               })),
         ),
-        title: Text(widget.user.name),
-        subtitle: Text("@${widget.user.userName}"),
+        title: Text(
+          widget.user.name,
+          style: TextStyle(
+              color: Provider.of<AppSetting>(context).getdarkMode
+                  ? Colors.grey.shade300
+                  : Colors.black),
+        ),
+        subtitle: Text(
+          "@${widget.user.userName}",
+          style: TextStyle(
+              color: Provider.of<AppSetting>(context).getdarkMode
+                  ? Colors.grey.shade300
+                  : Colors.black),
+        ),
         trailing: SizedBox(
           width: 100,
           child: Row(

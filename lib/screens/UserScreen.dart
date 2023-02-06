@@ -4,6 +4,7 @@ import 'package:shore_app/Components/Profile/ProfileDetails.dart';
 import 'package:shore_app/Components/Profile/UserPostList.dart';
 import 'package:shore_app/Components/UserScreen/UserDetails.dart';
 import 'package:shore_app/models.dart';
+import 'package:shore_app/provider/AppSetting.dart';
 import 'package:shore_app/provider/UnsignUser.dart';
 import 'package:shore_app/provider/User.dart';
 
@@ -30,11 +31,12 @@ class _UserScreenState extends State<UserScreen> {
       setState(() {
         _isLoading = true;
         user = ModalRoute.of(context)?.settings.arguments as UnsignUserModel;
+        print(user.id);
         Provider.of<UnsignUser>(context, listen: false)
             .loadUnsignUserPosts(user.id)
             .then((el) {
-          unsignUserPostList = el;
           setState(() {
+            unsignUserPostList = el;
             _isLoading = false;
           });
         });
@@ -54,6 +56,9 @@ class _UserScreenState extends State<UserScreen> {
         Scaffold(
           appBar: AppBar(
             title: Text("@${user.userName}"),
+            backgroundColor: Provider.of<AppSetting>(context).getdarkMode
+                ? const Color.fromARGB(255, 0, 99, 95)
+                : const Color.fromARGB(255, 0, 190, 184),
           ),
           body: RefreshIndicator(
             onRefresh: () async {
@@ -68,7 +73,10 @@ class _UserScreenState extends State<UserScreen> {
             child: Container(
               width: MediaQuery.of(context).size.width,
               decoration:
-                  const BoxDecoration(color: Color.fromARGB(31, 121, 121, 121)),
+                   BoxDecoration(color: Provider.of<AppSetting>(context)
+                                              .getdarkMode
+                                          ? Colors.grey.shade700
+                                          : Colors.white),
               // height: MediaQuery.of(context).size.height - 220,
               child: Column(
                 children: [

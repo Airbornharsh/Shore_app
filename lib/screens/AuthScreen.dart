@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:shore_app/provider/AppSetting.dart';
 import 'package:shore_app/provider/User.dart';
 import 'package:shore_app/screens/HomeScreen.dart';
 
@@ -21,6 +22,7 @@ class _AuthScreenState extends State<AuthScreen> {
   final _emailIdController = TextEditingController();
   final _passwordController = TextEditingController();
   final _confirmPasswordController = TextEditingController();
+  final _authController = TextEditingController();
   // final _confirmCodeController = TextEditingController();
 
   @override
@@ -52,29 +54,55 @@ class _AuthScreenState extends State<AuthScreen> {
           margin: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
           padding: const EdgeInsets.only(top: 4),
           decoration: BoxDecoration(
-              border:
-                  Border.all(color: const Color.fromARGB(255, 0, 190, 184))),
+              border: Border.all(
+                  color: Provider.of<AppSetting>(context).getdarkMode
+                      ? const Color.fromARGB(255, 0, 99, 95)
+                      : const Color.fromARGB(255, 0, 190, 184))),
           child: TextField(
-            decoration: const InputDecoration(
+            style: TextStyle(
+                color: Provider.of<AppSetting>(context).getdarkMode
+                    ? Colors.grey.shade400
+                    : Colors.black),
+            decoration: InputDecoration(
               border: InputBorder.none,
-              hintText: "Email Id",
-              fillColor: Colors.white,
+              hintText: "Email / Number / UserName",
+              hintStyle: TextStyle(
+                color: Provider.of<AppSetting>(context).getdarkMode
+                    ? Colors.grey.shade400
+                    : Colors.black,
+              ),
+              fillColor: Provider.of<AppSetting>(context).getdarkMode
+                  ? Colors.grey.shade900
+                  : Colors.white,
               filled: true,
             ),
-            controller: _emailIdController,
+            controller: _authController,
           ),
         ),
         Container(
           margin: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
           padding: const EdgeInsets.only(top: 4),
           decoration: BoxDecoration(
-              border:
-                  Border.all(color: const Color.fromARGB(255, 0, 190, 184))),
+              border: Border.all(
+                  color: Provider.of<AppSetting>(context).getdarkMode
+                      ? const Color.fromARGB(255, 0, 99, 95)
+                      : const Color.fromARGB(255, 0, 190, 184))),
           child: TextField(
-            decoration: const InputDecoration(
+            style: TextStyle(
+                color: Provider.of<AppSetting>(context).getdarkMode
+                    ? Colors.grey.shade400
+                    : Colors.black),
+            decoration: InputDecoration(
               border: InputBorder.none,
               hintText: "Password",
-              fillColor: Colors.white,
+              hintStyle: TextStyle(
+                color: Provider.of<AppSetting>(context).getdarkMode
+                    ? Colors.grey.shade400
+                    : Colors.black,
+              ),
+              fillColor: Provider.of<AppSetting>(context).getdarkMode
+                  ? Colors.grey.shade900
+                  : Colors.white,
               filled: true,
             ),
             controller: _passwordController,
@@ -89,7 +117,7 @@ class _AuthScreenState extends State<AuthScreen> {
                 isLoading = true;
               });
               String loginRes = await Provider.of<User>(context, listen: false)
-                  .signIn(_emailIdController.text, _passwordController.text);
+                  .signIn(_authController.text, _passwordController.text);
 
               if (loginRes == "Done") {
                 var snackBar = SnackBar(
@@ -113,7 +141,7 @@ class _AuthScreenState extends State<AuthScreen> {
                   // ),
                 );
                 ScaffoldMessenger.of(context).showSnackBar(snackBar);
-                // _emailIdController.clear();
+                // _authController.clear();
                 // _passwordController.clear();
               }
               setState(() {
@@ -122,7 +150,9 @@ class _AuthScreenState extends State<AuthScreen> {
             },
             style: ButtonStyle(
                 backgroundColor: MaterialStateProperty.all<Color>(
-                    const Color.fromARGB(255, 0, 190, 184))),
+                    Provider.of<AppSetting>(context).getdarkMode
+                        ? const Color.fromARGB(255, 0, 99, 95)
+                        : const Color.fromARGB(255, 0, 190, 184))),
             child: const Text(
               "Login",
               style: TextStyle(color: Colors.white),
@@ -136,10 +166,13 @@ class _AuthScreenState extends State<AuthScreen> {
               isLogin = false;
             });
           },
-          child: const Text(
+          child: Text(
             "Create an New Account",
             style: TextStyle(
-                fontSize: 14, color: Color.fromARGB(255, 0, 190, 184)),
+                fontSize: 14,
+                color: Provider.of<AppSetting>(context).getdarkMode
+                    ? const Color.fromARGB(255, 0, 150, 145)
+                    : const Color.fromARGB(255, 0, 190, 184)),
           ),
         ),
       ],
@@ -151,13 +184,26 @@ class _AuthScreenState extends State<AuthScreen> {
           margin: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
           padding: const EdgeInsets.only(top: 4),
           decoration: BoxDecoration(
-              border:
-                  Border.all(color: const Color.fromARGB(255, 0, 190, 184))),
+              border: Border.all(
+                  color: Provider.of<AppSetting>(context).getdarkMode
+                      ? const Color.fromARGB(255, 0, 99, 95)
+                      : const Color.fromARGB(255, 0, 190, 184))),
           child: TextField(
-            decoration: const InputDecoration(
+            style: TextStyle(
+                color: Provider.of<AppSetting>(context).getdarkMode
+                    ? Colors.grey.shade400
+                    : Colors.black),
+            decoration: InputDecoration(
               border: InputBorder.none,
               hintText: "Name",
-              fillColor: Colors.white,
+              hintStyle: TextStyle(
+                color: Provider.of<AppSetting>(context).getdarkMode
+                    ? Colors.grey.shade400
+                    : Colors.black,
+              ),
+              fillColor: Provider.of<AppSetting>(context).getdarkMode
+                  ? Colors.grey.shade900
+                  : Colors.white,
               filled: true,
             ),
             controller: _nameController,
@@ -167,13 +213,26 @@ class _AuthScreenState extends State<AuthScreen> {
           margin: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
           padding: const EdgeInsets.only(top: 4),
           decoration: BoxDecoration(
-              border:
-                  Border.all(color: const Color.fromARGB(255, 0, 190, 184))),
+              border: Border.all(
+                  color: Provider.of<AppSetting>(context).getdarkMode
+                      ? const Color.fromARGB(255, 0, 99, 95)
+                      : const Color.fromARGB(255, 0, 190, 184))),
           child: TextField(
-            decoration: const InputDecoration(
+            style: TextStyle(
+                color: Provider.of<AppSetting>(context).getdarkMode
+                    ? Colors.grey.shade400
+                    : Colors.black),
+            decoration: InputDecoration(
               border: InputBorder.none,
               hintText: "User Name",
-              fillColor: Colors.white,
+              hintStyle: TextStyle(
+                color: Provider.of<AppSetting>(context).getdarkMode
+                    ? Colors.grey.shade400
+                    : Colors.black,
+              ),
+              fillColor: Provider.of<AppSetting>(context).getdarkMode
+                  ? Colors.grey.shade900
+                  : Colors.white,
               filled: true,
             ),
             controller: _userNameController,
@@ -183,13 +242,26 @@ class _AuthScreenState extends State<AuthScreen> {
           margin: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
           padding: const EdgeInsets.only(top: 4),
           decoration: BoxDecoration(
-              border:
-                  Border.all(color: const Color.fromARGB(255, 0, 190, 184))),
+              border: Border.all(
+                  color: Provider.of<AppSetting>(context).getdarkMode
+                      ? const Color.fromARGB(255, 0, 99, 95)
+                      : const Color.fromARGB(255, 0, 190, 184))),
           child: TextField(
-            decoration: const InputDecoration(
+            style: TextStyle(
+                color: Provider.of<AppSetting>(context).getdarkMode
+                    ? Colors.grey.shade400
+                    : Colors.black),
+            decoration: InputDecoration(
               border: InputBorder.none,
               hintText: "Phone Number",
-              fillColor: Colors.white,
+              hintStyle: TextStyle(
+                color: Provider.of<AppSetting>(context).getdarkMode
+                    ? Colors.grey.shade400
+                    : Colors.black,
+              ),
+              fillColor: Provider.of<AppSetting>(context).getdarkMode
+                  ? Colors.grey.shade900
+                  : Colors.white,
               filled: true,
             ),
             controller: _phoneNumberController,
@@ -200,13 +272,26 @@ class _AuthScreenState extends State<AuthScreen> {
           margin: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
           padding: const EdgeInsets.only(top: 4),
           decoration: BoxDecoration(
-              border:
-                  Border.all(color: const Color.fromARGB(255, 0, 190, 184))),
+              border: Border.all(
+                  color: Provider.of<AppSetting>(context).getdarkMode
+                      ? const Color.fromARGB(255, 0, 99, 95)
+                      : const Color.fromARGB(255, 0, 190, 184))),
           child: TextField(
-            decoration: const InputDecoration(
+            style: TextStyle(
+                color: Provider.of<AppSetting>(context).getdarkMode
+                    ? Colors.grey.shade400
+                    : Colors.black),
+            decoration: InputDecoration(
               border: InputBorder.none,
               hintText: "Email Id",
-              fillColor: Colors.white,
+              hintStyle: TextStyle(
+                color: Provider.of<AppSetting>(context).getdarkMode
+                    ? Colors.grey.shade400
+                    : Colors.black,
+              ),
+              fillColor: Provider.of<AppSetting>(context).getdarkMode
+                  ? Colors.grey.shade900
+                  : Colors.white,
               filled: true,
             ),
             controller: _emailIdController,
@@ -216,13 +301,26 @@ class _AuthScreenState extends State<AuthScreen> {
           margin: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
           padding: const EdgeInsets.only(top: 4),
           decoration: BoxDecoration(
-              border:
-                  Border.all(color: const Color.fromARGB(255, 0, 190, 184))),
+              border: Border.all(
+                  color: Provider.of<AppSetting>(context).getdarkMode
+                      ? const Color.fromARGB(255, 0, 99, 95)
+                      : const Color.fromARGB(255, 0, 190, 184))),
           child: TextField(
-            decoration: const InputDecoration(
+            style: TextStyle(
+                color: Provider.of<AppSetting>(context).getdarkMode
+                    ? Colors.grey.shade400
+                    : Colors.black),
+            decoration: InputDecoration(
               border: InputBorder.none,
               hintText: "Password",
-              fillColor: Colors.white,
+              hintStyle: TextStyle(
+                color: Provider.of<AppSetting>(context).getdarkMode
+                    ? Colors.grey.shade400
+                    : Colors.black,
+              ),
+              fillColor: Provider.of<AppSetting>(context).getdarkMode
+                  ? Colors.grey.shade900
+                  : Colors.white,
               filled: true,
             ),
             controller: _confirmPasswordController,
@@ -232,13 +330,26 @@ class _AuthScreenState extends State<AuthScreen> {
           margin: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
           padding: const EdgeInsets.only(top: 4),
           decoration: BoxDecoration(
-              border:
-                  Border.all(color: const Color.fromARGB(255, 0, 190, 184))),
+              border: Border.all(
+                  color: Provider.of<AppSetting>(context).getdarkMode
+                      ? const Color.fromARGB(255, 0, 99, 95)
+                      : const Color.fromARGB(255, 0, 190, 184))),
           child: TextField(
-            decoration: const InputDecoration(
+            style: TextStyle(
+                color: Provider.of<AppSetting>(context).getdarkMode
+                    ? Colors.grey.shade400
+                    : Colors.black),
+            decoration: InputDecoration(
               border: InputBorder.none,
               hintText: "Confirm Password",
-              fillColor: Colors.white,
+              hintStyle: TextStyle(
+                color: Provider.of<AppSetting>(context).getdarkMode
+                    ? Colors.grey.shade400
+                    : Colors.black,
+              ),
+              fillColor: Provider.of<AppSetting>(context).getdarkMode
+                  ? Colors.grey.shade900
+                  : Colors.white,
               filled: true,
             ),
             controller: _passwordController,
@@ -294,7 +405,9 @@ class _AuthScreenState extends State<AuthScreen> {
             },
             style: ButtonStyle(
                 backgroundColor: MaterialStateProperty.all<Color>(
-                    const Color.fromARGB(255, 0, 190, 184))),
+                    Provider.of<AppSetting>(context).getdarkMode
+                        ? const Color.fromARGB(255, 0, 99, 95)
+                        : const Color.fromARGB(255, 0, 190, 184))),
             child: const Text(
               "Sign Up",
               style: TextStyle(color: Colors.white),
@@ -308,10 +421,13 @@ class _AuthScreenState extends State<AuthScreen> {
               isLogin = true;
             });
           },
-          child: const Text(
+          child: Text(
             "Login Instead",
             style: TextStyle(
-                fontSize: 14, color: Color.fromARGB(255, 0, 190, 184)),
+                fontSize: 14,
+                color: Provider.of<AppSetting>(context).getdarkMode
+                    ? const Color.fromARGB(255, 0, 150, 145)
+                    : const Color.fromARGB(255, 0, 190, 184)),
           ),
         )
       ],
@@ -322,7 +438,9 @@ class _AuthScreenState extends State<AuthScreen> {
     //     Container(
     //       margin: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
     //       padding: const EdgeInsets.only(top: 4),
-    //       decoration: BoxDecoration(border: Border.all(color: Color.fromARGB(255, 0, 190, 184))),
+    //       decoration: BoxDecoration(border: Border.all(color: Provider.of<AppSetting>(context).getdarkMode
+    // ? const Color.fromARGB(255, 0, 99, 95)
+    // : const Color.fromARGB(255, 0, 190, 184))),
     //       child: TextField(
     //         decoration: const InputDecoration(
     //           border: InputBorder.none,
@@ -360,7 +478,9 @@ class _AuthScreenState extends State<AuthScreen> {
     //         },
     //         style: ButtonStyle(
     //             backgroundColor:
-    //                 MaterialStateProperty.all<Color>(Color.fromARGB(255, 0, 190, 184))),
+    //                 MaterialStateProperty.all<Color>(Provider.of<AppSetting>(context).getdarkMode
+    // ? const Color.fromARGB(255, 0, 99, 95)
+    // : const Color.fromARGB(255, 0, 190, 184))),
     //         child: const Text(
     //           "Confirm Code",
     //           style: TextStyle(color: Colors.white),
@@ -387,7 +507,9 @@ class _AuthScreenState extends State<AuthScreen> {
     //       },
     //       child: const Text(
     //         "Login Instead",
-    //         style: TextStyle(fontSize: 14, color: Color.fromARGB(255, 0, 190, 184)),
+    //         style: TextStyle(fontSize: 14, color: Provider.of<AppSetting>(context).getdarkMode
+    // ? const Color.fromARGB(255, 0, 99, 95)
+    // : const Color.fromARGB(255, 0, 190, 184)),
     //       ),
     //     )
     //   ],
@@ -397,9 +519,13 @@ class _AuthScreenState extends State<AuthScreen> {
       body: SingleChildScrollView(
         child: Stack(
           children: <Widget>[
-            SizedBox(
+            Container(
               height: MediaQuery.of(context).size.height,
               width: MediaQuery.of(context).size.width,
+              decoration: BoxDecoration(
+                  color: Provider.of<AppSetting>(context).getdarkMode
+                      ? Colors.grey.shade900
+                      : Colors.white),
               child: Center(
                 child: Container(
                   padding: const EdgeInsets.only(
@@ -408,7 +534,9 @@ class _AuthScreenState extends State<AuthScreen> {
                   // height: 500,
                   constraints: BoxConstraints(maxHeight: (isLogin ? 270 : 570)),
                   decoration: BoxDecoration(
-                      color: Colors.white,
+                      color: Provider.of<AppSetting>(context).getdarkMode
+                          ? Colors.grey.shade800
+                          : Colors.white,
                       borderRadius: BorderRadius.circular(15),
                       boxShadow: const [
                         BoxShadow(
