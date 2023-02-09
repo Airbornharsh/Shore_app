@@ -129,7 +129,7 @@ class _AuthScreenState extends State<AuthScreen> {
                     },
                   ),
                 );
-                Navigator.of(context).popAndPushNamed(HomeScreen.routeName);
+                Navigator.of(context).popAndPushNamed("/");
               } else {
                 var snackBar = SnackBar(
                   content: Text(loginRes),

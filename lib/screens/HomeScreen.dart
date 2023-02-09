@@ -14,7 +14,7 @@ import 'package:shore_app/screens/AuthScreen.dart';
 
 class HomeScreen extends StatefulWidget {
   HomeScreen({super.key});
-  static const routeName = "/";
+  // static const routeName = "/";
   bool start = true;
 
   @override

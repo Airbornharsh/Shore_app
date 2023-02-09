@@ -21,16 +21,15 @@ class Home extends StatefulWidget {
 class _HomeState extends State<Home> {
   @override
   Widget build(BuildContext context) {
-    return RefreshIndicator(
-      onRefresh: () async {
-        widget.reloadPosts();
-      },
-      child: Container(
-        width: MediaQuery.of(context).size.width,
-        decoration:
-            const BoxDecoration(color: Color.fromARGB(31, 121, 121, 121)),
-        // height: MediaQuery.of(context).size.height - 130,
-        child: Column(
+    return Container(
+      width: MediaQuery.of(context).size.width,
+      decoration:
+          const BoxDecoration(color: Color.fromARGB(31, 121, 121, 121)),
+      child: RefreshIndicator(
+        onRefresh: () async {
+          widget.reloadPosts();
+        },
+        child: Column( 
           children: [
             // if (Provider.of<User>(context).getIsAuth) const Upload(),
             // const Upload(),

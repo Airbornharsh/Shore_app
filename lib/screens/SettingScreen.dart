@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shore_app/Components/SettingScreen/AccountList.dart';
+import 'package:shore_app/Components/SettingScreen/ActivitiesList.dart';
 import 'package:shore_app/Components/SettingScreen/GeneralList.dart';
 import 'package:shore_app/provider/AppSetting.dart';
 
@@ -28,7 +29,7 @@ class _SettingScreenState extends State<SettingScreen> {
                 ? Colors.grey.shade900
                 : Colors.white),
         child: Column(
-          children: const [GeneralList(), AccountList()],
+          children: const [GeneralList(), AccountList(), ActivitiesList()],
         ),
       ),
     );

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class AppSetting with ChangeNotifier {
-  bool darkMode = true;
+  bool darkMode = false;
 
   bool get getdarkMode {
     return darkMode;
