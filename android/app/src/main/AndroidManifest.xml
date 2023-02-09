@@ -1,7 +1,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.airbornharsh.shore_app">
    <application
-        android:label="shore_app"
+        android:label="Shore"
         android:name="${applicationName}"
         android:icon="@mipmap/launcher_icon">
         
