@@ -1,5 +1,6 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:provider/provider.dart';
 import 'package:shore_app/Utils/firebase_options.dart';
 import 'package:shore_app/provider/AppSetting.dart';
@@ -20,7 +21,8 @@ import 'package:shore_app/screens/UserPostListScreen.dart';
 import 'package:shore_app/screens/UserScreen.dart';
 
 Future main() async {
-  WidgetsFlutterBinding.ensureInitialized();
+  WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
+  FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
 
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 

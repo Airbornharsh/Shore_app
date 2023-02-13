@@ -48,6 +48,7 @@ dependencies:
   path_provider: ^2.0.11
   scrollable_positioned_list: ^0.3.5
   firebase_auth: ^4.2.5
+  flutter_native_splash: ^2.2.16
   # socket_io_client: ^2.0.1
 
 dev_dependencies:
@@ -60,8 +61,8 @@ flutter_icons:
   android: "launcher_icon"
   ios: true
   image_path: "lib/assets/images/Shore_Logo.png"
-  adaptive_icon_background: "#ffffff"
-  adaptive_icon_foreground: "lib/assets/images/Shore_Logo_Foreground.png"
+  # adaptive_icon_background: "#e8da1a"
+  # adaptive_icon_foreground: "lib/assets/images/New_Shore_Logo.png"
 
   # The "flutter_lints" package below contains a set of recommended lints to
   # encourage good coding practices. The lint set provided by the package is
