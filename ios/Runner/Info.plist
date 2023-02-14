@@ -49,5 +49,9 @@
 		<true/>
 		<key>UIStatusBarHidden</key>
 		<false/>
+		<key>GADApplicationIdentifier</key>
+		<string>ca-app-pub-1856488952723088~5799854496</string>
+		<key>io.flutter.embedded_views_preview</key>
+		<true/>
 	</dict>
 </plist>

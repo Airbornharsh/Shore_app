@@ -47,6 +47,12 @@ class _PostItemState extends State<PostItem> {
               child: Column(
             children: [
               Container(
+                height: 5,
+                color: Provider.of<AppSetting>(context).getdarkMode
+                    ? Colors.grey.shade800
+                    : Colors.grey.shade300,
+              ),
+              Container(
                 padding: const EdgeInsets.symmetric(horizontal: 10),
                 height: 70,
                 child: Row(
@@ -302,7 +308,7 @@ class _PostItemState extends State<PostItem> {
           )),
         ),
         Container(
-          height: 10,
+          height: 5,
           color: Provider.of<AppSetting>(context).getdarkMode
               ? Colors.grey.shade800
               : Colors.grey.shade300,

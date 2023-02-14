@@ -9,6 +9,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.0.12"
+  admob_flutter:
+    dependency: "direct main"
+    description:
+      name: admob_flutter
+      sha256: "593cf80078445d0794b03f0dbf55e45be5b41b2f0a6df06a41cc0cb5a580ce46"
+      url: "https://pub.dev"
+    source: hosted
+    version: "3.0.0"
   archive:
     dependency: transitive
     description:

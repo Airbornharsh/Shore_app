@@ -1,3 +1,6 @@
+import 'dart:io';
+
+import 'package:admob_flutter/admob_flutter.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -38,18 +41,32 @@ class _PostListState extends State<PostList> {
         Provider.of<User>(context, listen: false).getUserDetails;
 
     return Expanded(
-        child: ListView.builder(
-            itemCount: widget.postList.length,
-            controller: _controller,
-            itemBuilder: ((ctx, i) {
-              DateTime date = DateTime.fromMillisecondsSinceEpoch(
-                      int.parse(widget.postList[i].postedDate))
-                  .toLocal();
+        child: ListView.separated(
+      itemCount: widget.postList.length,
+      controller: _controller,
+      itemBuilder: ((ctx, i) {
+        DateTime date = DateTime.fromMillisecondsSinceEpoch(
+                int.parse(widget.postList[i].postedDate))
+            .toLocal();
 
-              String newDate =
-                  "${date.hour}:${date.minute} ${date.day}/${date.month}/${date.year}";
+        String newDate =
+            "${date.hour}:${date.minute} ${date.day}/${date.month}/${date.year}";
 
-              return PostItem(newDate: newDate, post: widget.postList[i]);
-            })));
+        return PostItem(newDate: newDate, post: widget.postList[i]);
+      }),
+      separatorBuilder: (BuildContext context, int index) {
+        // if (index % 2 == 0 && Platform.isAndroid) {
+        //   return Container(
+        //     child: Card(
+        //         color: Colors.white,
+        //         child: AdmobBanner(
+        //             adUnitId: "ca-app-pub-1856488952723088/3203828354",
+        //             adSize: AdmobBannerSize.ADAPTIVE_BANNER(
+        //                 width: (MediaQuery.of(context).size.width).round()))),
+        //   );
+        // }
+        return Container();
+      },
+    ));
   }
 }
