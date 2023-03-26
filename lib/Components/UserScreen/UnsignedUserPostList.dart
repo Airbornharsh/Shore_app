@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:shore_app/Components/Profile/UserPostItem.dart';
-import 'package:shore_app/Utils/userPostListScreenArgs.dart';
+import 'package:shore_app/Utils/UserPostListScreenArgs.dart';
 import 'package:shore_app/models.dart';
 import 'package:shore_app/screens/UserPostListScreen.dart';
 

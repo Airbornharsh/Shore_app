@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 import 'package:shore_app/Components/Profile/ProfilePostList/UserPostListItem.dart';
-import 'package:shore_app/Utils/userPostListScreenArgs.dart';
+import 'package:shore_app/Utils/UserPostListScreenArgs.dart';
 import 'package:shore_app/provider/AppSetting.dart';
 
 class UserPostListScreen extends StatefulWidget {
