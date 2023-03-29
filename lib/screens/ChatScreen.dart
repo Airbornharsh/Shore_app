@@ -18,11 +18,18 @@ class _ChatScreenState extends State<ChatScreen> {
   late Socket socketClient;
   List<String> messages = [];
   int count = 0;
+  final messageController = TextEditingController();
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+    messageController.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
-    // final socketId = ModalRoute.of(context)!.settings.arguments as String;
-    final socketId = "-Hh0tgRkenFOekseAAAD";
+    final socketId = ModalRoute.of(context)!.settings.arguments as String;
     if (widget.start) {
       socketClient = SocketClient.instance.socket!;
 
@@ -50,7 +57,7 @@ class _ChatScreenState extends State<ChatScreen> {
       count++;
       socketClient.emit("send-message-id", {
         "receiverSocketId": socketId,
-        "message": "Hii Bro $count",
+        "message": "${messageController.text}",
         "senderUserId": ""
       });
     }
@@ -60,8 +67,7 @@ class _ChatScreenState extends State<ChatScreen> {
         Scaffold(
           body: Column(
             children: [
-              Container(
-                height: 800,
+              Expanded(
                 child: ListView.builder(
                   itemCount: messages.length,
                   itemBuilder: (context, index) {
@@ -71,15 +77,48 @@ class _ChatScreenState extends State<ChatScreen> {
                   },
                 ),
               ),
-              TextButton(
-                  style: ButtonStyle(
-                      backgroundColor: MaterialStateProperty.all(
-                    const Color.fromARGB(255, 0, 190, 184),
-                  )),
-                  onPressed: () {
-                    sendMessage();
-                  },
-                  child: Text("Send", style: TextStyle(color: Colors.white)))
+              Stack(
+                children: [
+                  Container(
+                    margin: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+                    decoration: BoxDecoration(
+                        border: Border.all(color: Colors.grey, width: 1)),
+                    child: TextField(
+                      controller: messageController,
+                      style: TextStyle(
+                          color: Provider.of<AppSetting>(context).getdarkMode
+                              ? Colors.grey.shade400
+                              : Colors.black),
+                      decoration: InputDecoration(
+                        border: InputBorder.none,
+                        hintText: "Message",
+                        hintStyle: TextStyle(
+                          color: Provider.of<AppSetting>(context).getdarkMode
+                              ? Colors.grey.shade400
+                              : Colors.black,
+                        ),
+                        fillColor: Provider.of<AppSetting>(context).getdarkMode
+                            ? Colors.grey.shade900
+                            : Colors.white,
+                        filled: true,
+                      ),
+                    ),
+                  ),
+                  Positioned(
+                    right: 10,
+                    top: 11,
+                    child: IconButton(
+                      onPressed: () {
+                        sendMessage();
+                      },
+                      icon: Icon(
+                        Icons.send,
+                        color: const Color.fromARGB(255, 0, 190, 184),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
             ],
           ),
         ),

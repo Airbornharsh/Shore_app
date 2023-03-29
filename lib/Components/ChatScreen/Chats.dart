@@ -3,18 +3,22 @@ import 'package:provider/provider.dart';
 import 'package:shore_app/Utils/socket_client.dart';
 import 'package:shore_app/provider/AppSetting.dart';
 import 'package:shore_app/screens/ChatScreen.dart';
+import 'package:socket_io_client/socket_io_client.dart';
 
 class Chats extends StatefulWidget {
   Function setIsLoading;
   bool isLoading;
   Chats({super.key, required this.setIsLoading, required this.isLoading});
-  // bool start = true;
+  bool start = true;
 
   @override
   State<Chats> createState() => _ChatsState();
 }
 
 class _ChatsState extends State<Chats> {
+  late Socket socketClient;
+  List<String> ids = [];
+
   @override
   Widget build(BuildContext context) {
     // final socketClient = SocketClient.instance.socket!;
@@ -26,6 +30,27 @@ class _ChatsState extends State<Chats> {
     //   print("disconnected");
     // }
 
+    if (widget.start) {
+      socketClient = SocketClient.instance.socket!;
+
+      socketClient.emit("list-ids-request");
+
+      socketClient.on("list-ids-response", (data) {
+        print(data["ids"]);
+
+        setState(() {
+          ids = [];
+          data["ids"].forEach((element) {
+            ids.add(element);
+          });
+        });
+      });
+
+      setState(() {
+        widget.start = false;
+      });
+    }
+
     return RefreshIndicator(
       onRefresh: () async {},
       child: Container(
@@ -35,13 +60,20 @@ class _ChatsState extends State<Chats> {
                 : Colors.white),
         child: Column(
           children: [
-            ListTile(
-              onTap: () {
-                Navigator.of(context).pushNamed(ChatScreen.routeName);
+            ListView.builder(
+              shrinkWrap: true,
+              itemCount: ids.length,
+              itemBuilder: (context, index) {
+                return ListTile(
+                  onTap: () {
+                    Navigator.of(context)
+                        .pushNamed(ChatScreen.routeName, arguments: ids[index]);
+                  },
+                  title: Text(ids[index]),
+                  subtitle: Text("10 unread Message"),
+                );
               },
-              title: Text("New Chat"),
-              subtitle: Text("10 unread Message"),
-            )
+            ),
           ],
         ),
       ),
