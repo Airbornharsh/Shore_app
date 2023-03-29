@@ -21,30 +21,24 @@ class _RequestsState extends State<Requests> {
   List<UnsignUserModel> unsignuserRequestedList = [];
 
   @override
-  void dispose() {
-    // TODO: implement dispose
-    super.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
     if (widget.start) {
-      Provider.of<User>(context, listen: false)
-          .loadRequestingFollowers()
-          .then((el) {
-        setState(() {
-          unsignuserRequestingList = el;
-          widget.start = false;
-        });
-      });
-      Provider.of<User>(context, listen: false)
-          .loadRequestingFollowing()
-          .then((el) {
-        setState(() {
-          unsignuserRequestedList = el;
-          widget.start = false;
-        });
-      });
+      // Provider.of<User>(context, listen: false)
+      //     .loadRequestingFollowers()
+      //     .then((el) {
+      //   setState(() {
+      //     unsignuserRequestingList = el;
+      //     widget.start = false;
+      //   });
+      // });
+      // Provider.of<User>(context, listen: false)
+      //     .loadRequestingFollowing()
+      //     .then((el) {
+      //   setState(() {
+      //     unsignuserRequestedList = el;
+      //     widget.start = false;
+      //   });
+      // });
     }
 
     return RefreshIndicator(

@@ -3,7 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:shore_app/provider/AppSetting.dart';
 import 'package:shore_app/provider/User.dart';
 import 'package:shore_app/screens/AuthScreen.dart';
-import 'package:shore_app/screens/ChatScreen.dart';
+// import 'package:shore_app/screens/ChatsScreen.dart';
 import 'package:shore_app/screens/NewPostScreen.dart';
 import 'package:shore_app/screens/SearchScreen.dart';
 

@@ -1,78 +1,102 @@
 import 'package:flutter/material.dart';
-import "dart:io";
-
 import 'package:provider/provider.dart';
+import 'package:shore_app/Utils/socket_client.dart';
 import 'package:shore_app/provider/AppSetting.dart';
+import 'package:socket_io_client/socket_io_client.dart';
 
 class ChatScreen extends StatefulWidget {
   static const String routeName = "/chat";
-  const ChatScreen({super.key});
+  ChatScreen({super.key});
+  bool start = true;
 
   @override
   State<ChatScreen> createState() => _ChatScreenState();
 }
 
 class _ChatScreenState extends State<ChatScreen> {
-  // late IO.Socket socket;`
-  late Socket socket;
-
-  @override
-  void initState() {
-    initSocket();
-    super.initState();
-  }
-
-  @override
-  void dispose() {
-    //...
-    // socket.disconnect();
-    // socket.dispose();
-    super.dispose();
-    //...
-  }
-
-  initSocket() {
-    // socket = IO.io(
-    //     "https://shore.vercel.app/user/socket",
-    //     IO.OptionBuilder()
-    //         .setTransports(['websocket']) // for Flutter or Dart VM
-    //         .disableAutoConnect() // disable auto-connection
-    //         .setExtraHeaders({}) // optional
-    //         .build());
-
-    // socket.connect();
-    // socket.onConnect((_) {
-    //   print('Connection established');
-    // });
-    // socket.onDisconnect((_) => print('Connection Disconnection'));
-    // socket.onConnectError((err) => print(err));
-    // socket.onError((err) => print(err));
-
-    Socket.connect("localhost", 3000).then((Socket sock) {
-      socket = sock;
-      socket.listen((context) {},
-          onError: () {}, onDone: () {}, cancelOnError: false);
-    }).catchError((e) {
-      print(e);
-    });
-  }
+  bool _isLoading = false;
+  late Socket socketClient;
+  List<String> messages = [];
+  int count = 0;
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Center(
-          child: TextButton(
-              onPressed: () {},
-              style:  ButtonStyle(
-                backgroundColor: MaterialStatePropertyAll<Color>(
-                    Provider.of<AppSetting>(context).getdarkMode
-                        ? const Color.fromARGB(255, 0, 99, 95)
-                        : const Color.fromARGB(255, 0, 190, 184)),
+    // final socketId = ModalRoute.of(context)!.settings.arguments as String;
+    final socketId = "-Hh0tgRkenFOekseAAAD";
+    if (widget.start) {
+      socketClient = SocketClient.instance.socket!;
+
+      socketClient.on("receive-message-id", (data) {
+        print(data["message"]);
+        setState(() {
+          messages.add(data["message"]);
+        });
+      });
+      setState(() {
+        widget.start = false;
+      });
+    }
+
+    print(messages.length);
+
+    if (socketClient.connected) {
+      print("connected with ${socketClient.id}");
+    }
+    if (socketClient.disconnected) {
+      print("disconnected");
+    }
+
+    void sendMessage() {
+      count++;
+      socketClient.emit("send-message-id", {
+        "receiverSocketId": socketId,
+        "message": "Hii Bro $count",
+        "senderUserId": ""
+      });
+    }
+
+    return Stack(
+      children: [
+        Scaffold(
+          body: Column(
+            children: [
+              Container(
+                height: 800,
+                child: ListView.builder(
+                  itemCount: messages.length,
+                  itemBuilder: (context, index) {
+                    return ListTile(
+                      title: Text(messages[index]),
+                    );
+                  },
+                ),
               ),
-              child: const Text(
-                "Click Me",
-                style: TextStyle(color: Colors.white),
-              ))),
+              TextButton(
+                  style: ButtonStyle(
+                      backgroundColor: MaterialStateProperty.all(
+                    const Color.fromARGB(255, 0, 190, 184),
+                  )),
+                  onPressed: () {
+                    sendMessage();
+                  },
+                  child: Text("Send", style: TextStyle(color: Colors.white)))
+            ],
+          ),
+        ),
+        if (_isLoading)
+          Positioned(
+            top: 0,
+            left: 0,
+            height: MediaQuery.of(context).size.height,
+            width: MediaQuery.of(context).size.width,
+            child: Container(
+              color: const Color.fromRGBO(80, 80, 80, 0.3),
+              width: MediaQuery.of(context).size.width,
+              height: MediaQuery.of(context).size.height,
+              child: const Center(child: CircularProgressIndicator()),
+            ),
+          ),
+      ],
     );
   }
 }

@@ -61,7 +61,7 @@ class MyApp extends StatelessWidget {
           UserScreen.routeName: (ctx) => UserScreen(),
           FollowersScreen.routeName: (ctx) => FollowersScreen(),
           FollowingsScreen.routeName: (ctx) => FollowingsScreen(),
-          ChatScreen.routeName: (ctx) => const ChatScreen(),
+          ChatScreen.routeName: (ctx) =>  ChatScreen(),
           SettingScreen.routeName: (ctx) => const SettingScreen(),
         },
       ),

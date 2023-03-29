@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart' as fAuth;
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:shore_app/Components/ChatScreen/Chats.dart';
 import 'package:shore_app/Components/CustomAppBar.dart';
 import 'package:shore_app/Components/HomeScreen/Home.dart';
 import 'package:shore_app/Components/Profile/Profile.dart';
@@ -46,6 +47,7 @@ class _HomeScreenState extends State<HomeScreen> {
       // prefs.setString("hopl_backend_uri", "http://localhost:3000");
       // prefs.setString("shore_backend_uri", "http://10.0.2.2:3000");
       prefs.setString("shore_backend_uri", "https://shore.vercel.app");
+      prefs.setString("shore_backend_socket_uri", "https://192.168.1.36:4000");
     }
 
     onLoad();
@@ -160,6 +162,7 @@ class _HomeScreenState extends State<HomeScreen> {
           addLoad: addLoad,
           isLoadingMore: _isPostLoadingMore),
       Requests(isLoading: _isLoading, setIsLoading: setIsLoading),
+      Chats(isLoading: _isLoading, setIsLoading: setIsLoading),
       Profile(userPostList: userPostList, reloadUserPosts: reloadUserPosts)
     ];
 
@@ -171,6 +174,7 @@ class _HomeScreenState extends State<HomeScreen> {
               currentIndex: _selectedIndex,
               selectedFontSize: 0,
               iconSize: 30,
+              selectedItemColor: Colors.grey.shade600,
               backgroundColor: Provider.of<AppSetting>(context).getdarkMode
                   ? Colors.black
                   : Colors.white,
@@ -180,6 +184,7 @@ class _HomeScreenState extends State<HomeScreen> {
               items: const [
                 BottomNavigationBarItem(icon: Icon(Icons.home), label: ""),
                 BottomNavigationBarItem(icon: Icon(Icons.favorite), label: ""),
+                BottomNavigationBarItem(icon: Icon(Icons.chat), label: ""),
                 BottomNavigationBarItem(icon: Icon(Icons.person), label: ""),
               ],
               // onTap: (value) {
