@@ -1,4 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart' as fAuth;
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -37,9 +38,29 @@ class _HomeScreenState extends State<HomeScreen> {
     });
   }
 
+  Future<dynamic> notificationSetting() async {
+    FirebaseMessaging messaging = FirebaseMessaging.instance;
+
+    NotificationSettings settings = await messaging.requestPermission(
+      alert: true,
+      announcement: false,
+      badge: true,
+      carPlay: false,
+      criticalAlert: false,
+      provisional: false,
+      sound: true,
+    );
+
+    print('User granted permission: ${settings.authorizationStatus}');
+  }
+
   @override
   void initState() {
     // TODO: implement initState
+    super.initState();
+
+    notificationSetting();
+
     _pageController = PageController();
 
     void onLoad() async {
@@ -51,8 +72,6 @@ class _HomeScreenState extends State<HomeScreen> {
     }
 
     onLoad();
-
-    super.initState();
   }
 
   @override

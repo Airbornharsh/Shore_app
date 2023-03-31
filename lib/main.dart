@@ -1,7 +1,11 @@
+import 'dart:async';
+
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 // import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:shore_app/Utils/firebase_options.dart';
 import 'package:shore_app/provider/AppSetting.dart';
 import 'package:shore_app/provider/Posts.dart';
@@ -13,6 +17,7 @@ import 'package:shore_app/screens/EditProfileScreen.dart';
 import 'package:shore_app/screens/FollowersScreen.dart';
 import 'package:shore_app/screens/FollowingsScreen.dart';
 import 'package:shore_app/screens/HomeScreen.dart';
+import 'package:shore_app/screens/MessageClicked.dart';
 import 'package:shore_app/screens/NewPostScreen.dart';
 import 'package:shore_app/screens/PostEditScreen.dart';
 import 'package:shore_app/screens/SearchScreen.dart';
@@ -20,12 +25,62 @@ import 'package:shore_app/screens/SettingScreen.dart';
 import 'package:shore_app/screens/UserPostListScreen.dart';
 import 'package:shore_app/screens/UserScreen.dart';
 
+final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
+late String token;
+
 Future main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 
+  FirebaseMessaging.instance.getToken().then((value) {
+    token = value!;
+
+    void init() async {
+      final prefs = await SharedPreferences.getInstance();
+
+      prefs.setString("shore_app_token", "token");
+    }
+
+    init();
+    print("FCM Token: $value");
+  });
+
+//Application in Background
+  FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage? message) async {
+    if (message != null) {
+      print('Message clicked: ${message.data}');
+      Navigator.pushNamed(
+          navigatorKey.currentState!.context, MessageClicked.routeName,
+          arguments: message.data);
+    }
+  });
+
+  //Application is Terminateed or Killed
+  FirebaseMessaging.instance
+      .getInitialMessage()
+      .then((RemoteMessage? message) async {
+    if (message != null) {
+      print('Message clicked: ${message.data} 09');
+      Navigator.pushNamed(
+          navigatorKey.currentState!.context, MessageClicked.routeName,
+          arguments: message.data);
+    }
+  });
+
+  FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
+
   runApp(const MyApp());
+}
+
+Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
+  if (message != null) {
+    await Firebase.initializeApp();
+    print("Handling a background message: ${message.data}");
+    Navigator.pushNamed(
+        navigatorKey.currentState!.context, MessageClicked.routeName,
+        arguments: message.data);
+  }
 }
 
 class MyApp extends StatelessWidget {
@@ -50,6 +105,7 @@ class MyApp extends StatelessWidget {
           ),
         ),
         // home: const HomeScreen(),
+        navigatorKey: navigatorKey,
         home: HomeScreen(),
         routes: {
           AuthScreen.routeName: (ctx) => const AuthScreen(),
@@ -61,8 +117,9 @@ class MyApp extends StatelessWidget {
           UserScreen.routeName: (ctx) => UserScreen(),
           FollowersScreen.routeName: (ctx) => FollowersScreen(),
           FollowingsScreen.routeName: (ctx) => FollowingsScreen(),
-          ChatScreen.routeName: (ctx) =>  ChatScreen(),
+          ChatScreen.routeName: (ctx) => ChatScreen(),
           SettingScreen.routeName: (ctx) => const SettingScreen(),
+          MessageClicked.routeName: (ctx) => const MessageClicked(),
         },
       ),
     );

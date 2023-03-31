@@ -20,7 +20,29 @@ class _ChatsState extends State<Chats> {
   List<String> ids = [];
 
   @override
+  void initState() {
+    super.initState();
+    // print("hII");
+    socketClient = SocketClient.instance.socket!;
+    print("Mine Socket id is ${socketClient.id}");
+
+    socketClient.emit("list-ids-request");
+
+    socketClient.on("list-ids-response", (data) {
+      print(data["ids"]);
+
+      setState(() {
+        ids.clear();
+        data["ids"].forEach((element) {
+          ids.add(element);
+        });
+      });
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
+    print(socketClient.id);
     // final socketClient = SocketClient.instance.socket!;
 
     // if (socketClient.connected) {
@@ -31,28 +53,31 @@ class _ChatsState extends State<Chats> {
     // }
 
     if (widget.start) {
-      socketClient = SocketClient.instance.socket!;
+      // socketClient = SocketClient.instance.socket!;
+      // print("Mine Socket id is ${socketClient.id}");
 
-      socketClient.emit("list-ids-request");
+      // socketClient.emit("list-ids-request");
 
-      socketClient.on("list-ids-response", (data) {
-        print(data["ids"]);
+      // socketClient.on("list-ids-response", (data) {
+      //   print(data["ids"]);
 
-        setState(() {
-          ids = [];
-          data["ids"].forEach((element) {
-            ids.add(element);
-          });
-        });
-      });
+      //   setState(() {
+      //     ids.clear();
+      //     data["ids"].forEach((element) {
+      //       ids.add(element);
+      //     });
+      //   });
+      // });
 
-      setState(() {
-        widget.start = false;
-      });
+      // setState(() {
+      //   widget.start = false;
+      // });
     }
 
     return RefreshIndicator(
-      onRefresh: () async {},
+      onRefresh: () async {
+        socketClient.emit("list-ids-request");
+      },
       child: Container(
         decoration: BoxDecoration(
             color: Provider.of<AppSetting>(context).getdarkMode
