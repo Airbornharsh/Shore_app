@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:shore_app/Utils/firebase_options.dart';
+import 'package:shore_app/Utils/socket_client.dart';
 import 'package:shore_app/provider/AppSetting.dart';
 import 'package:shore_app/provider/Posts.dart';
 import 'package:shore_app/provider/UnsignUser.dart';
@@ -27,6 +28,7 @@ import 'package:shore_app/screens/UserScreen.dart';
 
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 late String token;
+late String accessToken;
 
 Future main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -40,6 +42,8 @@ Future main() async {
       final prefs = await SharedPreferences.getInstance();
 
       prefs.setString("shore_app_token", "token");
+      accessToken = prefs.getString("shore_accessToken") as String;
+      SocketClient.instance(value, accessToken).socket!;
     }
 
     init();

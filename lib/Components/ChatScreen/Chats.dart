@@ -23,7 +23,7 @@ class _ChatsState extends State<Chats> {
   void initState() {
     super.initState();
     // print("hII");
-    socketClient = SocketClient.instance.socket!;
+    socketClient = SocketClient.staticInstance.socket!;
     print("Mine Socket id is ${socketClient.id}");
 
     socketClient.emit("list-ids-request");

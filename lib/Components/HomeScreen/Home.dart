@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:shore_app/Components/HomeScreen/PhoneNumber.dart';
-import 'package:shore_app/Components/HomeScreen/PostList.dart';
 import 'package:shore_app/models.dart';
 
 class Home extends StatefulWidget {
@@ -37,10 +35,10 @@ class _HomeState extends State<Home> {
             //   height: 8,
             // ),
             // PhoneNumber(),
-            PostList(
-              addLoad: widget.addLoad,
-              postList: widget.postList,
-            ),
+            // PostList(
+            //   addLoad: widget.addLoad,
+            //   postList: widget.postList,
+            // ),
 
             if (widget.isLoadingMore)
               Container(

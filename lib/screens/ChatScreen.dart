@@ -31,7 +31,7 @@ class _ChatScreenState extends State<ChatScreen> {
   Widget build(BuildContext context) {
     final socketId = ModalRoute.of(context)!.settings.arguments as String;
     if (widget.start) {
-      socketClient = SocketClient.instance.socket!;
+      socketClient = SocketClient.staticInstance.socket!;
 
       socketClient.on("receive-message-id", (data) {
         print(data["message"]);
@@ -56,9 +56,8 @@ class _ChatScreenState extends State<ChatScreen> {
     void sendMessage() {
       count++;
       socketClient.emit("send-message-id", {
-        "receiverSocketId": socketId,
+        "receiverUserId": "63d78f1bb22a29c1153120d9",
         "message": "${messageController.text}",
-        "senderUserId": ""
       });
     }
 
