@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shore_app/provider/AppSetting.dart';
-import 'package:shore_app/provider/User.dart';
+import 'package:shore_app/provider/SignUser.dart';
 
 class ActivitiesList extends StatefulWidget {
   const ActivitiesList({super.key});

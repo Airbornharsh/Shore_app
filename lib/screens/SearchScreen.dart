@@ -5,7 +5,7 @@ import 'package:shore_app/Utils/snackBar.dart';
 import 'package:shore_app/models.dart';
 import 'package:shore_app/provider/AppSetting.dart';
 import 'package:shore_app/provider/UnsignUser.dart';
-import 'package:shore_app/provider/User.dart';
+import 'package:shore_app/provider/SignUser.dart';
 
 class SearchScreen extends StatefulWidget {
   static String routeName = "search";
@@ -98,7 +98,7 @@ class _SearchScreenState extends State<SearchScreen> {
                     autofocus: true,
                     autocorrect: true,
                     onSubmitted: (value) async {
-                      if (Provider.of<User>(context, listen: false).getIsAuth) {
+                      if (Provider.of<SignUser>(context, listen: false).getIsAuth) {
                         await searchFun();
                       } else {
                         snackBar(context, "Please Log In");

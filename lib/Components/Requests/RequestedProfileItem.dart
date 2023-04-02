@@ -3,7 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:shore_app/Utils/snackBar.dart';
 import 'package:shore_app/models.dart';
 import 'package:shore_app/provider/AppSetting.dart';
-import 'package:shore_app/provider/User.dart';
+import 'package:shore_app/provider/SignUser.dart';
 import 'package:shore_app/screens/UserScreen.dart';
 
 class RequestedProfileItem extends StatefulWidget {
@@ -82,7 +82,7 @@ class _RequestedProfileItemState extends State<RequestedProfileItem> {
               //           widget.setIsLoading(true);
 
               //           final res =
-              //               await Provider.of<User>(context, listen: false)
+              //               await Provider.of<SignUser>(context, listen: false)
               //                   .declineFollowRequest(widget.user.id);
 
               //           if (!res) {
@@ -110,7 +110,7 @@ class _RequestedProfileItemState extends State<RequestedProfileItem> {
               //           widget.setIsLoading(true);
 
               //           final res =
-              //               await Provider.of<User>(context, listen: false)
+              //               await Provider.of<SignUser>(context, listen: false)
               //                   .acceptFollowRequest(widget.user.id);
 
               //           if (!res) {

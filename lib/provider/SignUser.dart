@@ -7,7 +7,7 @@ import 'package:http/http.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:shore_app/models.dart';
 
-class User with ChangeNotifier {
+class SignUser with ChangeNotifier {
   UserModel _user = UserModel(
       id: "1",
       name: "",
@@ -204,6 +204,7 @@ class User with ChangeNotifier {
     final prefs = await SharedPreferences.getInstance();
     String domainUri = prefs.get("shore_backend_uri") as String;
     String authType = "";
+    String deviceToken = prefs.getString("shore_app_token") as String;
 
     try {
       String emailPattern =
@@ -221,7 +222,11 @@ class User with ChangeNotifier {
       }
 
       var tokenRes = await client.post(Uri.parse("$domainUri/api/user/login"),
-          body: json.encode({authType: authDetail, "password": password}),
+          body: json.encode({
+            authType: authDetail,
+            "password": password,
+            "deviceToken": deviceToken
+          }),
           // body: json.encode({
           //   "emailId": "harshkeshri1234567@gmail.com",
           //   "password": "Password1!"
@@ -297,6 +302,7 @@ class User with ChangeNotifier {
     var client = Client();
     final prefs = await SharedPreferences.getInstance();
     String domainUri = prefs.get("shore_backend_uri") as String;
+    String deviceToken = prefs.get("shore_app_token") as String;
 
     if (password != confirmPasssword) {
       return "Password are Different";
@@ -309,7 +315,8 @@ class User with ChangeNotifier {
             "phoneNumber": phoneNumber,
             "userName": userName,
             "emailId": emailId,
-            "password": password
+            "password": password,
+            "deviceToken": deviceToken
           }),
           headers: {"Content-Type": "application/json"});
 

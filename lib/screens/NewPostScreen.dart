@@ -7,7 +7,7 @@ import 'package:flutter_native_image/flutter_native_image.dart';
 import 'package:provider/provider.dart';
 import 'package:shore_app/Utils/snackBar.dart';
 import 'package:shore_app/provider/AppSetting.dart';
-import 'package:shore_app/provider/User.dart';
+import 'package:shore_app/provider/SignUser.dart';
 import 'package:video_player/video_player.dart';
 
 class NewPostScreen extends StatefulWidget {
@@ -271,7 +271,7 @@ class _NewPostScreenState extends State<NewPostScreen> {
                                     setState(() {
                                       _isLoading = true;
                                     });
-                                    final user = Provider.of<User>(context,
+                                    final user = Provider.of<SignUser>(context,
                                             listen: false)
                                         .getUserDetails;
                                     final random1 =
@@ -283,7 +283,7 @@ class _NewPostScreenState extends State<NewPostScreen> {
                                     final destination =
                                         "files/${user.id}/$fileName";
 
-                                    bool res = await Provider.of<User>(context,
+                                    bool res = await Provider.of<SignUser>(context,
                                             listen: false)
                                         .postUpload(
                                             _isFile,

@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shore_app/Components/HomeScreen/PostItem.dart';
 import 'package:shore_app/models.dart';
-import 'package:shore_app/provider/User.dart';
+import 'package:shore_app/provider/SignUser.dart';
 
 class PostList extends StatefulWidget {
   List<PostModel> postList = [];
@@ -38,7 +38,7 @@ class _PostListState extends State<PostList> {
   @override
   Widget build(BuildContext context) {
     UserModel userDetails =
-        Provider.of<User>(context, listen: false).getUserDetails;
+        Provider.of<SignUser>(context, listen: false).getUserDetails;
 
     return Expanded(
         child: ListView.separated(

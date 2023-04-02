@@ -7,7 +7,7 @@ import 'package:provider/provider.dart';
 import 'package:shore_app/Utils/snackBar.dart';
 import 'package:shore_app/models.dart';
 import 'package:shore_app/provider/AppSetting.dart';
-import 'package:shore_app/provider/User.dart';
+import 'package:shore_app/provider/SignUser.dart';
 
 class EditProfileScreen extends StatefulWidget {
   static String routeName = "/edit-profile";
@@ -43,7 +43,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
 
   @override
   Widget build(BuildContext context) {
-    UserModel user = Provider.of<User>(context).getUserDetails;
+    UserModel user = Provider.of<SignUser>(context).getUserDetails;
 
     if (widget.start) {
       _nameController.text = user.name;
@@ -336,7 +336,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                               });
 
                               final user =
-                                  Provider.of<User>(context, listen: false)
+                                  Provider.of<SignUser>(context, listen: false)
                                       .getUserDetails;
                               final random1 =
                                   (Random()).nextInt(99999).toString();
@@ -348,7 +348,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                                   "profile/${user.id}/$fileName";
 
                               String res = _isFile
-                                  ? await Provider.of<User>(context,
+                                  ? await Provider.of<SignUser>(context,
                                           listen: false)
                                       .editProfileWithImg(
                                       file: _tempFile,
@@ -360,7 +360,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                                       emailId: _emailIdController.text,
                                       phoneNumber: _phoneNumberController.text,
                                     )
-                                  : await Provider.of<User>(context,
+                                  : await Provider.of<SignUser>(context,
                                           listen: false)
                                       .editProfile(
                                       name: _nameController.text,

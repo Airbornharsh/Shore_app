@@ -8,7 +8,7 @@ import 'package:provider/provider.dart';
 import 'package:shore_app/Utils/snackBar.dart';
 import 'package:shore_app/models.dart';
 import 'package:shore_app/provider/AppSetting.dart';
-import 'package:shore_app/provider/User.dart';
+import 'package:shore_app/provider/SignUser.dart';
 
 class PostEditScreen extends StatefulWidget {
   static String routeName = "/edit-post";
@@ -218,7 +218,7 @@ class _PostEditScreenState extends State<PostEditScreen> {
                               //       });
 
                               //       final user =
-                              //           Provider.of<User>(context, listen: false)
+                              //           Provider.of<SignUser>(context, listen: false)
                               //               .getUserDetails;
                               //       final random1 =
                               //           (Random()).nextInt(99999).toString();
@@ -229,7 +229,7 @@ class _PostEditScreenState extends State<PostEditScreen> {
                               //       final destination = "files/${user.id}/$fileName";
 
                               //       String res = _isFile
-                              //           ? await Provider.of<User>(
+                              //           ? await Provider.of<SignUser>(
                               //                   context,
                               //                   listen: false)
                               //               .editPostWithImg(
@@ -239,7 +239,7 @@ class _PostEditScreenState extends State<PostEditScreen> {
                               //                   description:
                               //                       _descriptionController.text,
                               //                   post: post)
-                              //           : await Provider.of<User>(context,
+                              //           : await Provider.of<SignUser>(context,
                               //                   listen: false)
                               //               .editPost(
                               //                   description:
@@ -286,7 +286,7 @@ class _PostEditScreenState extends State<PostEditScreen> {
                                       _isLoading = true;
                                     });
 
-                                    String res = await Provider.of<User>(
+                                    String res = await Provider.of<SignUser>(
                                             context,
                                             listen: false)
                                         .deletePost(

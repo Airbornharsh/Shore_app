@@ -1,17 +1,19 @@
 import 'dart:async';
 
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 // import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:shore_app/Components/HomeScreen/Home.dart';
 import 'package:shore_app/Utils/firebase_options.dart';
 import 'package:shore_app/Utils/socket_client.dart';
 import 'package:shore_app/provider/AppSetting.dart';
 import 'package:shore_app/provider/Posts.dart';
 import 'package:shore_app/provider/UnsignUser.dart';
-import 'package:shore_app/provider/User.dart';
+import 'package:shore_app/provider/SignUser.dart';
 import 'package:shore_app/screens/AuthScreen.dart';
 import 'package:shore_app/screens/ChatScreen.dart';
 import 'package:shore_app/screens/EditProfileScreen.dart';
@@ -27,13 +29,18 @@ import 'package:shore_app/screens/UserPostListScreen.dart';
 import 'package:shore_app/screens/UserScreen.dart';
 
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
+late final FirebaseApp app;
+late final FirebaseAuth auth;
 late String token;
 late String accessToken;
 
 Future main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+  app = await Firebase.initializeApp(
+      options: DefaultFirebaseOptions.currentPlatform);
+
+  auth = await FirebaseAuth.instanceFor(app: app);
 
   FirebaseMessaging.instance.getToken().then((value) {
     token = value!;
@@ -41,7 +48,7 @@ Future main() async {
     void init() async {
       final prefs = await SharedPreferences.getInstance();
 
-      prefs.setString("shore_app_token", "token");
+      prefs.setString("shore_app_token", value);
       accessToken = prefs.getString("shore_accessToken") as String;
       SocketClient.instance(value, accessToken).socket!;
     }
@@ -97,7 +104,7 @@ class MyApp extends StatelessWidget {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider.value(value: AppSetting()),
-        ChangeNotifierProvider.value(value: User()),
+        ChangeNotifierProvider.value(value: SignUser()),
         ChangeNotifierProvider.value(value: UnsignUser()),
         ChangeNotifierProvider.value(value: Posts()),
       ],
@@ -110,8 +117,9 @@ class MyApp extends StatelessWidget {
         ),
         // home: const HomeScreen(),
         navigatorKey: navigatorKey,
-        home: HomeScreen(),
+        home: AuthScreen(),
         routes: {
+          HomeScreen.routeName: (ctx) => HomeScreen(),
           AuthScreen.routeName: (ctx) => const AuthScreen(),
           EditProfileScreen.routeName: (ctx) => EditProfileScreen(),
           PostEditScreen.routeName: (ctx) => PostEditScreen(),

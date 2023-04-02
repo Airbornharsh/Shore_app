@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shore_app/provider/AppSetting.dart';
-import 'package:shore_app/provider/User.dart';
+import 'package:shore_app/provider/SignUser.dart';
 import 'package:shore_app/screens/AuthScreen.dart';
 // import 'package:shore_app/screens/ChatsScreen.dart';
 import 'package:shore_app/screens/NewPostScreen.dart';
@@ -32,7 +32,7 @@ AppBar CustomAppBar(BuildContext context) {
         ? const Color.fromARGB(255, 0, 99, 95)
         : const Color.fromARGB(255, 0, 190, 184),
     actions: [
-      if (!Provider.of<User>(context, listen: false).getIsAuth)
+      if (!Provider.of<SignUser>(context, listen: false).getIsAuth)
         IconButton(
             onPressed: () {
               Navigator.of(context).popAndPushNamed(AuthScreen.routeName);
@@ -40,7 +40,7 @@ AppBar CustomAppBar(BuildContext context) {
             icon: const Icon(Icons.login)),
       IconButton(
           onPressed: () {
-            if (Provider.of<User>(context, listen: false).getIsAuth) {
+            if (Provider.of<SignUser>(context, listen: false).getIsAuth) {
               Navigator.of(context).push(_createRoute());
             } else {
               Navigator.of(context).popAndPushNamed(AuthScreen.routeName);

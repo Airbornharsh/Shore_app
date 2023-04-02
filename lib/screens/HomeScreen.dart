@@ -11,12 +11,13 @@ import 'package:shore_app/Components/Requests/Requests.dart';
 import 'package:shore_app/models.dart';
 import 'package:shore_app/provider/AppSetting.dart';
 import 'package:shore_app/provider/Posts.dart';
-import 'package:shore_app/provider/User.dart';
+import 'package:shore_app/provider/SignUser.dart';
 import 'package:shore_app/screens/AuthScreen.dart';
 
 class HomeScreen extends StatefulWidget {
+  // static String routeName = "home";
   HomeScreen({super.key});
-  // static const routeName = "/";
+  static const routeName = "";
   bool start = true;
 
   @override
@@ -83,7 +84,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   void _onItemTapped(int index) {
     if ((index == 2 || index == 1) &&
-        !Provider.of<User>(context, listen: false).getIsAuth) {
+        !Provider.of<SignUser>(context, listen: false).getIsAuth) {
       Navigator.of(context).popAndPushNamed(AuthScreen.routeName);
     }
     setState(() {
@@ -106,9 +107,9 @@ class _HomeScreenState extends State<HomeScreen> {
 
     setState(() {
       if (widget.start) {
-        Provider.of<User>(context, listen: false).onLoad().then((el) {
+        Provider.of<SignUser>(context, listen: false).onLoad().then((el) {
           if (el) {
-            Provider.of<User>(context, listen: false)
+            Provider.of<SignUser>(context, listen: false)
                 .loadUserPosts()
                 .then((el) {
               setState(() {
@@ -141,8 +142,8 @@ class _HomeScreenState extends State<HomeScreen> {
     }
 
     void reloadUserPosts() {
-      if (Provider.of<User>(context, listen: false).getIsAuth) {
-        Provider.of<User>(context, listen: false).loadUserPosts().then((el) {
+      if (Provider.of<SignUser>(context, listen: false).getIsAuth) {
+        Provider.of<SignUser>(context, listen: false).loadUserPosts().then((el) {
           setState(() {
             userPostList = el;
           });
@@ -208,7 +209,7 @@ class _HomeScreenState extends State<HomeScreen> {
               ],
               // onTap: (value) {
               //   if (value == 2 &&
-              //       !Provider.of<User>(context, listen: false).getIsAuth) {
+              //       !Provider.of<SignUser>(context, listen: false).getIsAuth) {
               //     Navigator.of(context).popAndPushNamed(AuthScreen.routeName);
               //   } else {
               //     setState(() {

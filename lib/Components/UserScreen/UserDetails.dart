@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shore_app/models.dart';
 import 'package:shore_app/provider/AppSetting.dart';
-import 'package:shore_app/provider/User.dart';
+import 'package:shore_app/provider/SignUser.dart';
 import 'package:shore_app/screens/AuthScreen.dart';
 import 'package:shore_app/screens/FollowersScreen.dart';
 import 'package:shore_app/screens/FollowingsScreen.dart';
@@ -22,7 +22,7 @@ class _UserDetailsState extends State<UserDetails> {
   @override
   Widget build(BuildContext context) {
     if (widget.start) {
-      final res = Provider.of<User>(context).isFollowing(widget.user.id);
+      final res = Provider.of<SignUser>(context).isFollowing(widget.user.id);
       setState(() {
         if (res.isEmpty) {
           isFollowing = "";
@@ -102,14 +102,14 @@ class _UserDetailsState extends State<UserDetails> {
                   if (isFollowing == "Follow")
                     TextButton(
                         onPressed: () async {
-                          if (Provider.of<User>(context, listen: false)
+                          if (Provider.of<SignUser>(context, listen: false)
                               .getIsAuth) {
                             try {
-                              final res = await Provider.of<User>(context,
+                              final res = await Provider.of<SignUser>(context,
                                       listen: false)
                                   .follow(widget.user.id);
                               widget.user.followers.add(
-                                  Provider.of<User>(context, listen: false)
+                                  Provider.of<SignUser>(context, listen: false)
                                       .getUserDetails
                                       .id);
                               setState(() {
@@ -136,13 +136,13 @@ class _UserDetailsState extends State<UserDetails> {
                   if (isFollowing == "Requested")
                     TextButton(
                         onPressed: () async {
-                          if (Provider.of<User>(context, listen: false)
+                          if (Provider.of<SignUser>(context, listen: false)
                               .getIsAuth) {
                             try {
-                              await Provider.of<User>(context, listen: false)
+                              await Provider.of<SignUser>(context, listen: false)
                                   .unfollow(widget.user.id);
                               widget.user.followers.remove(
-                                  Provider.of<User>(context, listen: false)
+                                  Provider.of<SignUser>(context, listen: false)
                                       .getUserDetails
                                       .id);
                               setState(() {
@@ -167,13 +167,13 @@ class _UserDetailsState extends State<UserDetails> {
                   if (isFollowing == "Following")
                     TextButton(
                         onPressed: () async {
-                          if (Provider.of<User>(context, listen: false)
+                          if (Provider.of<SignUser>(context, listen: false)
                               .getIsAuth) {
                             try {
-                              await Provider.of<User>(context, listen: false)
+                              await Provider.of<SignUser>(context, listen: false)
                                   .unfollow(widget.user.id);
                               widget.user.followers.remove(
-                                  Provider.of<User>(context, listen: false)
+                                  Provider.of<SignUser>(context, listen: false)
                                       .getUserDetails
                                       .id);
                               setState(() {

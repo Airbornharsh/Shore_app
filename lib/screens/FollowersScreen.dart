@@ -3,7 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:shore_app/Components/UserListBuilder.dart';
 import 'package:shore_app/models.dart';
 import 'package:shore_app/provider/AppSetting.dart';
-import 'package:shore_app/provider/User.dart';
+import 'package:shore_app/provider/SignUser.dart';
 
 class FollowersScreen extends StatefulWidget {
   static String routeName = "followers";
@@ -29,7 +29,7 @@ class _FollowersScreenState extends State<FollowersScreen> {
       setState(() {
         _isLoading = true;
       });
-      Provider.of<User>(context, listen: false)
+      Provider.of<SignUser>(context, listen: false)
           .loadFollowersUsers(userId: userId)
           .then((el) {
         setState(() {

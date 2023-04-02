@@ -4,7 +4,7 @@ import 'package:shore_app/Components/Profile/ProfileDetails.dart';
 import 'package:shore_app/Components/Profile/UserPostList.dart';
 import 'package:shore_app/models.dart';
 import 'package:shore_app/provider/AppSetting.dart';
-import 'package:shore_app/provider/User.dart';
+import 'package:shore_app/provider/SignUser.dart';
 
 class Profile extends StatefulWidget {
   final List<UserPostModel> userPostList;
@@ -24,14 +24,14 @@ class _ProfileState extends State<Profile> {
   @override
   Widget build(BuildContext context) {
     setState(() {
-      user = Provider.of<User>(context).getUserDetails;
+      user = Provider.of<SignUser>(context).getUserDetails;
     });
 
     if (widget.start) {}
 
     return RefreshIndicator(
       onRefresh: () async {
-        Provider.of<User>(context, listen: false).reloadUser().then((el) {
+        Provider.of<SignUser>(context, listen: false).reloadUser().then((el) {
           setState(() {
             user = el;
           });

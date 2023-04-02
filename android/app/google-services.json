@@ -14,6 +14,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "587468145711-980rv1uo00eshijks1rjtrnumvbnnh6n.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.airbornharsh.shore_app",
+            "certificate_hash": "aaa0962ab9a8793e9b1b9953b4e985643194f371"
+          }
+        },
+        {
           "client_id": "587468145711-kn76i4c85lrdn8tng8m18nrh62sc336t.apps.googleusercontent.com",
           "client_type": 3
         }
@@ -29,6 +37,13 @@
             {
               "client_id": "587468145711-kn76i4c85lrdn8tng8m18nrh62sc336t.apps.googleusercontent.com",
               "client_type": 3
+            },
+            {
+              "client_id": "587468145711-1561rq1vd38oidommtr3e075cj26g9he.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.airbornharsh.shoreApp"
+              }
             }
           ]
         }

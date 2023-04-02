@@ -4,7 +4,7 @@ import 'package:shore_app/Components/Requests/RequestModalList.dart';
 import 'package:shore_app/Components/Requests/RequestedModalList.dart';
 import 'package:shore_app/models.dart';
 import 'package:shore_app/provider/AppSetting.dart';
-import 'package:shore_app/provider/User.dart';
+import 'package:shore_app/provider/SignUser.dart';
 
 class Requests extends StatefulWidget {
   bool isLoading;
@@ -23,7 +23,7 @@ class _RequestsState extends State<Requests> {
   @override
   Widget build(BuildContext context) {
     if (widget.start) {
-      // Provider.of<User>(context, listen: false)
+      // Provider.of<SignUser>(context, listen: false)
       //     .loadRequestingFollowers()
       //     .then((el) {
       //   setState(() {
@@ -31,7 +31,7 @@ class _RequestsState extends State<Requests> {
       //     widget.start = false;
       //   });
       // });
-      // Provider.of<User>(context, listen: false)
+      // Provider.of<SignUser>(context, listen: false)
       //     .loadRequestingFollowing()
       //     .then((el) {
       //   setState(() {
@@ -44,7 +44,7 @@ class _RequestsState extends State<Requests> {
     return RefreshIndicator(
       onRefresh: () async {
         setState(() {
-          Provider.of<User>(context, listen: false)
+          Provider.of<SignUser>(context, listen: false)
               .loadRequestingFollowers()
               .then((el) {
             unsignuserRequestingList = el;

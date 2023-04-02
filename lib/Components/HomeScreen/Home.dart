@@ -29,7 +29,7 @@ class _HomeState extends State<Home> {
         },
         child: Column(
           children: [
-            // if (Provider.of<User>(context).getIsAuth) const Upload(),
+            // if (Provider.of<SignUser>(context).getIsAuth) const Upload(),
             // const Upload(),
             // const SizedBox(
             //   height: 8,

@@ -1,7 +1,9 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:shore_app/Utils/snackBar.dart';
 import 'package:shore_app/provider/AppSetting.dart';
-import 'package:shore_app/provider/User.dart';
+import 'package:shore_app/provider/SignUser.dart';
 import 'package:shore_app/screens/HomeScreen.dart';
 
 class AuthScreen extends StatefulWidget {
@@ -14,7 +16,7 @@ class AuthScreen extends StatefulWidget {
 
 class _AuthScreenState extends State<AuthScreen> {
   var isLogin = true;
-  // var isConfirmCode = false;
+  var isConfirmCode = false;
   var isLoading = false;
   final _nameController = TextEditingController();
   final _userNameController = TextEditingController();
@@ -23,7 +25,10 @@ class _AuthScreenState extends State<AuthScreen> {
   final _passwordController = TextEditingController();
   final _confirmPasswordController = TextEditingController();
   final _authController = TextEditingController();
-  // final _confirmCodeController = TextEditingController();
+  final _confirmCodeController = TextEditingController();
+
+  FirebaseAuth auth = FirebaseAuth.instance;
+  late String verificationId;
 
   @override
   void dispose() {
@@ -33,6 +38,7 @@ class _AuthScreenState extends State<AuthScreen> {
     _emailIdController.dispose();
     _passwordController.dispose();
     _confirmPasswordController.dispose();
+    _confirmCodeController.dispose();
     super.dispose();
   }
 
@@ -46,6 +52,76 @@ class _AuthScreenState extends State<AuthScreen> {
     Navigator.of(context).pushReplacementNamed(routeName);
   }
 
+  bool get isCodeValidation {
+    if (_confirmCodeController.text.isEmpty) {
+      snackBar(context, "Please Enter Code");
+      return false;
+    } else if (_confirmCodeController.text.length > 6) {
+      snackBar(context, "Please Enter Valid Code");
+      return false;
+    } else {
+      return true;
+    }
+  }
+
+  bool get isLoginValidation {
+    if (_authController.text.isEmpty) {
+      snackBar(context, "Please Enter Email / Number / UserName");
+      return false;
+    } else if (_passwordController.text.isEmpty) {
+      snackBar(context, "Please Enter Password");
+      return false;
+    } else {
+      return true;
+    }
+  }
+
+  bool get isRegisterValidation {
+    if (_nameController.text.isEmpty) {
+      snackBar(context, "Please Enter Name");
+      return false;
+    } else if (_userNameController.text.isEmpty) {
+      snackBar(context, "Please Enter UserName");
+      return false;
+    } else if (_phoneNumberController.text.isEmpty) {
+      snackBar(context, "Please Enter Phone Number");
+      return false;
+    } else if (_emailIdController.text.isEmpty) {
+      snackBar(context, "Please Enter Email Id");
+      return false;
+    } else if (_passwordController.text.isEmpty) {
+      snackBar(context, "Please Enter Password");
+      return false;
+    } else if (_confirmPasswordController.text.isEmpty) {
+      snackBar(context, "Please Enter Confirm Password");
+      return false;
+    } else if (_passwordController.text.trim() !=
+        _confirmPasswordController.text.trim()) {
+      snackBar(context, "Password and Confirm Password Not Match");
+      return false;
+    } else {
+      return true;
+    }
+  }
+
+  void changeLogin(bool data) {
+    setState(() {
+      isLogin = data;
+    });
+  }
+
+  void changeLoading(bool data) {
+    setState(() {
+      isLoading = data;
+    });
+  }
+
+  void changeConfirmCode(bool data) {
+    setState(() {
+      isConfirmCode = data;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     var login = Column(
@@ -54,58 +130,42 @@ class _AuthScreenState extends State<AuthScreen> {
           margin: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
           padding: const EdgeInsets.only(top: 4),
           decoration: BoxDecoration(
-              border: Border.all(
-                  color: Provider.of<AppSetting>(context).getdarkMode
-                      ? const Color.fromARGB(255, 0, 99, 95)
-                      : const Color.fromARGB(255, 0, 190, 184))),
+              border:
+                  Border.all(color: const Color.fromARGB(255, 0, 190, 184))),
           child: TextField(
-            style: TextStyle(
-                color: Provider.of<AppSetting>(context).getdarkMode
-                    ? Colors.grey.shade400
-                    : Colors.black),
+            style: TextStyle(color: Colors.black),
             decoration: InputDecoration(
               border: InputBorder.none,
               hintText: "Email / Number / UserName",
               hintStyle: TextStyle(
-                color: Provider.of<AppSetting>(context).getdarkMode
-                    ? Colors.grey.shade400
-                    : Colors.black,
+                color: Colors.black,
               ),
-              fillColor: Provider.of<AppSetting>(context).getdarkMode
-                  ? Colors.grey.shade900
-                  : Colors.white,
+              fillColor: Colors.white,
               filled: true,
             ),
             controller: _authController,
+            keyboardType: TextInputType.text,
           ),
         ),
         Container(
           margin: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
           padding: const EdgeInsets.only(top: 4),
           decoration: BoxDecoration(
-              border: Border.all(
-                  color: Provider.of<AppSetting>(context).getdarkMode
-                      ? const Color.fromARGB(255, 0, 99, 95)
-                      : const Color.fromARGB(255, 0, 190, 184))),
+              border:
+                  Border.all(color: const Color.fromARGB(255, 0, 190, 184))),
           child: TextField(
-            style: TextStyle(
-                color: Provider.of<AppSetting>(context).getdarkMode
-                    ? Colors.grey.shade400
-                    : Colors.black),
+            style: TextStyle(color: Colors.black),
             decoration: InputDecoration(
               border: InputBorder.none,
               hintText: "Password",
               hintStyle: TextStyle(
-                color: Provider.of<AppSetting>(context).getdarkMode
-                    ? Colors.grey.shade400
-                    : Colors.black,
+                color: Colors.black,
               ),
-              fillColor: Provider.of<AppSetting>(context).getdarkMode
-                  ? Colors.grey.shade900
-                  : Colors.white,
+              fillColor: Colors.white,
               filled: true,
             ),
             controller: _passwordController,
+            keyboardType: TextInputType.visiblePassword,
           ),
         ),
         const SizedBox(
@@ -113,46 +173,39 @@ class _AuthScreenState extends State<AuthScreen> {
         ),
         TextButton(
             onPressed: () async {
-              setState(() {
-                isLoading = true;
-              });
-              String loginRes = await Provider.of<User>(context, listen: false)
-                  .signIn(_authController.text, _passwordController.text);
+              changeLoading(true);
+
+              if (!isLoginValidation) {
+                changeLoading(false);
+                return;
+              }
+
+              String loginRes =
+                  await Provider.of<SignUser>(context, listen: false)
+                      .signIn(_authController.text, _passwordController.text);
 
               if (loginRes == "Done") {
                 var snackBar = SnackBar(
                   content: const Text('Logged In'),
                   action: SnackBarAction(
                     label: 'Undo',
-                    onPressed: () {
-                      // Some code to undo the change.
-                    },
+                    onPressed: () {},
                   ),
                 );
-                Navigator.of(context).popAndPushNamed("/");
+                Navigator.of(context).popAndPushNamed(HomeScreen.routeName);
               } else {
                 var snackBar = SnackBar(
                   content: Text(loginRes),
-                  // action: SnackBarAction(
-                  //   label: 'Undo',
-                  //   onPressed: () {
-                  //     // Some code to undo the change.
-                  //   },
-                  // ),
                 );
                 ScaffoldMessenger.of(context).showSnackBar(snackBar);
                 // _authController.clear();
                 // _passwordController.clear();
               }
-              setState(() {
-                isLoading = false;
-              });
+              changeLoading(false);
             },
             style: ButtonStyle(
                 backgroundColor: MaterialStateProperty.all<Color>(
-                    Provider.of<AppSetting>(context).getdarkMode
-                        ? const Color.fromARGB(255, 0, 99, 95)
-                        : const Color.fromARGB(255, 0, 190, 184))),
+                    const Color.fromARGB(255, 0, 190, 184))),
             child: const Text(
               "Login",
               style: TextStyle(color: Colors.white),
@@ -162,17 +215,12 @@ class _AuthScreenState extends State<AuthScreen> {
         ),
         GestureDetector(
           onTap: () {
-            setState(() {
-              isLogin = false;
-            });
+            changeLogin(false);
           },
           child: Text(
             "Create an New Account",
             style: TextStyle(
-                fontSize: 14,
-                color: Provider.of<AppSetting>(context).getdarkMode
-                    ? const Color.fromARGB(255, 0, 150, 145)
-                    : const Color.fromARGB(255, 0, 190, 184)),
+                fontSize: 14, color: const Color.fromARGB(255, 0, 190, 184)),
           ),
         ),
       ],
@@ -184,26 +232,17 @@ class _AuthScreenState extends State<AuthScreen> {
           margin: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
           padding: const EdgeInsets.only(top: 4),
           decoration: BoxDecoration(
-              border: Border.all(
-                  color: Provider.of<AppSetting>(context).getdarkMode
-                      ? const Color.fromARGB(255, 0, 99, 95)
-                      : const Color.fromARGB(255, 0, 190, 184))),
+              border:
+                  Border.all(color: const Color.fromARGB(255, 0, 190, 184))),
           child: TextField(
-            style: TextStyle(
-                color: Provider.of<AppSetting>(context).getdarkMode
-                    ? Colors.grey.shade400
-                    : Colors.black),
+            style: TextStyle(color: Colors.black),
             decoration: InputDecoration(
               border: InputBorder.none,
               hintText: "Name",
               hintStyle: TextStyle(
-                color: Provider.of<AppSetting>(context).getdarkMode
-                    ? Colors.grey.shade400
-                    : Colors.black,
+                color: Colors.black,
               ),
-              fillColor: Provider.of<AppSetting>(context).getdarkMode
-                  ? Colors.grey.shade900
-                  : Colors.white,
+              fillColor: Colors.white,
               filled: true,
             ),
             controller: _nameController,
@@ -213,26 +252,17 @@ class _AuthScreenState extends State<AuthScreen> {
           margin: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
           padding: const EdgeInsets.only(top: 4),
           decoration: BoxDecoration(
-              border: Border.all(
-                  color: Provider.of<AppSetting>(context).getdarkMode
-                      ? const Color.fromARGB(255, 0, 99, 95)
-                      : const Color.fromARGB(255, 0, 190, 184))),
+              border:
+                  Border.all(color: const Color.fromARGB(255, 0, 190, 184))),
           child: TextField(
-            style: TextStyle(
-                color: Provider.of<AppSetting>(context).getdarkMode
-                    ? Colors.grey.shade400
-                    : Colors.black),
+            style: TextStyle(color: Colors.black),
             decoration: InputDecoration(
               border: InputBorder.none,
               hintText: "User Name",
               hintStyle: TextStyle(
-                color: Provider.of<AppSetting>(context).getdarkMode
-                    ? Colors.grey.shade400
-                    : Colors.black,
+                color: Colors.black,
               ),
-              fillColor: Provider.of<AppSetting>(context).getdarkMode
-                  ? Colors.grey.shade900
-                  : Colors.white,
+              fillColor: Colors.white,
               filled: true,
             ),
             controller: _userNameController,
@@ -242,58 +272,41 @@ class _AuthScreenState extends State<AuthScreen> {
           margin: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
           padding: const EdgeInsets.only(top: 4),
           decoration: BoxDecoration(
-              border: Border.all(
-                  color: Provider.of<AppSetting>(context).getdarkMode
-                      ? const Color.fromARGB(255, 0, 99, 95)
-                      : const Color.fromARGB(255, 0, 190, 184))),
+              border:
+                  Border.all(color: const Color.fromARGB(255, 0, 190, 184))),
           child: TextField(
-            style: TextStyle(
-                color: Provider.of<AppSetting>(context).getdarkMode
-                    ? Colors.grey.shade400
-                    : Colors.black),
+            style: TextStyle(color: Colors.black),
             decoration: InputDecoration(
               border: InputBorder.none,
               hintText: "Phone Number",
               hintStyle: TextStyle(
-                color: Provider.of<AppSetting>(context).getdarkMode
-                    ? Colors.grey.shade400
-                    : Colors.black,
+                color: Colors.black,
               ),
-              fillColor: Provider.of<AppSetting>(context).getdarkMode
-                  ? Colors.grey.shade900
-                  : Colors.white,
+              fillColor: Colors.white,
               filled: true,
             ),
             controller: _phoneNumberController,
-            keyboardType: TextInputType.number,
+            keyboardType: TextInputType.phone,
           ),
         ),
         Container(
           margin: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
           padding: const EdgeInsets.only(top: 4),
           decoration: BoxDecoration(
-              border: Border.all(
-                  color: Provider.of<AppSetting>(context).getdarkMode
-                      ? const Color.fromARGB(255, 0, 99, 95)
-                      : const Color.fromARGB(255, 0, 190, 184))),
+              border:
+                  Border.all(color: const Color.fromARGB(255, 0, 190, 184))),
           child: TextField(
-            style: TextStyle(
-                color: Provider.of<AppSetting>(context).getdarkMode
-                    ? Colors.grey.shade400
-                    : Colors.black),
+            style: TextStyle(color: Colors.black),
             decoration: InputDecoration(
               border: InputBorder.none,
               hintText: "Email Id",
               hintStyle: TextStyle(
-                color: Provider.of<AppSetting>(context).getdarkMode
-                    ? Colors.grey.shade400
-                    : Colors.black,
+                color: Colors.black,
               ),
-              fillColor: Provider.of<AppSetting>(context).getdarkMode
-                  ? Colors.grey.shade900
-                  : Colors.white,
+              fillColor: Colors.white,
               filled: true,
             ),
+            keyboardType: TextInputType.emailAddress,
             controller: _emailIdController,
           ),
         ),
@@ -301,58 +314,42 @@ class _AuthScreenState extends State<AuthScreen> {
           margin: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
           padding: const EdgeInsets.only(top: 4),
           decoration: BoxDecoration(
-              border: Border.all(
-                  color: Provider.of<AppSetting>(context).getdarkMode
-                      ? const Color.fromARGB(255, 0, 99, 95)
-                      : const Color.fromARGB(255, 0, 190, 184))),
+              border:
+                  Border.all(color: const Color.fromARGB(255, 0, 190, 184))),
           child: TextField(
-            style: TextStyle(
-                color: Provider.of<AppSetting>(context).getdarkMode
-                    ? Colors.grey.shade400
-                    : Colors.black),
+            style: TextStyle(color: Colors.black),
             decoration: InputDecoration(
               border: InputBorder.none,
               hintText: "Password",
               hintStyle: TextStyle(
-                color: Provider.of<AppSetting>(context).getdarkMode
-                    ? Colors.grey.shade400
-                    : Colors.black,
+                color: Colors.black,
               ),
-              fillColor: Provider.of<AppSetting>(context).getdarkMode
-                  ? Colors.grey.shade900
-                  : Colors.white,
+              fillColor: Colors.white,
               filled: true,
             ),
-            controller: _confirmPasswordController,
+            controller: _passwordController,
+            keyboardType: TextInputType.visiblePassword,
           ),
         ),
         Container(
           margin: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
           padding: const EdgeInsets.only(top: 4),
           decoration: BoxDecoration(
-              border: Border.all(
-                  color: Provider.of<AppSetting>(context).getdarkMode
-                      ? const Color.fromARGB(255, 0, 99, 95)
-                      : const Color.fromARGB(255, 0, 190, 184))),
+              border:
+                  Border.all(color: const Color.fromARGB(255, 0, 190, 184))),
           child: TextField(
-            style: TextStyle(
-                color: Provider.of<AppSetting>(context).getdarkMode
-                    ? Colors.grey.shade400
-                    : Colors.black),
+            style: TextStyle(color: Colors.black),
             decoration: InputDecoration(
               border: InputBorder.none,
               hintText: "Confirm Password",
               hintStyle: TextStyle(
-                color: Provider.of<AppSetting>(context).getdarkMode
-                    ? Colors.grey.shade400
-                    : Colors.black,
+                color: Colors.black,
               ),
-              fillColor: Provider.of<AppSetting>(context).getdarkMode
-                  ? Colors.grey.shade900
-                  : Colors.white,
+              fillColor: Colors.white,
               filled: true,
             ),
-            controller: _passwordController,
+            controller: _confirmPasswordController,
+            keyboardType: TextInputType.visiblePassword,
           ),
         ),
         const SizedBox(
@@ -360,54 +357,44 @@ class _AuthScreenState extends State<AuthScreen> {
         ),
         TextButton(
             onPressed: () async {
-              setState(() {
-                isLoading = true;
-              });
-              try {
-                String Res = await Provider.of<User>(context, listen: false)
-                    .signUp(
-                        _nameController.text,
-                        _userNameController.text,
-                        int.parse(_phoneNumberController.text),
-                        _emailIdController.text,
-                        _passwordController.text,
-                        _confirmPasswordController.text);
+              changeLoading(true);
 
-                if (Res == "Done") {
-                  setState(() {
-                    isLogin = true;
-                  });
-                } else {
-                  var snackBar = SnackBar(content: Text(Res));
-                  ScaffoldMessenger.of(context).showSnackBar(snackBar);
-                  setState(() {
-                    isLoading = false;
-                  });
-                  // _nameController.clear();
-                  // _userNameController.clear();
-                  // _phoneNumberController.clear();
-                  // _emailIdController.clear();
-                  // _passwordController.clear();
-                  // _confirmPasswordController.clear();
-                }
-                // setState(() {
-                //   isConfirmCode = true;
-                // });
+              if (!isRegisterValidation) {
+                changeLoading(false);
+                return;
+              }
+              try {
+                auth.verifyPhoneNumber(
+                    phoneNumber: "+91${_phoneNumberController.text}",
+                    verificationCompleted:
+                        (PhoneAuthCredential credential) async {
+                      print("Completed: ${credential}}");
+                      changeLoading(false);
+                    },
+                    verificationFailed: (FirebaseAuthException e) {
+                      print("Failed: $e");
+                      changeLoading(false);
+                    },
+                    codeSent: (String verificationId, int? resendToken) {
+                      setState(() {
+                        this.verificationId = verificationId;
+                      });
+                      changeConfirmCode(true);
+                      changeLoading(false);
+                      print("Code Sent: $verificationId and $resendToken");
+                    },
+                    codeAutoRetrievalTimeout: (String verificationId) {
+                      print("Timeout: $verificationId");
+                      changeLoading(false);
+                    });
               } catch (e) {
                 print(e);
-                setState(() {
-                  isLoading = false;
-                });
+                changeLoading(false);
               }
-              setState(() {
-                isLoading = false;
-              });
             },
             style: ButtonStyle(
                 backgroundColor: MaterialStateProperty.all<Color>(
-                    Provider.of<AppSetting>(context).getdarkMode
-                        ? const Color.fromARGB(255, 0, 99, 95)
-                        : const Color.fromARGB(255, 0, 190, 184))),
+                    const Color.fromARGB(255, 0, 190, 184))),
             child: const Text(
               "Sign Up",
               style: TextStyle(color: Colors.white),
@@ -417,103 +404,137 @@ class _AuthScreenState extends State<AuthScreen> {
         ),
         GestureDetector(
           onTap: () {
-            setState(() {
-              isLogin = true;
-            });
+            changeLogin(true);
           },
           child: Text(
             "Login Instead",
             style: TextStyle(
-                fontSize: 14,
-                color: Provider.of<AppSetting>(context).getdarkMode
-                    ? const Color.fromARGB(255, 0, 150, 145)
-                    : const Color.fromARGB(255, 0, 190, 184)),
+                fontSize: 14, color: const Color.fromARGB(255, 0, 190, 184)),
           ),
         )
       ],
     );
 
-    // var verify = Column(
-    //   children: [
-    //     Container(
-    //       margin: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
-    //       padding: const EdgeInsets.only(top: 4),
-    //       decoration: BoxDecoration(border: Border.all(color: Provider.of<AppSetting>(context).getdarkMode
-    // ? const Color.fromARGB(255, 0, 99, 95)
-    // : const Color.fromARGB(255, 0, 190, 184))),
-    //       child: TextField(
-    //         decoration: const InputDecoration(
-    //           border: InputBorder.none,
-    //           hintText: "Code",
-    //           fillColor: Colors.white,
-    //           filled: true,
-    //         ),
-    //         controller: _confirmCodeController,
-    //       ),
-    //     ),
-    //     const SizedBox(
-    //       height: 4,
-    //     ),
-    //     TextButton(
-    //         onPressed: () async {
-    //           setState(() {
-    //             isLoading = true;
-    //           });
-    //           var res = await Provider.of<User>(context, listen: false)
-    //               .CodeHandler(_confirmCodeController.text);
+    var verify = Column(
+      children: [
+        Container(
+          margin: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
+          padding: const EdgeInsets.only(top: 4),
+          decoration: BoxDecoration(
+              border:
+                  Border.all(color: const Color.fromARGB(255, 0, 190, 184))),
+          child: TextField(
+            keyboardType: TextInputType.number,
+            decoration: const InputDecoration(
+              border: InputBorder.none,
+              hintText: "Code",
+              fillColor: Colors.white,
+              filled: true,
+            ),
+            controller: _confirmCodeController,
+          ),
+        ),
+        const SizedBox(
+          height: 4,
+        ),
+        TextButton(
+            onPressed: () async {
+              changeLoading(true);
 
-    //           if (res) {
-    //             setState(() {
-    //               isLogin = true;
-    //             });
-    //           } else {
-    //             var snackBar =
-    //                 const SnackBar(content: Text("Enter the Otp Correctly"));
-    //             ScaffoldMessenger.of(context).showSnackBar(snackBar);
-    //             _confirmCodeController.clear();
-    //           }
-    //           setState(() {
-    //             isLoading = false;
-    //           });
-    //         },
-    //         style: ButtonStyle(
-    //             backgroundColor:
-    //                 MaterialStateProperty.all<Color>(Provider.of<AppSetting>(context).getdarkMode
-    // ? const Color.fromARGB(255, 0, 99, 95)
-    // : const Color.fromARGB(255, 0, 190, 184))),
-    //         child: const Text(
-    //           "Confirm Code",
-    //           style: TextStyle(color: Colors.white),
-    //         )),
-    //     const SizedBox(
-    //       height: 7,
-    //     ),
-    //     GestureDetector(
-    //       onTap: () {
-    //         setState(() {
-    //           isConfirmCode = false;
-    //         });
-    //       },
-    //       child: const Text("Re-Enter the Details"),
-    //     ),
-    //     const SizedBox(
-    //       height: 7,
-    //     ),
-    //     GestureDetector(
-    //       onTap: () {
-    //         setState(() {
-    //           isLogin = true;
-    //         });
-    //       },
-    //       child: const Text(
-    //         "Login Instead",
-    //         style: TextStyle(fontSize: 14, color: Provider.of<AppSetting>(context).getdarkMode
-    // ? const Color.fromARGB(255, 0, 99, 95)
-    // : const Color.fromARGB(255, 0, 190, 184)),
-    //       ),
-    //     )
-    //   ],
-    // );
+              if (!isCodeValidation) {
+                return;
+              }
+
+              try {
+                PhoneAuthCredential credential = PhoneAuthProvider.credential(
+                    verificationId: this.verificationId,
+                    smsCode: _confirmCodeController.text.trim());
+
+                // if (credential.accessToken == null) {
+                //   snackBar(context, "Invalid Code");
+                //   setState(() {
+                //     isLoading = false;
+                //   });
+                //   return;
+                // }
+
+                print("step 1");
+
+                // Sign the user in (or link) with the credential
+                final authCredential =
+                    await auth.signInWithCredential(credential);
+
+                print("step 2");
+
+                if (authCredential.user == null) {
+                  snackBar(context, "Invalid Code");
+                  changeLoading(false);
+
+                  return;
+                }
+
+                String Res = await Provider.of<SignUser>(context, listen: false)
+                    .signUp(
+                        _nameController.text,
+                        _userNameController.text,
+                        int.parse(_phoneNumberController.text),
+                        _emailIdController.text,
+                        _passwordController.text,
+                        _confirmPasswordController.text);
+
+                if (Res == "Done") {
+                  changeLogin(true);
+                  changeConfirmCode(false);
+                } else {
+                  var snackBar = SnackBar(content: Text(Res));
+                  ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                  changeLoading(false);
+
+                  _nameController.clear();
+                  _userNameController.clear();
+                  _phoneNumberController.clear();
+                  _emailIdController.clear();
+                  _passwordController.clear();
+                  _confirmPasswordController.clear();
+                }
+              } catch (e) {
+                print(e);
+                snackBar(context, "Invalid Code");
+              } finally {
+                changeLoading(false);
+              }
+            },
+            style: ButtonStyle(
+                backgroundColor: MaterialStateProperty.all<Color>(
+                    const Color.fromARGB(255, 0, 190, 184))),
+            child: const Text(
+              "Confirm Code",
+              style: TextStyle(color: Colors.white),
+            )),
+        const SizedBox(
+          height: 7,
+        ),
+        GestureDetector(
+          onTap: () {
+            changeConfirmCode(false);
+          },
+          child: const Text("Re-Enter the Details"),
+        ),
+        const SizedBox(
+          height: 7,
+        ),
+        GestureDetector(
+          onTap: () {
+            changeLogin(true);
+          },
+          child: Text(
+            "Login Instead",
+            style: TextStyle(
+                fontSize: 14, color: const Color.fromARGB(255, 0, 190, 184)),
+          ),
+        )
+      ],
+    );
 
     return Scaffold(
       body: SingleChildScrollView(
@@ -522,21 +543,21 @@ class _AuthScreenState extends State<AuthScreen> {
             Container(
               height: MediaQuery.of(context).size.height,
               width: MediaQuery.of(context).size.width,
-              decoration: BoxDecoration(
-                  color: Provider.of<AppSetting>(context).getdarkMode
-                      ? Colors.grey.shade900
-                      : Colors.white),
+              decoration: BoxDecoration(color: Colors.white),
               child: Center(
                 child: Container(
                   padding: const EdgeInsets.only(
                       top: 20, left: 10, right: 10, bottom: 20),
                   width: (MediaQuery.of(context).size.width - 70),
                   // height: 500,
-                  constraints: BoxConstraints(maxHeight: (isLogin ? 270 : 570)),
+                  constraints: BoxConstraints(
+                      maxHeight: (isConfirmCode
+                          ? 220
+                          : isLogin
+                              ? 270
+                              : 570)),
                   decoration: BoxDecoration(
-                      color: Provider.of<AppSetting>(context).getdarkMode
-                          ? Colors.grey.shade800
-                          : Colors.white,
+                      color: Colors.white,
                       borderRadius: BorderRadius.circular(15),
                       boxShadow: const [
                         BoxShadow(
@@ -547,7 +568,11 @@ class _AuthScreenState extends State<AuthScreen> {
                             blurStyle: BlurStyle.outer)
                       ]),
                   child: Container(
-                    child: isLogin ? login : register,
+                    child: isConfirmCode
+                        ? verify
+                        : isLogin
+                            ? login
+                            : register,
                   ),
                 ),
               ),

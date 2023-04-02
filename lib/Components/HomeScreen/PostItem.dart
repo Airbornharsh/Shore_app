@@ -3,7 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:shore_app/models.dart';
 import 'package:shore_app/provider/AppSetting.dart';
 import 'package:shore_app/provider/Posts.dart';
-import 'package:shore_app/provider/User.dart';
+import 'package:shore_app/provider/SignUser.dart';
 import 'package:shore_app/screens/AuthScreen.dart';
 
 class PostItem extends StatefulWidget {
@@ -24,7 +24,7 @@ class _PostItemState extends State<PostItem> {
   @override
   Widget build(BuildContext context) {
     UserModel userDetails =
-        Provider.of<User>(context, listen: false).getUserDetails;
+        Provider.of<SignUser>(context, listen: false).getUserDetails;
 
     if (widget.start) {
       setState(() {
@@ -128,14 +128,14 @@ class _PostItemState extends State<PostItem> {
                 ),
               GestureDetector(
                 onDoubleTap: () async {
-                  if (Provider.of<User>(context, listen: false).getIsAuth) {
+                  if (Provider.of<SignUser>(context, listen: false).getIsAuth) {
                     try {
                       if (!isLiked) {
                         setState(() {
                           isLiked = true;
                           _likes += 1;
                         });
-                        await Provider.of<User>(context, listen: false)
+                        await Provider.of<SignUser>(context, listen: false)
                             .postLike(widget.post.id);
                       }
                     } catch (e) {
@@ -179,21 +179,21 @@ class _PostItemState extends State<PostItem> {
               Row(mainAxisAlignment: MainAxisAlignment.spaceAround, children: [
                 GestureDetector(
                   onTap: () async {
-                    if (Provider.of<User>(context, listen: false).getIsAuth) {
+                    if (Provider.of<SignUser>(context, listen: false).getIsAuth) {
                       try {
                         if (isLiked) {
                           setState(() {
                             isLiked = false;
                             _likes -= 1;
                           });
-                          await Provider.of<User>(context, listen: false)
+                          await Provider.of<SignUser>(context, listen: false)
                               .postUnlike(widget.post.id);
                         } else {
                           setState(() {
                             isLiked = true;
                             _likes += 1;
                           });
-                          await Provider.of<User>(context, listen: false)
+                          await Provider.of<SignUser>(context, listen: false)
                               .postLike(widget.post.id);
                         }
                       } catch (e) {
@@ -259,19 +259,19 @@ class _PostItemState extends State<PostItem> {
                 ),
                 GestureDetector(
                   onTap: () async {
-                    if (Provider.of<User>(context, listen: false).getIsAuth) {
+                    if (Provider.of<SignUser>(context, listen: false).getIsAuth) {
                       try {
                         if (isFav) {
                           setState(() {
                             isFav = false;
                           });
-                          await Provider.of<User>(context, listen: false)
+                          await Provider.of<SignUser>(context, listen: false)
                               .postRemoveFav(widget.post.id);
                         } else {
                           setState(() {
                             isFav = true;
                           });
-                          await Provider.of<User>(context, listen: false)
+                          await Provider.of<SignUser>(context, listen: false)
                               .postAddFav(widget.post.id);
                         }
                       } catch (e) {

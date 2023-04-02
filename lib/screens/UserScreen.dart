@@ -6,7 +6,7 @@ import 'package:shore_app/Components/UserScreen/UserDetails.dart';
 import 'package:shore_app/models.dart';
 import 'package:shore_app/provider/AppSetting.dart';
 import 'package:shore_app/provider/UnsignUser.dart';
-import 'package:shore_app/provider/User.dart';
+import 'package:shore_app/provider/SignUser.dart';
 
 class UserScreen extends StatefulWidget {
   static String routeName = "unsign-user";
@@ -25,7 +25,7 @@ class _UserScreenState extends State<UserScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final UserModel profileDetails = Provider.of<User>(context).getUserDetails;
+    final UserModel profileDetails = Provider.of<SignUser>(context).getUserDetails;
 
     if (widget.start) {
       setState(() {
@@ -41,7 +41,7 @@ class _UserScreenState extends State<UserScreen> {
           });
         });
 
-        isPrivate = !Provider.of<User>(context)
+        isPrivate = !Provider.of<SignUser>(context)
             .getUserDetails
             .followings
             .contains(user.id);

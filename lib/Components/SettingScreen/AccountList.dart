@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shore_app/provider/AppSetting.dart';
-import 'package:shore_app/provider/User.dart';
+import 'package:shore_app/provider/SignUser.dart';
 
 class AccountList extends StatefulWidget {
   const AccountList({super.key});
@@ -33,7 +33,7 @@ class _AccountListState extends State<AccountList> {
       children: [
         ListTile(
           onTap: () {
-            Provider.of<User>(context, listen: false).logout();
+            Provider.of<SignUser>(context, listen: false).logout();
             Navigator.of(context).pop();
           },
           title: Text("Log Out",
