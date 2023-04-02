@@ -51,6 +51,7 @@ dependencies:
   admob_flutter: ^3.0.0
   socket_io_client: ^2.0.1
   firebase_messaging: ^14.4.0
+  pinput: ^2.2.31
   # socket_io_client: ^2.0.1
 
 dev_dependencies:
@@ -92,6 +93,8 @@ flutter:
   # To add assets to your application, add an assets section, like this:
   assets:
     - lib/assets/images/error.png
+    - lib/assets/images/login/profile_login.png
+    - lib/assets/images/login/otp.png
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware

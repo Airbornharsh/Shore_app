@@ -7,7 +7,6 @@ import 'package:flutter/material.dart';
 // import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:shore_app/Components/HomeScreen/Home.dart';
 import 'package:shore_app/Utils/firebase_options.dart';
 import 'package:shore_app/Utils/socket_client.dart';
 import 'package:shore_app/provider/AppSetting.dart';
@@ -120,7 +119,7 @@ class MyApp extends StatelessWidget {
         home: AuthScreen(),
         routes: {
           HomeScreen.routeName: (ctx) => HomeScreen(),
-          AuthScreen.routeName: (ctx) => const AuthScreen(),
+          AuthScreen.routeName: (ctx) =>  AuthScreen(),
           EditProfileScreen.routeName: (ctx) => EditProfileScreen(),
           PostEditScreen.routeName: (ctx) => PostEditScreen(),
           NewPostScreen.routeName: (ctx) => const NewPostScreen(),

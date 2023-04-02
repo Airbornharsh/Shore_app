@@ -291,6 +291,40 @@ class SignUser with ChangeNotifier {
     }
   }
 
+  Future<bool> isValidAccessToken() async {
+    var client = Client();
+    final prefs = await SharedPreferences.getInstance();
+    String domainUri = prefs.get("shore_backend_uri") as String;
+    String accessToken = prefs.getString("shore_accessToken") as String;
+
+    try {
+      var tokenRes = await client.post(
+          Uri.parse("$domainUri/api/user/is-valid-user"),
+          body: json.encode({}),
+          headers: {
+            "Content-Type": "application/json",
+            "authorization": "Bearer $accessToken"
+          });
+
+      var parsedBody = json.decode(tokenRes.body);
+
+      print(parsedBody);
+
+      if (tokenRes.statusCode != 200) {
+        return false;
+        throw tokenRes.body;
+      }
+
+      return true;
+    } catch (e) {
+      print(e);
+      return false;
+    } finally {
+      client.close();
+      notifyListeners();
+    }
+  }
+
   Future<String> signUp(
     String name,
     String userName,
