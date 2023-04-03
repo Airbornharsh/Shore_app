@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shore_app/provider/AppSetting.dart';
 import 'package:shore_app/provider/SignUser.dart';
+import 'package:shore_app/screens/AuthScreen.dart';
 
 class AccountList extends StatefulWidget {
   const AccountList({super.key});
@@ -35,6 +36,7 @@ class _AccountListState extends State<AccountList> {
           onTap: () {
             Provider.of<SignUser>(context, listen: false).logout();
             Navigator.of(context).pop();
+            Navigator.of(context).pushReplacementNamed(AuthScreen.routeName);
           },
           title: Text("Log Out",
               style: TextStyle(
