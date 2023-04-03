@@ -283,7 +283,8 @@ class _NewPostScreenState extends State<NewPostScreen> {
                                     final destination =
                                         "files/${user.id}/$fileName";
 
-                                    bool res = await Provider.of<SignUser>(context,
+                                    bool res = await Provider.of<SignUser>(
+                                            context,
                                             listen: false)
                                         .postUpload(
                                             _isFile,
@@ -338,6 +339,7 @@ class _NewPostScreenState extends State<NewPostScreen> {
                                 try {
                                   setState(() {
                                     _isCroppped = false;
+                                    _isLoading = true;
                                   });
                                   FilePickerResult? result =
                                       await FilePicker.platform.pickFiles(
@@ -378,10 +380,14 @@ class _NewPostScreenState extends State<NewPostScreen> {
                                   setState(() {
                                     _tempFile = compressedFile;
                                     _originalFile = compressedFile;
+                                    _isLoading = false;
                                   });
                                 } catch (e) {
                                   print(e);
                                   _isFile = "";
+                                  setState(() {
+                                    _isLoading = false;
+                                  });
                                 }
                               },
                               child: Row(children: [

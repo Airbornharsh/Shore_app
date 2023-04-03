@@ -32,26 +32,12 @@ AppBar CustomAppBar(BuildContext context) {
         ? const Color.fromARGB(255, 0, 99, 95)
         : const Color.fromARGB(255, 0, 190, 184),
     actions: [
-      if (!Provider.of<SignUser>(context, listen: false).getIsAuth)
+      if (Provider.of<SignUser>(context).getIsAuth)
         IconButton(
             onPressed: () {
-              Navigator.of(context).popAndPushNamed(AuthScreen.routeName);
-            },
-            icon: const Icon(Icons.login)),
-      IconButton(
-          onPressed: () {
-            if (Provider.of<SignUser>(context, listen: false).getIsAuth) {
               Navigator.of(context).push(_createRoute());
-            } else {
-              Navigator.of(context).popAndPushNamed(AuthScreen.routeName);
-            }
-          },
-          icon: const Icon(Icons.post_add)),
-      // IconButton(
-      //     onPressed: () {
-      //       Navigator.of(context).pushNamed(ChatScreen.routeName);
-      //     },
-      //     icon: const Icon(Icons.chat))
+            },
+            icon: const Icon(Icons.post_add)),
     ],
     toolbarHeight: 130,
     title: Center(

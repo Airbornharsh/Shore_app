@@ -11,7 +11,14 @@ import 'package:shore_app/provider/SignUser.dart';
 class PostList extends StatefulWidget {
   List<PostModel> postList = [];
   Function addLoad;
-  PostList({required this.postList, required this.addLoad, super.key});
+  Function setIsLoading;
+  bool isLoading;
+  PostList(
+      {required this.postList,
+      required this.addLoad,
+      required this.isLoading,
+      required this.setIsLoading,
+      super.key});
 
   @override
   State<PostList> createState() => _PostListState();
@@ -52,7 +59,11 @@ class _PostListState extends State<PostList> {
         String newDate =
             "${date.hour}:${date.minute} ${date.day}/${date.month}/${date.year}";
 
-        return PostItem(newDate: newDate, post: widget.postList[i]);
+        return PostItem(
+            newDate: newDate,
+            post: widget.postList[i],
+            isLoading: widget.isLoading,
+            setIsLoading: widget.setIsLoading);
       }),
       separatorBuilder: (BuildContext context, int index) {
         // if (index % 2 == 0 && Platform.isAndroid) {

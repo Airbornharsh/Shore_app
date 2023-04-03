@@ -298,7 +298,7 @@ class SignUser with ChangeNotifier {
     String accessToken = prefs.getString("shore_accessToken") as String;
 
     try {
-      var tokenRes = await client.post(
+      var res = await client.post(
           Uri.parse("$domainUri/api/user/is-valid-user"),
           body: json.encode({}),
           headers: {
@@ -306,14 +306,46 @@ class SignUser with ChangeNotifier {
             "authorization": "Bearer $accessToken"
           });
 
-      var parsedBody = json.decode(tokenRes.body);
+      var parsedBody = json.decode(res.body);
 
-      print(parsedBody);
+      var parsedUserBody = parsedBody["user"];
 
-      if (tokenRes.statusCode != 200) {
+      if (res.statusCode != 200) {
         return false;
-        throw tokenRes.body;
       }
+
+      _user = UserModel(
+          id: parsedUserBody["_id"].toString(),
+          name: parsedUserBody["name"].toString(),
+          emailId: parsedUserBody["emailId"].toString(),
+          gender: parsedUserBody["gender"].toString(),
+          userName: parsedUserBody["userName"].toString(),
+          imgUrl: parsedUserBody["imgUrl"].toString(),
+          joinedDate: parsedUserBody["joinedDate"].toString(),
+          phoneNumber: parsedUserBody["phoneNumber"].toString(),
+          isPrivate: parsedUserBody["isPrivate"],
+          posts: List<String>.from(parsedUserBody["posts"]),
+          followers: List<String>.from(parsedUserBody["followers"]),
+          followings: List<String>.from(parsedUserBody["followings"]),
+          closeFriends: List<String>.from(parsedUserBody["closeFriends"]),
+          acceptedFollowerRequests:
+              List<String>.from(parsedUserBody["acceptedFollowerRequests"]),
+          declinedFollowerRequests:
+              List<String>.from(parsedUserBody["declinedFollowerRequests"]),
+          requestingFollowers:
+              List<String>.from(parsedUserBody["requestingFollowers"]),
+          acceptedFollowingRequests:
+              List<String>.from(parsedUserBody["acceptedFollowingRequests"]),
+          declinedFollowingRequests:
+              List<String>.from(parsedUserBody["declinedFollowingRequests"]),
+          requestingFollowing:
+              List<String>.from(parsedUserBody["requestingFollowing"]),
+          postLiked: List<String>.from(parsedUserBody["postLiked"]),
+          commentLiked: List<String>.from(parsedUserBody["commentLiked"]),
+          commented: List<String>.from(parsedUserBody["commented"]),
+          fav: List<String>.from(parsedUserBody["fav"]));
+
+      _isAuth = true;
 
       return true;
     } catch (e) {

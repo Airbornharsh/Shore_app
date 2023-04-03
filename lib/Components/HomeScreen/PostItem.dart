@@ -4,12 +4,21 @@ import 'package:shore_app/models.dart';
 import 'package:shore_app/provider/AppSetting.dart';
 import 'package:shore_app/provider/Posts.dart';
 import 'package:shore_app/provider/SignUser.dart';
+import 'package:shore_app/provider/UnsignUser.dart';
 import 'package:shore_app/screens/AuthScreen.dart';
+import 'package:shore_app/screens/UserScreen.dart';
 
 class PostItem extends StatefulWidget {
   String newDate;
   PostModel post;
-  PostItem({required this.newDate, required this.post, super.key});
+  Function setIsLoading;
+  bool isLoading;
+  PostItem(
+      {required this.newDate,
+      required this.post,
+      required this.isLoading,
+      required this.setIsLoading,
+      super.key});
   bool start = true;
 
   @override
@@ -52,60 +61,84 @@ class _PostItemState extends State<PostItem> {
                     ? Colors.grey.shade800
                     : Colors.grey.shade300,
               ),
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: 10),
-                height: 70,
-                child: Row(
-                  children: [
-                    ClipRRect(
-                        borderRadius: BorderRadius.circular(10),
-                        child: Image.network(
-                            widget.post.profileUrl.isNotEmpty
-                                ? widget.post.profileUrl
-                                : "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png",
-                            height: 50,
-                            width: 50,
-                            fit: BoxFit.cover,
-                            filterQuality: FilterQuality.low, errorBuilder:
-                                (BuildContext context, Object exception,
-                                    StackTrace? stackTrace) {
-                          return const SizedBox(
+              GestureDetector(
+                onTap: () async {
+                  try {
+                    setState(() {
+                      widget.isLoading = true;
+                    });
+
+                    final user =
+                        await Provider.of<UnsignUser>(context, listen: false)
+                            .reloadUser(widget.post.userId);
+
+                    Navigator.of(context)
+                        .pushNamed(UserScreen.routeName, arguments: user);
+                    setState(() {
+                      widget.isLoading = false;
+                    });
+                  } catch (e) {
+                    setState(() {
+                      widget.isLoading = false;
+                    });
+                    print(e);
+                  }
+                },
+                child: Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 10),
+                  height: 70,
+                  child: Row(
+                    children: [
+                      ClipRRect(
+                          borderRadius: BorderRadius.circular(10),
+                          child: Image.network(
+                              widget.post.profileUrl.isNotEmpty
+                                  ? widget.post.profileUrl
+                                  : "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png",
                               height: 50,
                               width: 50,
-                              child: Center(child: Text('😊')));
-                        })),
-                    const SizedBox(
-                      width: 7,
-                    ),
-                    Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          widget.post.profileName,
-                          style: TextStyle(
-                              fontWeight: FontWeight.w600,
-                              fontSize: 15,
-                              color:
-                                  Provider.of<AppSetting>(context).getdarkMode
-                                      ? Colors.grey.shade300
-                                      : Colors.grey.shade800),
-                        ),
-                        const SizedBox(
-                          height: 3,
-                        ),
-                        Text(
-                          widget.newDate,
-                          style: TextStyle(
-                              fontSize: 12,
-                              color:
-                                  Provider.of<AppSetting>(context).getdarkMode
-                                      ? Colors.grey.shade300
-                                      : Colors.grey.shade800),
-                        )
-                      ],
-                    )
-                  ],
+                              fit: BoxFit.cover,
+                              filterQuality: FilterQuality.low, errorBuilder:
+                                  (BuildContext context, Object exception,
+                                      StackTrace? stackTrace) {
+                            return const SizedBox(
+                                height: 50,
+                                width: 50,
+                                child: Center(child: Text('😊')));
+                          })),
+                      const SizedBox(
+                        width: 7,
+                      ),
+                      Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            widget.post.profileName,
+                            style: TextStyle(
+                                fontWeight: FontWeight.w600,
+                                fontSize: 15,
+                                color:
+                                    Provider.of<AppSetting>(context).getdarkMode
+                                        ? Colors.grey.shade300
+                                        : Colors.grey.shade800),
+                          ),
+                          const SizedBox(
+                            height: 3,
+                          ),
+                          Text(
+                            widget.newDate,
+                            style: TextStyle(
+                                fontSize: 12,
+                                color:
+                                    Provider.of<AppSetting>(context).getdarkMode
+                                        ? Colors.grey.shade300
+                                        : Colors.grey.shade800),
+                          )
+                        ],
+                      )
+                    ],
+                  ),
                 ),
               ),
               if (widget.post.description.isNotEmpty)
@@ -179,7 +212,8 @@ class _PostItemState extends State<PostItem> {
               Row(mainAxisAlignment: MainAxisAlignment.spaceAround, children: [
                 GestureDetector(
                   onTap: () async {
-                    if (Provider.of<SignUser>(context, listen: false).getIsAuth) {
+                    if (Provider.of<SignUser>(context, listen: false)
+                        .getIsAuth) {
                       try {
                         if (isLiked) {
                           setState(() {
@@ -259,7 +293,8 @@ class _PostItemState extends State<PostItem> {
                 ),
                 GestureDetector(
                   onTap: () async {
-                    if (Provider.of<SignUser>(context, listen: false).getIsAuth) {
+                    if (Provider.of<SignUser>(context, listen: false)
+                        .getIsAuth) {
                       try {
                         if (isFav) {
                           setState(() {

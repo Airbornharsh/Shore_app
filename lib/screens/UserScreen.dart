@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shore_app/Components/Profile/ProfileDetails.dart';
+import 'package:shore_app/Components/Profile/UnsignUserPostList.dart';
 import 'package:shore_app/Components/Profile/UserPostList.dart';
 import 'package:shore_app/Components/UserScreen/UserDetails.dart';
 import 'package:shore_app/models.dart';
@@ -25,7 +26,8 @@ class _UserScreenState extends State<UserScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final UserModel profileDetails = Provider.of<SignUser>(context).getUserDetails;
+    final UserModel profileDetails =
+        Provider.of<SignUser>(context).getUserDetails;
 
     if (widget.start) {
       setState(() {
@@ -72,21 +74,27 @@ class _UserScreenState extends State<UserScreen> {
             },
             child: Container(
               width: MediaQuery.of(context).size.width,
-              decoration:
-                   BoxDecoration(color: Provider.of<AppSetting>(context)
-                                              .getdarkMode
-                                          ? Colors.grey.shade700
-                                          : Colors.white),
+              decoration: BoxDecoration(
+                  color: Provider.of<AppSetting>(context).getdarkMode
+                      ? Colors.grey.shade700
+                      : Colors.white),
               // height: MediaQuery.of(context).size.height - 220,
               child: Column(
                 children: [
                   if (user.id != profileDetails.id) UserDetails(user: user),
                   if (user.id == profileDetails.id)
                     ProfileDetails(user: profileDetails),
-                  if (!isPrivate)
-                    UserPostList(
+                  // if (!isPrivate)
+                  if (user.id != profileDetails.id)
+                    UnsignUserPostList(
                         userPostList: unsignUserPostList,
-                        reloadUserPosts: reloadUserPosts),
+                        reloadUserPosts: reloadUserPosts,
+                        user: user),
+                  if (user.id == profileDetails.id)
+                    UserPostList(
+                      userPostList: unsignUserPostList,
+                      reloadUserPosts: reloadUserPosts,
+                    )
                 ],
               ),
             ),

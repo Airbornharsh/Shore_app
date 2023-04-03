@@ -3,9 +3,13 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
+import 'package:shore_app/Components/Profile/ProfilePostList/UnsignUserPostListItem.dart';
 import 'package:shore_app/Components/Profile/ProfilePostList/UserPostListItem.dart';
 import 'package:shore_app/Utils/UserPostListScreenArgs.dart';
 import 'package:shore_app/provider/AppSetting.dart';
+import 'package:shore_app/provider/SignUser.dart';
+
+import '../models.dart';
 
 class UserPostListScreen extends StatefulWidget {
   static String routeName = "user-post-list";
@@ -31,6 +35,8 @@ class UserPostListScreenState extends State<UserPostListScreen> {
   Widget build(BuildContext context) {
     UserPostListScreenArgs args =
         ModalRoute.of(context)?.settings.arguments as UserPostListScreenArgs;
+
+    UserModel user = Provider.of<SignUser>(context).getUserDetails;
 
     Timer(Duration(seconds: 0), () {
       itemScrollController.scrollTo(
@@ -69,8 +75,15 @@ class UserPostListScreenState extends State<UserPostListScreen> {
                             String newDate =
                                 "${date.hour}:${date.minute} ${date.day}/${date.month}/${date.year}";
 
-                            return UserPostListItem(
-                                newDate: newDate, post: args.userPostList[i]);
+                            if (user.id == args.userPostList[i].userId) {
+                              return UserPostListItem(
+                                  newDate: newDate, post: args.userPostList[i]);
+                            } else {
+                              return UserPostListItem(
+                                newDate: newDate,
+                                post: args.userPostList[i],
+                              );
+                            }
                           }))),
                 ],
               ),

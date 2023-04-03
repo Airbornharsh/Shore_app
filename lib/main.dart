@@ -24,6 +24,7 @@ import 'package:shore_app/screens/NewPostScreen.dart';
 import 'package:shore_app/screens/PostEditScreen.dart';
 import 'package:shore_app/screens/SearchScreen.dart';
 import 'package:shore_app/screens/SettingScreen.dart';
+import 'package:shore_app/screens/UnsignUserPostListScreen.dart';
 import 'package:shore_app/screens/UserPostListScreen.dart';
 import 'package:shore_app/screens/UserScreen.dart';
 
@@ -119,11 +120,13 @@ class MyApp extends StatelessWidget {
         home: AuthScreen(),
         routes: {
           HomeScreen.routeName: (ctx) => HomeScreen(),
-          AuthScreen.routeName: (ctx) =>  AuthScreen(),
+          AuthScreen.routeName: (ctx) => AuthScreen(),
           EditProfileScreen.routeName: (ctx) => EditProfileScreen(),
           PostEditScreen.routeName: (ctx) => PostEditScreen(),
           NewPostScreen.routeName: (ctx) => const NewPostScreen(),
           UserPostListScreen.routeName: (ctx) => UserPostListScreen(),
+          UnsignUserPostListScreen.routeName: (ctx) =>
+              UnsignUserPostListScreen(),
           SearchScreen.routeName: (ctx) => const SearchScreen(),
           UserScreen.routeName: (ctx) => UserScreen(),
           FollowersScreen.routeName: (ctx) => FollowersScreen(),

@@ -193,24 +193,37 @@ class _AuthScreenState extends State<AuthScreen> {
 
   @override
   Widget build(BuildContext context) {
-    if (widget.start) {
-      void onLoad() async {
-        final prefs = await SharedPreferences.getInstance();
+    setState(() {
+      if (widget.start) {
+        isLoading = true;
+        // changeLoading(true);
+        void onLoad() async {
+          final prefs = await SharedPreferences.getInstance();
 
-        if (prefs.containsKey("shore_accessToken")) {
-          bool isValid = await Provider.of<SignUser>(context, listen: false)
-              .isValidAccessToken();
-          if (isValid) {
-            changeRoute(HomeScreen.routeName, context);
+          try {
+            if (prefs.containsKey("shore_accessToken")) {
+              bool isValid = await Provider.of<SignUser>(context, listen: false)
+                  .isValidAccessToken();
+              print(isValid);
+              // changeLoading(false);
+              if (isValid) {
+                changeRoute(HomeScreen.routeName, context);
+              }
+            }
+            setState(() {
+              isLoading = false;
+              widget.start = false;
+            });
+          } catch (e) {
+            print(e);
+            isLoading = false;
+            widget.start = false;
           }
         }
-        setState(() {
-          widget.start = false;
-        });
-      }
 
-      onLoad();
-    }
+        onLoad();
+      }
+    });
 
     var login = Column(
       mainAxisAlignment: MainAxisAlignment.center,

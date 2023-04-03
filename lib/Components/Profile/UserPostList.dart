@@ -6,6 +6,7 @@ import 'package:shore_app/Utils/UserPostListScreenArgs.dart';
 import 'package:shore_app/models.dart';
 import 'package:shore_app/provider/SignUser.dart';
 import 'package:shore_app/screens/PostEditScreen.dart';
+import 'package:shore_app/screens/UnsignUserPostListScreen.dart';
 import 'package:shore_app/screens/UserPostListScreen.dart';
 
 class UserPostList extends StatefulWidget {

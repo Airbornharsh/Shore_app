@@ -32,23 +32,23 @@ class _GeneralListState extends State<GeneralList> {
                 : Colors.black,
           )),
       children: [
-        ListTile(
-          title: Text("Dark Mode",
-              style: TextStyle(
-                  color: Provider.of<AppSetting>(context).getdarkMode
-                      ? Colors.grey.shade300
-                      : Colors.black)),
-          trailing: Switch(
-            onChanged: (value) {
-              setState(() {
-                isDarkMode = value;
-              });
-              Provider.of<AppSetting>(context, listen: false)
-                  .setDarkMode(value);
-            },
-            value: Provider.of<AppSetting>(context).getdarkMode,
-          ),
-        )
+        // ListTile(
+        //   title: Text("Dark Mode",
+        //       style: TextStyle(
+        //           color: Provider.of<AppSetting>(context).getdarkMode
+        //               ? Colors.grey.shade300
+        //               : Colors.black)),
+        //   trailing: Switch(
+        //     onChanged: (value) {
+        //       setState(() {
+        //         isDarkMode = value;
+        //       });
+        //       Provider.of<AppSetting>(context, listen: false)
+        //           .setDarkMode(value);
+        //     },
+        //     value: Provider.of<AppSetting>(context).getdarkMode,
+        //   ),
+        // )
       ],
     );
   }

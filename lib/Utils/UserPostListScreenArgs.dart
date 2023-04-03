@@ -10,3 +10,16 @@ class UserPostListScreenArgs {
       required this.reloadUserPosts,
       required this.index});
 }
+
+class UnsignUserPostListScreenArgs {
+  final List<UserPostModel> userPostList;
+  final Function reloadUserPosts;
+  final int index;
+  final UnsignUserModel user;
+
+  UnsignUserPostListScreenArgs(
+      {required this.userPostList,
+      required this.reloadUserPosts,
+      required this.user,
+      required this.index});
+}

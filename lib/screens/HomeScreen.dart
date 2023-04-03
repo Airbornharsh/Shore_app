@@ -1,4 +1,3 @@
-import 'package:firebase_auth/firebase_auth.dart' as fAuth;
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -12,7 +11,7 @@ import 'package:shore_app/models.dart';
 import 'package:shore_app/provider/AppSetting.dart';
 import 'package:shore_app/provider/Posts.dart';
 import 'package:shore_app/provider/SignUser.dart';
-import 'package:shore_app/screens/AuthScreen.dart';
+import 'package:shore_app/Components/NewPostContainer.dart';
 
 class HomeScreen extends StatefulWidget {
   // static String routeName = "home";
@@ -29,7 +28,7 @@ class _HomeScreenState extends State<HomeScreen> {
   int _postPage = 1;
   List<PostModel> postList = [];
   List<UserPostModel> userPostList = [];
-  PageController _pageController = PageController();
+  late final PageController _pageController;
   bool _isLoading = false;
   bool _isPostLoadingMore = false;
 
@@ -62,14 +61,15 @@ class _HomeScreenState extends State<HomeScreen> {
 
     notificationSetting();
 
-    _pageController = PageController();
+    _pageController = PageController(initialPage: 1);
 
     void onLoad() async {
       final prefs = await SharedPreferences.getInstance();
       // prefs.setString("hopl_backend_uri", "http://localhost:3000");
       // prefs.setString("shore_backend_uri", "http://10.0.2.2:3000");
       prefs.setString("shore_backend_uri", "https://shore.vercel.app");
-      prefs.setString("shore_backend_socket_uri", "http://192.168.118.224:4000");
+      prefs.setString(
+          "shore_backend_socket_uri", "http://192.168.118.224:4000");
     }
 
     onLoad();
@@ -83,13 +83,13 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   void _onItemTapped(int index) {
-    if ((index == 2 || index == 1) &&
-        !Provider.of<SignUser>(context, listen: false).getIsAuth) {
-      Navigator.of(context).popAndPushNamed(AuthScreen.routeName);
-    }
+    // if ((index == 2 || index == 1) &&
+    //     !Provider.of<SignUser>(context, listen: false).getIsAuth) {
+    //   Navigator.of(context).popAndPushNamed(AuthScreen.routeName);
+    // }
     setState(() {
       _selectedIndex = index;
-      _pageController.animateToPage(index,
+      _pageController.animateToPage(index + 1,
           duration: const Duration(milliseconds: 500),
           curve: Curves.easeInOutQuart);
     });
@@ -97,16 +97,11 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    // fAuth.FirebaseAuth.instance.authStateChanges().listen((user) {
-    //   if (user == null) {
-    //     print('User is currently signed out!');
-    //   } else {
-    //     print('User is signed in!');
-    //   }
-    // });
-
     setState(() {
       if (widget.start) {
+        // _pageController.animateToPage(1,
+        //     duration: const Duration(milliseconds: 500),
+        //     curve: Curves.easeInOutQuart);
         Provider.of<SignUser>(context, listen: false).onLoad().then((el) {
           if (el) {
             Provider.of<SignUser>(context, listen: false)
@@ -143,7 +138,9 @@ class _HomeScreenState extends State<HomeScreen> {
 
     void reloadUserPosts() {
       if (Provider.of<SignUser>(context, listen: false).getIsAuth) {
-        Provider.of<SignUser>(context, listen: false).loadUserPosts().then((el) {
+        Provider.of<SignUser>(context, listen: false)
+            .loadUserPosts()
+            .then((el) {
           setState(() {
             userPostList = el;
           });
@@ -176,15 +173,20 @@ class _HomeScreenState extends State<HomeScreen> {
     }
 
     List<Widget> selectedWidget = [
+      NewPostContainer(isLoading: _isLoading, setIsLoading: setIsLoading),
       Home(
           postList: postList,
           reloadPosts: reloadPosts,
           addLoad: addLoad,
-          isLoadingMore: _isPostLoadingMore),
+          isLoadingMore: _isPostLoadingMore,
+          isLoading: _isLoading,
+          setIsLoading: setIsLoading),
       Requests(isLoading: _isLoading, setIsLoading: setIsLoading),
       Chats(isLoading: _isLoading, setIsLoading: setIsLoading),
       Profile(userPostList: userPostList, reloadUserPosts: reloadUserPosts)
     ];
+
+    print(_selectedIndex);
 
     return Stack(
       children: [
@@ -207,16 +209,6 @@ class _HomeScreenState extends State<HomeScreen> {
                 BottomNavigationBarItem(icon: Icon(Icons.chat), label: ""),
                 BottomNavigationBarItem(icon: Icon(Icons.person), label: ""),
               ],
-              // onTap: (value) {
-              //   if (value == 2 &&
-              //       !Provider.of<SignUser>(context, listen: false).getIsAuth) {
-              //     Navigator.of(context).popAndPushNamed(AuthScreen.routeName);
-              //   } else {
-              //     setState(() {
-              //       _selectedIndex = value;
-              //     });
-              //   }
-              // },
               onTap: _onItemTapped),
           body: Container(
             color: Provider.of<AppSetting>(context).getdarkMode
@@ -225,7 +217,13 @@ class _HomeScreenState extends State<HomeScreen> {
             child: SizedBox.expand(
                 child: PageView(
               controller: _pageController,
-              onPageChanged: ((i) => setState(() => _selectedIndex = i)),
+              onPageChanged: ((i) => setState(() {
+                    if (i < 1) {
+                      _selectedIndex = 0;
+                    } else {
+                      _selectedIndex = i - 1;
+                    }
+                  })),
               children: selectedWidget,
             )),
           ),
