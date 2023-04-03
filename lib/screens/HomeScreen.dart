@@ -186,8 +186,6 @@ class _HomeScreenState extends State<HomeScreen> {
       Profile(userPostList: userPostList, reloadUserPosts: reloadUserPosts)
     ];
 
-    print(_selectedIndex);
-
     return Stack(
       children: [
         Scaffold(
@@ -197,17 +195,39 @@ class _HomeScreenState extends State<HomeScreen> {
               selectedFontSize: 0,
               iconSize: 30,
               selectedItemColor: Colors.grey.shade600,
-              backgroundColor: Provider.of<AppSetting>(context).getdarkMode
-                  ? Colors.black
-                  : Colors.white,
-              unselectedItemColor: Provider.of<AppSetting>(context).getdarkMode
-                  ? Colors.grey.shade400
-                  : Colors.grey,
-              items: const [
-                BottomNavigationBarItem(icon: Icon(Icons.home), label: ""),
-                BottomNavigationBarItem(icon: Icon(Icons.favorite), label: ""),
-                BottomNavigationBarItem(icon: Icon(Icons.chat), label: ""),
-                BottomNavigationBarItem(icon: Icon(Icons.person), label: ""),
+              backgroundColor: Colors.white,
+              unselectedItemColor: Colors.grey,
+              showSelectedLabels: true,
+              type: BottomNavigationBarType.fixed,
+              items: [
+                BottomNavigationBarItem(
+                    icon: Icon(Icons.home),
+                    label: "Home",
+                    activeIcon: Icon(
+                      Icons.home,
+                      color: const Color.fromARGB(255, 0, 190, 184),
+                    )),
+                BottomNavigationBarItem(
+                    icon: Icon(Icons.favorite),
+                    label: "Fav",
+                    activeIcon: Icon(
+                      Icons.favorite,
+                      color: const Color.fromARGB(255, 0, 190, 184),
+                    )),
+                BottomNavigationBarItem(
+                    icon: Icon(Icons.chat),
+                    label: "",
+                    activeIcon: Icon(
+                      Icons.chat,
+                      color: const Color.fromARGB(255, 0, 190, 184),
+                    )),
+                BottomNavigationBarItem(
+                    icon: Icon(Icons.person),
+                    label: "",
+                    activeIcon: Icon(
+                      Icons.person,
+                      color: const Color.fromARGB(255, 0, 190, 184),
+                    )),
               ],
               onTap: _onItemTapped),
           body: Container(
