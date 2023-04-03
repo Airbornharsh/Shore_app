@@ -29,7 +29,7 @@ class _ChatScreenState extends State<ChatScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final socketId = ModalRoute.of(context)!.settings.arguments as String;
+    final userId = ModalRoute.of(context)!.settings.arguments as String;
     if (widget.start) {
       socketClient = SocketClient.staticInstance.socket!;
 

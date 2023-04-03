@@ -121,6 +121,15 @@ class _HomeScreenState extends State<HomeScreen> {
             widget.start = false;
           });
         });
+
+        Provider.of<SignUser>(
+          context,
+          listen: false,
+        ).loadFriendsUsers().then((value) {
+          setState(() {
+            widget.start = false;
+          });
+        });
       }
 
       Provider.of<AppSetting>(context, listen: false).onLoad();

@@ -34,6 +34,7 @@ class SignUser with ChangeNotifier {
       fav: []);
 
   List<UserPostModel> _userPosts = [];
+  List<UnsignUserModel> _friends = [];
 
   late String _accessToken;
   late bool _isAuth = false;
@@ -44,6 +45,10 @@ class SignUser with ChangeNotifier {
 
   UserModel get getUserDetails {
     return _user;
+  }
+
+  List<UnsignUserModel> get getFriends {
+    return _friends;
   }
 
   void logout() async {
@@ -969,6 +974,7 @@ class SignUser with ChangeNotifier {
           joinedDate: user["joinedDate"].toString(),
           phoneNumber: user["phoneNumber"].toString(),
           isPrivate: user["isPrivate"],
+          socketIds: List<String>.from(user["socketIds"]),
           posts: List<String>.from(user["posts"]),
           followers: List<String>.from(user["followers"]),
           followings: List<String>.from(user["followings"]),
@@ -1014,6 +1020,7 @@ class SignUser with ChangeNotifier {
           joinedDate: user["joinedDate"].toString(),
           phoneNumber: user["phoneNumber"].toString(),
           isPrivate: user["isPrivate"],
+          socketIds: List<String>.from(user["socketIds"]),
           posts: List<String>.from(user["posts"]),
           followers: List<String>.from(user["followers"]),
           followings: List<String>.from(user["followings"]),
@@ -1027,6 +1034,49 @@ class SignUser with ChangeNotifier {
       notifyListeners();
     }
     return users;
+  }
+
+  Future<List<UnsignUserModel>> loadFriendsUsers() async {
+    var client = Client();
+    final prefs = await SharedPreferences.getInstance();
+    String domainUri = prefs.get("shore_backend_uri") as String;
+    try {
+      Response res = await client.post(
+          Uri.parse("$domainUri/api/user/friends/list"),
+          headers: {"authorization": "Bearer $_accessToken"});
+
+      var parsedUserBody = json.decode(res.body);
+
+      if (res.statusCode != 200) {
+        throw res.body;
+      }
+
+      _friends.clear();
+
+      await parsedUserBody.forEach((user) {
+        UnsignUserModel newUser = UnsignUserModel(
+          id: user["id"].toString(),
+          name: user["name"].toString(),
+          gender: user["gender"].toString(),
+          userName: user["userName"].toString(),
+          imgUrl: user["imgUrl"].toString(),
+          joinedDate: user["joinedDate"].toString(),
+          phoneNumber: user["phoneNumber"].toString(),
+          isPrivate: user["isPrivate"],
+          socketIds: List<String>.from(user["socketIds"]),
+          posts: List<String>.from(user["posts"]),
+          followers: List<String>.from(user["followers"]),
+          followings: List<String>.from(user["followings"]),
+        );
+
+        _friends.add(newUser);
+      });
+    } catch (e) {
+      print(e);
+    } finally {
+      notifyListeners();
+    }
+    return _friends;
   }
 
   Future<List<UnsignUserModel>> loadRequestingFollowers() async {
@@ -1050,6 +1100,7 @@ class SignUser with ChangeNotifier {
           joinedDate: user["joinedDate"].toString(),
           phoneNumber: user["phoneNumber"].toString(),
           isPrivate: user["isPrivate"],
+          socketIds: List<String>.from(user["socketIds"]),
           posts: List<String>.from(user["posts"]),
           followers: List<String>.from(user["followers"]),
           followings: List<String>.from(user["followings"]),
@@ -1148,6 +1199,7 @@ class SignUser with ChangeNotifier {
           joinedDate: user["joinedDate"].toString(),
           phoneNumber: user["phoneNumber"].toString(),
           isPrivate: user["isPrivate"],
+          socketIds: List<String>.from(user["socketIds"]),
           posts: List<String>.from(user["posts"]),
           followers: List<String>.from(user["followers"]),
           followings: List<String>.from(user["followings"]),

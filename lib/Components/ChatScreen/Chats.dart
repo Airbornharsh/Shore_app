@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shore_app/Utils/socket_client.dart';
+import 'package:shore_app/models.dart';
 import 'package:shore_app/provider/AppSetting.dart';
+import 'package:shore_app/provider/SignUser.dart';
 import 'package:shore_app/screens/ChatScreen.dart';
 import 'package:socket_io_client/socket_io_client.dart';
 
@@ -16,33 +18,32 @@ class Chats extends StatefulWidget {
 }
 
 class _ChatsState extends State<Chats> {
-  late Socket socketClient;
-  List<String> ids = [];
+  // late Socket socketClient;
+  // List<String> ids = [];
 
   @override
   void initState() {
     super.initState();
     // print("hII");
-    socketClient = SocketClient.staticInstance.socket!;
-    print("Mine Socket id is ${socketClient.id}");
+    // socketClient = SocketClient.staticInstance.socket!;
+    // print("Mine Socket id is ${socketClient.id}");
 
-    socketClient.emit("list-ids-request");
+    // socketClient.emit("list-ids-request");
 
-    socketClient.on("list-ids-response", (data) {
-      print(data["ids"]);
+    // socketClient.on("list-ids-response", (data) {
+    //   print(data["ids"]);
 
-      setState(() {
-        ids.clear();
-        data["ids"].forEach((element) {
-          ids.add(element);
-        });
-      });
-    });
+    //   setState(() {
+    //     ids.clear();
+    //     data["ids"].forEach((element) {
+    //       ids.add(element);
+    //     });
+    //   });
+    // });
   }
 
   @override
   Widget build(BuildContext context) {
-    print(socketClient.id);
     // final socketClient = SocketClient.instance.socket!;
 
     // if (socketClient.connected) {
@@ -74,9 +75,11 @@ class _ChatsState extends State<Chats> {
       // });
     }
 
+    List<UnsignUserModel> friends = Provider.of<SignUser>(context).getFriends;
+
     return RefreshIndicator(
       onRefresh: () async {
-        socketClient.emit("list-ids-request");
+        // socketClient.emit("list-ids-request");
       },
       child: Container(
         decoration: BoxDecoration(
@@ -87,14 +90,32 @@ class _ChatsState extends State<Chats> {
           children: [
             ListView.builder(
               shrinkWrap: true,
-              itemCount: ids.length,
+              itemCount: friends.length,
               itemBuilder: (context, index) {
                 return ListTile(
                   onTap: () {
-                    Navigator.of(context)
-                        .pushNamed(ChatScreen.routeName, arguments: ids[index]);
+                    Navigator.of(context).pushNamed(ChatScreen.routeName,
+                        arguments: friends[index].id);
                   },
-                  title: Text(ids[index]),
+                  leading: ClipRRect(
+                      borderRadius: BorderRadius.circular(10),
+                      child: Image.network(
+                          friends[index].imgUrl.isNotEmpty
+                              ? friends[index].imgUrl
+                              : "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png",
+                          height: 50,
+                          width: 50,
+                          fit: BoxFit.cover,
+                          filterQuality: FilterQuality.low, errorBuilder:
+                              (BuildContext context, Object exception,
+                                  StackTrace? stackTrace) {
+                        return Container(
+                            height: 50,
+                            width: 50,
+                            decoration: const BoxDecoration(),
+                            child: const Center(child: Text('😊')));
+                      })),
+                  title: Text(friends[index].name),
                   subtitle: Text("10 unread Message"),
                 );
               },
