@@ -141,3 +141,12 @@ class CommentModel {
     required this.likes,
   });
 }
+
+class Message {
+  String from;
+  String message;
+  String time;
+  
+
+  Message({required this.from, required this.message, required this.time});
+}

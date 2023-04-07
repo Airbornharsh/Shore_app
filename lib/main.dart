@@ -49,12 +49,19 @@ Future main() async {
       final prefs = await SharedPreferences.getInstance();
 
       prefs.setString("shore_app_token", value);
+      prefs.setString("shore_backend_uri", "https://shore.vercel.app");
+      prefs.setString("shore_backend_socket_uri", "http://192.168.1.37:4000");
       accessToken = prefs.getString("shore_accessToken") as String;
       SocketClient.instance(value, accessToken).socket!;
     }
 
     init();
     print("FCM Token: $value");
+  });
+
+  FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+    print('Got a message whilst in the foreground!');
+    print('Message data: ${message.data}');
   });
 
 //Application in Background

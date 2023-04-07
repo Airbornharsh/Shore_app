@@ -67,9 +67,6 @@ class _HomeScreenState extends State<HomeScreen> {
       final prefs = await SharedPreferences.getInstance();
       // prefs.setString("hopl_backend_uri", "http://localhost:3000");
       // prefs.setString("shore_backend_uri", "http://10.0.2.2:3000");
-      prefs.setString("shore_backend_uri", "https://shore.vercel.app");
-      prefs.setString(
-          "shore_backend_socket_uri", "http://192.168.118.224:4000");
     }
 
     onLoad();
