@@ -39,7 +39,7 @@ class SignUser with ChangeNotifier {
   List<UnsignUserModel> _friends = [];
   Map<String, List<Message>> _messages = {};
 
-  late String _accessToken;
+  // late String _accessToken;
   late bool _isAuth = false;
 
   bool get getIsAuth {
@@ -78,33 +78,33 @@ class SignUser with ChangeNotifier {
 
   Future logout() async {
     final prefs = await SharedPreferences.getInstance();
-    prefs.setString("shore_accessToken", "");
-    _accessToken = "";
-    _isAuth = false;
-    _user = UserModel(
-        id: "1",
-        name: "",
-        emailId: "",
-        gender: "",
-        userName: "",
-        imgUrl: "",
-        joinedDate: DateTime.now().toString(),
-        phoneNumber: "000000000",
-        isPrivate: false,
-        posts: [],
-        followers: [],
-        followings: [],
-        closeFriends: [],
-        acceptedFollowerRequests: [],
-        declinedFollowerRequests: [],
-        requestingFollowers: [],
-        acceptedFollowingRequests: [],
-        declinedFollowingRequests: [],
-        requestingFollowing: [],
-        postLiked: [],
-        commentLiked: [],
-        commented: [],
-        fav: []);
+    // prefs.setString("shore_accessToken", "");
+    // _accessToken = "";
+    // _isAuth = false;
+    // _user = UserModel(
+    //     id: "1",
+    //     name: "",
+    //     emailId: "",
+    //     gender: "",
+    //     userName: "",
+    //     imgUrl: "",
+    //     joinedDate: DateTime.now().toString(),
+    //     phoneNumber: "000000000",
+    //     isPrivate: false,
+    //     posts: [],
+    //     followers: [],
+    //     followings: [],
+    //     closeFriends: [],
+    //     acceptedFollowerRequests: [],
+    //     declinedFollowerRequests: [],
+    //     requestingFollowers: [],
+    //     acceptedFollowingRequests: [],
+    //     declinedFollowingRequests: [],
+    //     requestingFollowing: [],
+    //     postLiked: [],
+    //     commentLiked: [],
+    //     commented: [],
+    //     fav: []);
     notifyListeners();
 
     final deviceToken = await prefs.getString("shore_device_token") as String;
@@ -136,7 +136,6 @@ class SignUser with ChangeNotifier {
         return false;
       }
       String accessToken = prefs.get("shore_accessToken") as String;
-      _accessToken = accessToken;
 
       if (accessToken.isEmpty) return false;
 
@@ -196,10 +195,11 @@ class SignUser with ChangeNotifier {
     var client = Client();
     final prefs = await SharedPreferences.getInstance();
     String domainUri = prefs.get("shore_backend_uri") as String;
+    final accessToken = prefs.getString("shore_accessToken") as String;
 
     try {
       var userRes = await client.get(Uri.parse("$domainUri/api/user/get"),
-          headers: {"authorization": "Bearer $_accessToken"});
+          headers: {"authorization": "Bearer $accessToken"});
 
       if (userRes.statusCode != 200) {
         throw userRes.body;
@@ -254,6 +254,7 @@ class SignUser with ChangeNotifier {
     String domainUri = prefs.get("shore_backend_uri") as String;
     String authType = "";
     String deviceToken = prefs.getString("shore_app_token") as String;
+    final accessToken = prefs.getString("shore_accessToken") as String;
 
     try {
       String emailPattern =
@@ -288,10 +289,10 @@ class SignUser with ChangeNotifier {
 
       var parsedBody = json.decode(tokenRes.body);
       prefs.setString("shore_accessToken", parsedBody["accessToken"]);
-      _accessToken = parsedBody["accessToken"];
+      // _accessToken = parsedBody["accessToken"];
       _isAuth = true;
       var userRes = await client.get(Uri.parse("$domainUri/api/user/get"),
-          headers: {"authorization": "Bearer $_accessToken"});
+          headers: {"authorization": "Bearer $accessToken"});
 
       if (userRes.statusCode != 200) {
         return json.decode(userRes.body)["message"];
@@ -995,17 +996,19 @@ class SignUser with ChangeNotifier {
     var client = Client();
     final prefs = await SharedPreferences.getInstance();
     String domainUri = prefs.get("shore_backend_uri") as String;
+    final accessToken = prefs.getString("shore_accessToken") as String;
+
     try {
       Response res;
 
       userId.isEmpty
           ? res = await client.post(
               Uri.parse("$domainUri/api/user/followings/list"),
-              headers: {"authorization": "Bearer $_accessToken"})
+              headers: {"authorization": "Bearer $accessToken"})
           : res = await client.post(
               Uri.parse("$domainUri/api/unsignuser/followings/list"),
               body: json.encode({"userId": userId}),
-              headers: {"authorization": "Bearer $_accessToken"});
+              headers: {"authorization": "Bearer $accessToken"});
 
       var parsedUserBody = json.decode(res.body);
 
@@ -1041,17 +1044,19 @@ class SignUser with ChangeNotifier {
     var client = Client();
     final prefs = await SharedPreferences.getInstance();
     String domainUri = prefs.get("shore_backend_uri") as String;
+    final accessToken = prefs.getString("shore_accessToken") as String;
+
     try {
       Response res;
 
       userId.isEmpty
           ? res = await client.post(
               Uri.parse("$domainUri/api/user/followers/list"),
-              headers: {"authorization": "Bearer $_accessToken"})
+              headers: {"authorization": "Bearer $accessToken"})
           : res = await client.post(
               Uri.parse("$domainUri/api/unsignuser/followers/list"),
               body: json.encode({"userId": userId}),
-              headers: {"authorization": "Bearer $_accessToken"});
+              headers: {"authorization": "Bearer $accessToken"});
 
       var parsedUserBody = json.decode(res.body);
 
@@ -1086,10 +1091,12 @@ class SignUser with ChangeNotifier {
     var client = Client();
     final prefs = await SharedPreferences.getInstance();
     String domainUri = prefs.get("shore_backend_uri") as String;
+    final accessToken = prefs.getString("shore_accessToken") as String;
+
     try {
       Response res = await client.post(
           Uri.parse("$domainUri/api/user/friends/message-list"),
-          headers: {"authorization": "Bearer $_accessToken"});
+          headers: {"authorization": "Bearer $accessToken"});
 
       var parsedUserBody = json.decode(res.body);
 
@@ -1151,10 +1158,12 @@ class SignUser with ChangeNotifier {
     var client = Client();
     final prefs = await SharedPreferences.getInstance();
     String domainUri = prefs.get("shore_backend_uri") as String;
+    final accessToken = prefs.getString("shore_accessToken") as String;
+
     try {
       var res = await client.post(
           Uri.parse("$domainUri/api/user/requesting/list"),
-          headers: {"authorization": "Bearer $_accessToken"});
+          headers: {"authorization": "Bearer $accessToken"});
       var parsedUserBody = json.decode(res.body);
 
       await parsedUserBody.forEach((user) {
@@ -1250,10 +1259,12 @@ class SignUser with ChangeNotifier {
     var client = Client();
     final prefs = await SharedPreferences.getInstance();
     String domainUri = prefs.get("shore_backend_uri") as String;
+    final accessToken = prefs.getString("shore_accessToken") as String;
+
     try {
       var res = await client.post(
           Uri.parse("$domainUri/api/user/requested/list"),
-          headers: {"authorization": "Bearer $_accessToken"});
+          headers: {"authorization": "Bearer $accessToken"});
       var parsedUserBody = json.decode(res.body);
 
       await parsedUserBody.forEach((user) {

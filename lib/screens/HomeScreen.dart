@@ -94,43 +94,40 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    setState(() {
-      if (widget.start) {
-        // _pageController.animateToPage(1,
-        //     duration: const Duration(milliseconds: 500),
-        //     curve: Curves.easeInOutQuart);
-        Provider.of<SignUser>(context, listen: false).onLoad().then((el) {
-          if (el) {
-            Provider.of<SignUser>(context, listen: false)
-                .loadUserPosts()
-                .then((el) {
-              setState(() {
-                userPostList = el;
-                widget.start = false;
-              });
-            });
-          }
-        });
+    // setState(() {
+    if (widget.start) {
+      // _pageController.animateToPage(1,
+      //     duration: const Duration(milliseconds: 500),
+      //     curve: Curves.easeInOutQuart);
+      // Provider.of<SignUser>(context, listen: false).onLoad().then((el) {
+      //   if (el) {
 
-        Provider.of<Posts>(context, listen: false).loadPosts().then((el) {
-          setState(() {
-            postList = el;
-            widget.start = false;
-          });
+      //   }
+      // });
+      Provider.of<SignUser>(context, listen: false).loadUserPosts().then((el) {
+        setState(() {
+          userPostList = el;
         });
+      });
 
-        Provider.of<SignUser>(
-          context,
-          listen: false,
-        ).loadFriendsUsers().then((value) {
-          setState(() {
-            widget.start = false;
-          });
+      Provider.of<Posts>(context, listen: false).loadPosts().then((el) {
+        setState(() {
+          postList = el;
         });
-      }
+      });
 
-      Provider.of<AppSetting>(context, listen: false).onLoad();
-    });
+      Provider.of<SignUser>(
+        context,
+        listen: false,
+      ).loadFriendsUsers();
+
+      setState(() {
+        widget.start = false;
+      });
+    }
+
+    Provider.of<AppSetting>(context, listen: false).onLoad();
+    // });
 
     void reloadPosts() {
       Provider.of<Posts>(context, listen: false).loadPosts().then((el) {
