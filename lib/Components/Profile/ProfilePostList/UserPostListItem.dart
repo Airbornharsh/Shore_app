@@ -127,8 +127,9 @@ class _UserPostListItemState extends State<UserPostListItem> {
                     try {
                       if (!isLiked) {
                         setState(() {
-                          isLiked = true;
-                          _likes += 1;
+                          // isLiked = true;
+                          // _likes += 1;
+                          widget.post.likes.add(userDetails.id);
                         });
                         await Provider.of<SignUser>(context, listen: false)
                             .postLike(widget.post.id);
@@ -178,19 +179,22 @@ class _UserPostListItemState extends State<UserPostListItem> {
               Row(mainAxisAlignment: MainAxisAlignment.spaceAround, children: [
                 GestureDetector(
                   onTap: () async {
-                    if (Provider.of<SignUser>(context, listen: false).getIsAuth) {
+                    if (Provider.of<SignUser>(context, listen: false)
+                        .getIsAuth) {
                       try {
                         if (isLiked) {
                           setState(() {
-                            isLiked = false;
-                            _likes -= 1;
+                            // isLiked = false;
+                            // _likes -= 1;
+                            widget.post.likes.remove(userDetails.id);
                           });
                           await Provider.of<SignUser>(context, listen: false)
                               .postUnlike(widget.post.id);
                         } else {
                           setState(() {
-                            isLiked = true;
-                            _likes += 1;
+                            // isLiked = true;
+                            // _likes += 1;
+                            widget.post.likes.add(userDetails.id);
                           });
                           await Provider.of<SignUser>(context, listen: false)
                               .postLike(widget.post.id);
@@ -256,7 +260,8 @@ class _UserPostListItemState extends State<UserPostListItem> {
                 ),
                 GestureDetector(
                   onTap: () async {
-                    if (Provider.of<SignUser>(context, listen: false).getIsAuth) {
+                    if (Provider.of<SignUser>(context, listen: false)
+                        .getIsAuth) {
                       try {
                         if (isFav) {
                           setState(() {

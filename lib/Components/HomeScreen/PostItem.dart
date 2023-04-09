@@ -37,10 +37,10 @@ class _PostItemState extends State<PostItem> {
 
     if (widget.start) {
       setState(() {
-        isLiked = Provider.of<Posts>(context, listen: false)
+        isLiked = Provider.of<Posts>(context)
             .isUserLiked(widget.post.likes, userDetails.id);
-        isFav = Provider.of<Posts>(context, listen: false)
-            .isUserFav(userDetails, widget.post.id);
+        isFav =
+            Provider.of<Posts>(context).isUserFav(userDetails, widget.post.id);
         _likes = widget.post.likes.length;
       });
       widget.start = false;
@@ -165,8 +165,9 @@ class _PostItemState extends State<PostItem> {
                     try {
                       if (!isLiked) {
                         setState(() {
-                          isLiked = true;
-                          _likes += 1;
+                          // isLiked = true;
+                          // _likes += 1;
+                          widget.post.likes.add(userDetails.id);
                         });
                         await Provider.of<SignUser>(context, listen: false)
                             .postLike(widget.post.id);
@@ -217,15 +218,17 @@ class _PostItemState extends State<PostItem> {
                       try {
                         if (isLiked) {
                           setState(() {
-                            isLiked = false;
-                            _likes -= 1;
+                            // isLiked = false;
+                            // _likes -= 1;
+                            widget.post.likes.remove(userDetails.id);
                           });
                           await Provider.of<SignUser>(context, listen: false)
                               .postUnlike(widget.post.id);
                         } else {
                           setState(() {
-                            isLiked = true;
-                            _likes += 1;
+                            // isLiked = true;
+                            // _likes += 1;
+                            widget.post.likes.add(userDetails.id);
                           });
                           await Provider.of<SignUser>(context, listen: false)
                               .postLike(widget.post.id);

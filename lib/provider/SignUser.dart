@@ -507,6 +507,7 @@ class SignUser with ChangeNotifier {
   }
 
   Future<bool> postLike(String postId) async {
+    notifyListeners();
     var client = Client();
     final prefs = await SharedPreferences.getInstance();
     String domainUri = prefs.get("shore_backend_uri") as String;
@@ -534,6 +535,7 @@ class SignUser with ChangeNotifier {
   }
 
   Future<bool> postUnlike(String postId) async {
+    notifyListeners();
     var client = Client();
     final prefs = await SharedPreferences.getInstance();
     String domainUri = prefs.get("shore_backend_uri") as String;
