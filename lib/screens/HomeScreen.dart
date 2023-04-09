@@ -187,7 +187,7 @@ class _HomeScreenState extends State<HomeScreen> {
           isLoadingMore: _isPostLoadingMore,
           isLoading: _isLoading,
           setIsLoading: setIsLoading),
-      Requests(isLoading: _isLoading, setIsLoading: setIsLoading),
+      // Requests(isLoading: _isLoading, setIsLoading: setIsLoading),
       Chats(isLoading: _isLoading, setIsLoading: setIsLoading),
       Profile(userPostList: userPostList, reloadUserPosts: reloadUserPosts)
     ];
@@ -213,13 +213,13 @@ class _HomeScreenState extends State<HomeScreen> {
                       Icons.home,
                       color: const Color.fromARGB(255, 0, 190, 184),
                     )),
-                BottomNavigationBarItem(
-                    icon: Icon(Icons.favorite),
-                    label: "Fav",
-                    activeIcon: Icon(
-                      Icons.favorite,
-                      color: const Color.fromARGB(255, 0, 190, 184),
-                    )),
+                // BottomNavigationBarItem(
+                //     icon: Icon(Icons.favorite),
+                //     label: "Fav",
+                //     activeIcon: Icon(
+                //       Icons.favorite,
+                //       color: const Color.fromARGB(255, 0, 190, 184),
+                //     )),
                 BottomNavigationBarItem(
                     icon: Icon(Icons.chat),
                     label: "",

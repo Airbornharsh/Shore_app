@@ -30,25 +30,25 @@ class _UserScreenState extends State<UserScreen> {
         Provider.of<SignUser>(context).getUserDetails;
 
     if (widget.start) {
-      setState(() {
-        _isLoading = true;
-        user = ModalRoute.of(context)?.settings.arguments as UnsignUserModel;
-        print(user.id);
-        Provider.of<UnsignUser>(context, listen: false)
-            .loadUnsignUserPosts(user.id)
-            .then((el) {
-          setState(() {
-            unsignUserPostList = el;
-            _isLoading = false;
-          });
+      _isLoading = true;
+      user = ModalRoute.of(context)?.settings.arguments as UnsignUserModel;
+      print(user.id);
+      Provider.of<UnsignUser>(context, listen: false)
+          .loadUnsignUserPosts(user.id)
+          .then((el) {
+        setState(() {
+          unsignUserPostList = el;
+          _isLoading = false;
         });
-
-        isPrivate = !Provider.of<SignUser>(context)
-            .getUserDetails
-            .followings
-            .contains(user.id);
       });
-      widget.start = false;
+
+      isPrivate = !Provider.of<SignUser>(context)
+          .getUserDetails
+          .followings
+          .contains(user.id);
+      setState(() {
+        widget.start = false;
+      });
     }
 
     void reloadUserPosts() {}

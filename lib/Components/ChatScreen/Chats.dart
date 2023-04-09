@@ -116,7 +116,7 @@ class _ChatsState extends State<Chats> {
                             child: const Center(child: Text('😊')));
                       })),
                   title: Text(friends[index].name),
-                  subtitle: Text("10 unread Message"),
+                  subtitle: Text("Tap to Message"),
                 );
               },
             ),

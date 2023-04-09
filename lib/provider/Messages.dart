@@ -1,16 +1,41 @@
-import 'package:flutter/material.dart';
+import 'dart:convert';
 
-// class MessagesModel{}
+import 'package:flutter/material.dart';
+import 'package:http/http.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:shore_app/models.dart';
+
+// class MessagesModel {
+//   String userId;
+//   List<Message> messages;
+
+//   MessagesModel({required this.messages, required this.userId});
+// }
 
 class Messages extends ChangeNotifier {
+  // late Map<String, List<Message>> _messages = {};
+
+  // void setMessages(Map<String, List<Message>> messages) {
+  //   // Iterable<String> keys = messages.keys;
+
+  //   // keys.forEach((key) {
+  //   //   _messages.putIfAbsent(key, () => messages[key] as List<Message>);
+  //   // });
+
+  //   _messages = {...messages};
+
+  //   print(_messages.length);
+  // }
+
   // Future<List<UnsignUserModel>> loadFriendsUsers() async {
   //   var client = Client();
   //   final prefs = await SharedPreferences.getInstance();
   //   String domainUri = prefs.get("shore_backend_uri") as String;
+  //   String? accessToken = prefs.getString("shore_accessToken");
   //   try {
   //     Response res = await client.post(
-  //         Uri.parse("$domainUri/api/user/friends/list"),
-  //         headers: {"authorization": "Bearer $_accessToken"});
+  //         Uri.parse("$domainUri/api/user/friends/message-list"),
+  //         headers: {"authorization": "Bearer $accessToken"});
 
   //     var parsedUserBody = json.decode(res.body);
 

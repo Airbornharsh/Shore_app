@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:ffi';
 import 'dart:io';
 
 import 'package:firebase_storage/firebase_storage.dart';
@@ -6,6 +7,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:http/http.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:shore_app/models.dart';
+import "package:shore_app/provider/Messages.dart";
 
 class SignUser with ChangeNotifier {
   UserModel _user = UserModel(
@@ -35,6 +37,7 @@ class SignUser with ChangeNotifier {
 
   List<UserPostModel> _userPosts = [];
   List<UnsignUserModel> _friends = [];
+  Map<String, List<Message>> _messages = {};
 
   late String _accessToken;
   late bool _isAuth = false;
@@ -51,7 +54,29 @@ class SignUser with ChangeNotifier {
     return _friends;
   }
 
-  void logout() async {
+  UnsignUserModel getFriend(String userId) {
+    return _friends.firstWhere((element) => element.id == userId);
+  }
+
+  Map<String, List<Message>> get getMessages {
+    return _messages;
+  }
+
+  List<Message>? getFriendMessage(String id) {
+    return _messages[id];
+  }
+
+  void addMessage(Map<String, dynamic> message) {
+    _messages[message["senderUserId"]]?.add(Message(
+        from: message["senderUserId"].toString(),
+        message: message["message"],
+        time: int.parse(message["time"]),
+        to: _user.id));
+
+    notifyListeners();
+  }
+
+  Future logout() async {
     final prefs = await SharedPreferences.getInstance();
     prefs.setString("shore_accessToken", "");
     _accessToken = "";
@@ -81,6 +106,25 @@ class SignUser with ChangeNotifier {
         commented: [],
         fav: []);
     notifyListeners();
+
+    final deviceToken = await prefs.getString("shore_device_token") as String;
+    final domainUri = await prefs.get("shore_backend_uri") as String;
+    final accessToken = await prefs.get("shore_accessToken") as String;
+
+    try {
+      final client = Client();
+
+      await client.post(Uri.parse("$domainUri/api/user/logout"),
+          body: json.encode({
+            "deviceToken": deviceToken,
+          }),
+          headers: {
+            "authorization": "Bearer $accessToken",
+            "Content-Type": "application/json",
+          });
+    } catch (e) {
+      print(e);
+    }
   }
 
   Future<bool> onLoad() async {
@@ -299,13 +343,14 @@ class SignUser with ChangeNotifier {
   Future<bool> isValidAccessToken() async {
     var client = Client();
     final prefs = await SharedPreferences.getInstance();
-    String domainUri = prefs.get("shore_backend_uri") as String;
-    String accessToken = prefs.getString("shore_accessToken") as String;
+    final domainUri = prefs.get("shore_backend_uri") as String;
+    final accessToken = prefs.getString("shore_accessToken") as String;
+    final deviceToken = await prefs.getString("shore_device_token") as String;
 
     try {
       var res = await client.post(
           Uri.parse("$domainUri/api/user/is-valid-user"),
-          body: json.encode({}),
+          body: json.encode({"deviceToken": deviceToken}),
           headers: {
             "Content-Type": "application/json",
             "authorization": "Bearer $accessToken"
@@ -1037,12 +1082,13 @@ class SignUser with ChangeNotifier {
   }
 
   Future<List<UnsignUserModel>> loadFriendsUsers() async {
+    // Map<String, List<Message>> messages = {};
     var client = Client();
     final prefs = await SharedPreferences.getInstance();
     String domainUri = prefs.get("shore_backend_uri") as String;
     try {
       Response res = await client.post(
-          Uri.parse("$domainUri/api/user/friends/list"),
+          Uri.parse("$domainUri/api/user/friends/message-list"),
           headers: {"authorization": "Bearer $_accessToken"});
 
       var parsedUserBody = json.decode(res.body);
@@ -1052,8 +1098,29 @@ class SignUser with ChangeNotifier {
       }
 
       _friends.clear();
+      _messages.clear();
 
       await parsedUserBody.forEach((user) {
+        user["messages"].forEach((message) {
+          if (_messages.containsKey(user["id"])) {
+            _messages[user["id"]]?.add(Message(
+                from: message["from"],
+                message: message["message"],
+                time: int.parse(message["time"]),
+                to: message["to"]));
+          } else {
+            _messages.putIfAbsent(
+                user["id"].toString(),
+                () => [
+                      Message(
+                          from: message["from"],
+                          message: message["message"],
+                          time: int.parse(message["time"]),
+                          to: message["to"])
+                    ]);
+          }
+        });
+
         UnsignUserModel newUser = UnsignUserModel(
           id: user["id"].toString(),
           name: user["name"].toString(),
@@ -1213,5 +1280,38 @@ class SignUser with ChangeNotifier {
       notifyListeners();
     }
     return users;
+  }
+
+  Future<bool> sendMessage(String recieverUserId, String message) async {
+    var client = Client();
+    final prefs = await SharedPreferences.getInstance();
+    final domainUri = await prefs.get("shore_backend_uri") as String;
+    final accessToken = await prefs.get("shore_accessToken") as String;
+    final currentTime = DateTime.now().millisecondsSinceEpoch.toString();
+    try {
+      _messages[recieverUserId]?.add(Message(
+          from: _user.id.toString(),
+          message: message,
+          time: int.parse(currentTime),
+          to: recieverUserId));
+
+      notifyListeners();
+
+      await client.post(Uri.parse("$domainUri/api/user/message/one"),
+          body: json.encode({
+            "recieverUserId": recieverUserId,
+            "message": message,
+            "currentTime": currentTime
+          }),
+          headers: {
+            "authorization": "Bearer $accessToken",
+            "Content-Type": "application/json",
+          });
+
+      return true;
+    } catch (e) {
+      print(e);
+      return false;
+    }
   }
 }

@@ -1,4 +1,6 @@
 //Models
+import 'dart:ffi';
+
 class UserModel {
   final String id;
   final String name;
@@ -145,8 +147,12 @@ class CommentModel {
 class Message {
   String from;
   String message;
-  String time;
-  
+  int time;
+  String to;
 
-  Message({required this.from, required this.message, required this.time});
+  Message(
+      {required this.from,
+      required this.message,
+      required this.time,
+      required this.to});
 }

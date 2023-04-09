@@ -10,6 +10,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:shore_app/Utils/firebase_options.dart';
 import 'package:shore_app/Utils/socket_client.dart';
 import 'package:shore_app/provider/AppSetting.dart';
+import 'package:shore_app/provider/Messages.dart';
 import 'package:shore_app/provider/Posts.dart';
 import 'package:shore_app/provider/UnsignUser.dart';
 import 'package:shore_app/provider/SignUser.dart';
@@ -32,7 +33,6 @@ final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 late final FirebaseApp app;
 late final FirebaseAuth auth;
 late String token;
-late String accessToken;
 
 Future main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -42,26 +42,21 @@ Future main() async {
 
   auth = await FirebaseAuth.instanceFor(app: app);
 
-  FirebaseMessaging.instance.getToken().then((value) {
-    token = value!;
+  var value = await FirebaseMessaging.instance.getToken();
 
-    void init() async {
-      final prefs = await SharedPreferences.getInstance();
+  final prefs = await SharedPreferences.getInstance();
 
-      prefs.setString("shore_app_token", value);
-      prefs.setString("shore_backend_uri", "https://shore.vercel.app");
-      prefs.setString("shore_backend_socket_uri", "http://192.168.1.37:4000");
-      accessToken = prefs.getString("shore_accessToken") as String;
-      SocketClient.instance(value, accessToken).socket!;
-    }
+  prefs.setString("shore_device_token", value!);
+  prefs.setString("shore_backend_uri", "https://shore.vercel.app");
+  // prefs.setString("shore_backend_socket_uri", "http://192.168.1.37:4000");
 
-    init();
-    print("FCM Token: $value");
-  });
+  print("FCM Token: $value");
 
   FirebaseMessaging.onMessage.listen((RemoteMessage message) {
     print('Got a message whilst in the foreground!');
     print('Message data: ${message.data}');
+    Provider.of<SignUser>(navigatorKey.currentState!.context, listen: false)
+        .addMessage(message.data);
   });
 
 //Application in Background
@@ -112,6 +107,7 @@ class MyApp extends StatelessWidget {
       providers: [
         ChangeNotifierProvider.value(value: AppSetting()),
         ChangeNotifierProvider.value(value: SignUser()),
+        ChangeNotifierProvider.value(value: Messages()),
         ChangeNotifierProvider.value(value: UnsignUser()),
         ChangeNotifierProvider.value(value: Posts()),
       ],

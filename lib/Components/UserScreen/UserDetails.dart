@@ -139,7 +139,8 @@ class _UserDetailsState extends State<UserDetails> {
                           if (Provider.of<SignUser>(context, listen: false)
                               .getIsAuth) {
                             try {
-                              await Provider.of<SignUser>(context, listen: false)
+                              await Provider.of<SignUser>(context,
+                                      listen: false)
                                   .unfollow(widget.user.id);
                               widget.user.followers.remove(
                                   Provider.of<SignUser>(context, listen: false)
@@ -170,7 +171,8 @@ class _UserDetailsState extends State<UserDetails> {
                           if (Provider.of<SignUser>(context, listen: false)
                               .getIsAuth) {
                             try {
-                              await Provider.of<SignUser>(context, listen: false)
+                              await Provider.of<SignUser>(context,
+                                      listen: false)
                                   .unfollow(widget.user.id);
                               widget.user.followers.remove(
                                   Provider.of<SignUser>(context, listen: false)
@@ -212,45 +214,15 @@ class _UserDetailsState extends State<UserDetails> {
         height: 90,
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.center,
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          // mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
-            Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text(
-                  widget.user.posts.length.toString(),
-                  style: TextStyle(
-                      fontWeight: FontWeight.w400,
-                      fontSize: 24,
-                      color: Provider.of<AppSetting>(context).getdarkMode
-                          ? Colors.grey.shade200
-                          : Colors.black),
-                ),
-                Text(
-                  "Posts",
-                  style: TextStyle(
-                      fontSize: 12,
-                      color: Provider.of<AppSetting>(context).getdarkMode
-                          ? Colors.grey.shade200
-                          : Colors.black),
-                )
-              ],
-            ),
             Container(
-              width: 2,
-              height: 20,
-              decoration: const BoxDecoration(color: Colors.grey),
-            ),
-            GestureDetector(
-              onTap: () {
-                Navigator.of(context).pushNamed(FollowersScreen.routeName,
-                    arguments: widget.user.id);
-              },
+              width: (MediaQuery.of(context).size.width - 4) / 3,
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Text(
-                    widget.user.followers.length.toString(),
+                    widget.user.posts.length.toString(),
                     style: TextStyle(
                         fontWeight: FontWeight.w400,
                         fontSize: 24,
@@ -259,7 +231,7 @@ class _UserDetailsState extends State<UserDetails> {
                             : Colors.black),
                   ),
                   Text(
-                    "Followers",
+                    "Posts",
                     style: TextStyle(
                         fontSize: 12,
                         color: Provider.of<AppSetting>(context).getdarkMode
@@ -276,30 +248,69 @@ class _UserDetailsState extends State<UserDetails> {
             ),
             GestureDetector(
               onTap: () {
+                Navigator.of(context).pushNamed(FollowersScreen.routeName,
+                    arguments: widget.user.id);
+              },
+              child: Container(
+                width: (MediaQuery.of(context).size.width - 4) / 3,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      widget.user.followers.length.toString(),
+                      style: TextStyle(
+                          fontWeight: FontWeight.w400,
+                          fontSize: 24,
+                          color: Provider.of<AppSetting>(context).getdarkMode
+                              ? Colors.grey.shade200
+                              : Colors.black),
+                    ),
+                    Text(
+                      "Followers",
+                      style: TextStyle(
+                          fontSize: 12,
+                          color: Provider.of<AppSetting>(context).getdarkMode
+                              ? Colors.grey.shade200
+                              : Colors.black),
+                    )
+                  ],
+                ),
+              ),
+            ),
+            Container(
+              width: 2,
+              height: 20,
+              decoration: const BoxDecoration(color: Colors.grey),
+            ),
+            GestureDetector(
+              onTap: () {
                 Navigator.of(context).pushNamed(FollowingsScreen.routeName,
                     arguments: widget.user.id);
               },
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(
-                    widget.user.followings.length.toString(),
-                    style: TextStyle(
-                        fontWeight: FontWeight.w400,
-                        fontSize: 24,
-                        color: Provider.of<AppSetting>(context).getdarkMode
-                            ? Colors.grey.shade200
-                            : Colors.black),
-                  ),
-                  Text(
-                    "Following",
-                    style: TextStyle(
-                        fontSize: 12,
-                        color: Provider.of<AppSetting>(context).getdarkMode
-                            ? Colors.grey.shade200
-                            : Colors.black),
-                  )
-                ],
+              child: Container(
+                width: (MediaQuery.of(context).size.width - 4) / 3,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      widget.user.followings.length.toString(),
+                      style: TextStyle(
+                          fontWeight: FontWeight.w400,
+                          fontSize: 24,
+                          color: Provider.of<AppSetting>(context).getdarkMode
+                              ? Colors.grey.shade200
+                              : Colors.black),
+                    ),
+                    Text(
+                      "Following",
+                      style: TextStyle(
+                          fontSize: 12,
+                          color: Provider.of<AppSetting>(context).getdarkMode
+                              ? Colors.grey.shade200
+                              : Colors.black),
+                    )
+                  ],
+                ),
               ),
             ),
           ],
