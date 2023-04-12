@@ -8,7 +8,6 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:shore_app/Utils/firebase_options.dart';
-import 'package:shore_app/Utils/socket_client.dart';
 import 'package:shore_app/provider/AppSetting.dart';
 import 'package:shore_app/provider/Messages.dart';
 import 'package:shore_app/provider/Posts.dart';

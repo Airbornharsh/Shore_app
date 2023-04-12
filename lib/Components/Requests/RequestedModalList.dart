@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:shore_app/Components/Requests/RequestProfileItem.dart';
 import 'package:shore_app/Components/Requests/RequestedProfileItem.dart';
 import 'package:shore_app/models.dart';
 

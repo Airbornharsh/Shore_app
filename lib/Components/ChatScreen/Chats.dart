@@ -1,11 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:shore_app/Utils/socket_client.dart';
 import 'package:shore_app/models.dart';
 import 'package:shore_app/provider/AppSetting.dart';
 import 'package:shore_app/provider/SignUser.dart';
 import 'package:shore_app/screens/ChatScreen.dart';
-import 'package:socket_io_client/socket_io_client.dart';
 
 class Chats extends StatefulWidget {
   Function setIsLoading;

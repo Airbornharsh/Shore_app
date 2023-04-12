@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:shore_app/Utils/snackBar.dart';
 import 'package:shore_app/models.dart';
 import 'package:shore_app/provider/AppSetting.dart';
-import 'package:shore_app/provider/SignUser.dart';
 import 'package:shore_app/screens/UserScreen.dart';
 
 class RequestedProfileItem extends StatefulWidget {

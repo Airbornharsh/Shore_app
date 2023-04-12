@@ -175,16 +175,16 @@ class _NewPostScreenState extends State<NewPostScreen> {
                                                             ? fileWidth
                                                             : fileHeight);
 
-                                                final fileHeight1 =
-                                                    (await decodeImageFromList(
-                                                            (croppedFile)
-                                                                .readAsBytesSync()))
-                                                        .height;
-                                                final fileWidth1 =
-                                                    (await decodeImageFromList(
-                                                            (croppedFile)
-                                                                .readAsBytesSync()))
-                                                        .width;
+                                                // final fileHeight1 =
+                                                //     (await decodeImageFromList(
+                                                //             (croppedFile)
+                                                //                 .readAsBytesSync()))
+                                                //         .height;
+                                                // final fileWidth1 =
+                                                //     (await decodeImageFromList(
+                                                //             (croppedFile)
+                                                //                 .readAsBytesSync()))
+                                                //         .width;
 
                                                 File? compressedFile =
                                                     await FlutterNativeImage

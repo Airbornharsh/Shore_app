@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'dart:ffi';
 import 'dart:io';
 
 import 'package:firebase_storage/firebase_storage.dart';
@@ -7,7 +6,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:http/http.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:shore_app/models.dart';
-import "package:shore_app/provider/Messages.dart";
 
 class SignUser with ChangeNotifier {
   UserModel _user = UserModel(
@@ -253,8 +251,7 @@ class SignUser with ChangeNotifier {
     final prefs = await SharedPreferences.getInstance();
     String domainUri = prefs.get("shore_backend_uri") as String;
     String authType = "";
-    String deviceToken = prefs.getString("shore_app_token") as String;
-    final accessToken = prefs.getString("shore_accessToken") as String;
+    String deviceToken = prefs.getString("shore_device_token") as String;
 
     try {
       String emailPattern =
@@ -289,7 +286,8 @@ class SignUser with ChangeNotifier {
 
       var parsedBody = json.decode(tokenRes.body);
       prefs.setString("shore_accessToken", parsedBody["accessToken"]);
-      // _accessToken = parsedBody["accessToken"];
+      final accessToken = parsedBody["accessToken"];
+
       _isAuth = true;
       var userRes = await client.get(Uri.parse("$domainUri/api/user/get"),
           headers: {"authorization": "Bearer $accessToken"});
@@ -419,7 +417,7 @@ class SignUser with ChangeNotifier {
     var client = Client();
     final prefs = await SharedPreferences.getInstance();
     String domainUri = prefs.get("shore_backend_uri") as String;
-    String deviceToken = prefs.get("shore_app_token") as String;
+    String deviceToken = prefs.get("shore_device_token") as String;
 
     if (password != confirmPasssword) {
       return "Password are Different";
@@ -441,7 +439,7 @@ class SignUser with ChangeNotifier {
         return json.decode(res.body)["message"];
       }
 
-      var parsedBody = json.decode(res.body);
+      // var parsedBody = json.decode(res.body);
 
       return "Done";
     } catch (e) {
@@ -476,7 +474,7 @@ class SignUser with ChangeNotifier {
         throw postRes.body;
       }
 
-      var postResBody = json.decode(postRes.body);
+      // var postResBody = json.decode(postRes.body);
 
       return true;
     } catch (e) {
@@ -523,7 +521,7 @@ class SignUser with ChangeNotifier {
         throw res.body;
       }
 
-      var resBody = json.decode(res.body);
+      // var resBody = json.decode(res.body);
 
       return true;
     } catch (e) {
@@ -551,7 +549,7 @@ class SignUser with ChangeNotifier {
         throw res.body;
       }
 
-      var resBody = json.decode(res.body);
+      // var resBody = json.decode(res.body);
 
       return true;
     } catch (e) {
@@ -577,7 +575,7 @@ class SignUser with ChangeNotifier {
         throw res.body;
       }
 
-      var resBody = json.decode(res.body);
+      // var resBody = json.decode(res.body);
 
       return true;
     } catch (e) {
@@ -604,7 +602,7 @@ class SignUser with ChangeNotifier {
         throw res.body;
       }
 
-      var resBody = json.decode(res.body);
+      // var resBody = json.decode(res.body);
 
       return true;
     } catch (e) {
@@ -979,7 +977,7 @@ class SignUser with ChangeNotifier {
         throw res.body;
       }
 
-      var resBody = json.decode(res.body);
+      // var resBody = json.decode(res.body);
 
       _user.followings.remove(userId);
 
@@ -1210,7 +1208,7 @@ class SignUser with ChangeNotifier {
         throw res.body;
       }
 
-      var resBody = json.decode(res.body);
+      // var resBody = json.decode(res.body);
 
       _user.acceptedFollowerRequests.add(userId);
       _user.followers.add(userId);
@@ -1241,7 +1239,7 @@ class SignUser with ChangeNotifier {
         throw res.body;
       }
 
-      var resBody = json.decode(res.body);
+      // var resBody = json.decode(res.body);
 
       _user.declinedFollowingRequests.add(userId);
       _user.followers.add(userId);

@@ -6,7 +6,6 @@ import 'package:shore_app/Components/ChatScreen/Chats.dart';
 import 'package:shore_app/Components/CustomAppBar.dart';
 import 'package:shore_app/Components/HomeScreen/Home.dart';
 import 'package:shore_app/Components/Profile/Profile.dart';
-import 'package:shore_app/Components/Requests/Requests.dart';
 import 'package:shore_app/models.dart';
 import 'package:shore_app/provider/AppSetting.dart';
 import 'package:shore_app/provider/Posts.dart';

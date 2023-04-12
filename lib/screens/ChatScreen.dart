@@ -2,11 +2,8 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:shore_app/Utils/socket_client.dart';
 import 'package:shore_app/models.dart';
-import 'package:shore_app/provider/AppSetting.dart';
 import 'package:shore_app/provider/SignUser.dart';
-import 'package:socket_io_client/socket_io_client.dart';
 
 class ChatScreen extends StatefulWidget {
   static const String routeName = "/chat";
