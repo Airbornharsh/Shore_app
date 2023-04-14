@@ -44,8 +44,7 @@ class _ChatScreenState extends State<ChatScreen> {
       // });
 
       setState(() {
-        messages = Provider.of<SignUser>(context).getFriendMessage(userId)
-            as List<Message>;
+        messages = Provider.of<SignUser>(context).getRoomMessage(userId) ?? [];
         widget.start = false;
         _isLoading = false;
       });
@@ -126,6 +125,7 @@ class _ChatScreenState extends State<ChatScreen> {
                   shrinkWrap: true,
                   itemBuilder: (context, index) {
                     final messageData = messages[index];
+                    print("${messageData.from} $signUserId");
                     if (messageData.from == signUserId) {
                       return Container(
                         decoration: BoxDecoration(

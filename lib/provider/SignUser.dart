@@ -6,7 +6,7 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:http/http.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:shore_app/Components/HomeScreen/PhoneNumber.dart';
+import 'package:shore_app/Utils/Functions.dart';
 import 'package:shore_app/models.dart';
 
 class SignUser with ChangeNotifier {
@@ -39,7 +39,8 @@ class SignUser with ChangeNotifier {
 
   List<UserPostModel> _userPosts = [];
   List<UnsignUserModel> _friends = [];
-  Map<String, List<Message>> _messages = {};
+  Map<String, String> _friendRoomId = {};
+  Map<String, List<Message>> _roomMessages = {};
 
   // late String _accessToken;
   late bool _isAuth = false;
@@ -60,20 +61,29 @@ class SignUser with ChangeNotifier {
     return _friends.firstWhere((element) => element.id == userId);
   }
 
-  Map<String, List<Message>> get getMessages {
-    return _messages;
+  Map<String, List<Message>> get getRoomMessages {
+    return _roomMessages;
   }
 
-  List<Message>? getFriendMessage(String id) {
-    return _messages[id];
+  List<Message>? getRoomMessage(String id) {
+    return _roomMessages[Functions.genHash(id, _user.id)];
+  }
+
+  Map<String, String> get getRoomIds {
+    return _friendRoomId;
+  }
+
+  String getRoomId(String id) {
+    return _friendRoomId[id]!;
   }
 
   void addMessage(Map<String, dynamic> message) {
-    _messages[message["senderUserId"]]?.add(Message(
-        from: message["senderUserId"].toString(),
-        message: message["message"],
-        time: int.parse(message["time"]),
-        to: _user.id));
+    _roomMessages[Functions.genHash(message["senderUserId"], _user.id)]?.add(
+        Message(
+            from: message["senderUserId"].toString(),
+            message: message["message"],
+            time: int.parse(message["time"]),
+            to: _user.id));
 
     notifyListeners();
   }
@@ -130,7 +140,7 @@ class SignUser with ChangeNotifier {
 
       await prefs.remove("shore_accessToken");
     } catch (e) {
-      debugPrint(e.toString());
+      print(e);
     }
   }
 
@@ -193,7 +203,7 @@ class SignUser with ChangeNotifier {
 
       return true;
     } catch (e) {
-      debugPrint(e.toString());
+      print(e);
       return false;
     } finally {
       client.close();
@@ -253,7 +263,7 @@ class SignUser with ChangeNotifier {
 
       return _user;
     } catch (e) {
-      debugPrint(e.toString());
+      print(e);
       return _user;
     } finally {
       client.close();
@@ -349,7 +359,7 @@ class SignUser with ChangeNotifier {
 
       return "Done";
     } catch (e) {
-      debugPrint(e.toString());
+      print(e);
       return "Error";
     } finally {
       client.close();
@@ -419,7 +429,7 @@ class SignUser with ChangeNotifier {
 
       return true;
     } catch (e) {
-      debugPrint(e.toString());
+      print(e);
       return false;
     } finally {
       client.close();
@@ -476,7 +486,7 @@ class SignUser with ChangeNotifier {
 
       return "Done";
     } catch (e) {
-      debugPrint(e.toString());
+      print(e);
       return "Error";
     } finally {
       client.close();
@@ -511,7 +521,7 @@ class SignUser with ChangeNotifier {
 
       return true;
     } catch (e) {
-      debugPrint(e.toString());
+      print(e);
       return false;
     } finally {
       notifyListeners();
@@ -532,7 +542,7 @@ class SignUser with ChangeNotifier {
 
       return fileUrl;
     } catch (e) {
-      debugPrint(e.toString());
+      print(e);
       return "";
     } finally {}
   }
@@ -558,7 +568,7 @@ class SignUser with ChangeNotifier {
 
       return true;
     } catch (e) {
-      debugPrint(e.toString());
+      print(e);
       return false;
     } finally {
       notifyListeners();
@@ -586,7 +596,7 @@ class SignUser with ChangeNotifier {
 
       return true;
     } catch (e) {
-      debugPrint(e.toString());
+      print(e);
       return false;
     } finally {
       notifyListeners();
@@ -612,7 +622,7 @@ class SignUser with ChangeNotifier {
 
       return true;
     } catch (e) {
-      debugPrint(e.toString());
+      print(e);
       return false;
     } finally {
       notifyListeners();
@@ -639,7 +649,7 @@ class SignUser with ChangeNotifier {
 
       return true;
     } catch (e) {
-      debugPrint(e.toString());
+      print(e);
       return false;
     } finally {
       notifyListeners();
@@ -676,7 +686,7 @@ class SignUser with ChangeNotifier {
         _userPosts.add(newPost);
       });
     } catch (e) {
-      debugPrint(e.toString());
+      print(e);
     } finally {
       notifyListeners();
     }
@@ -735,7 +745,7 @@ class SignUser with ChangeNotifier {
 
       return "withoutImg";
     } catch (e) {
-      debugPrint(e.toString());
+      print(e);
       return "Error";
     } finally {
       notifyListeners();
@@ -812,7 +822,7 @@ class SignUser with ChangeNotifier {
 
       return "withImg";
     } catch (e) {
-      debugPrint(e.toString());
+      print(e);
       return "Error";
     } finally {
       notifyListeners();
@@ -845,7 +855,7 @@ class SignUser with ChangeNotifier {
 
       return "withoutImg";
     } catch (e) {
-      debugPrint(e.toString());
+      print(e);
       return "Error";
     } finally {
       notifyListeners();
@@ -896,7 +906,7 @@ class SignUser with ChangeNotifier {
 
       return "withImg";
     } catch (e) {
-      debugPrint(e.toString());
+      print(e);
       return "Error";
     } finally {
       notifyListeners();
@@ -932,7 +942,7 @@ class SignUser with ChangeNotifier {
 
       return "withImg";
     } catch (e) {
-      debugPrint(e.toString());
+      print(e);
       return "Error";
     } finally {
       notifyListeners();
@@ -987,7 +997,7 @@ class SignUser with ChangeNotifier {
 
       return resBody["message"];
     } catch (e) {
-      debugPrint(e.toString());
+      print(e);
       return "Server Error";
     } finally {
       notifyListeners();
@@ -1016,7 +1026,7 @@ class SignUser with ChangeNotifier {
 
       return true;
     } catch (e) {
-      debugPrint(e.toString());
+      print(e);
       return false;
     } finally {
       notifyListeners();
@@ -1067,7 +1077,7 @@ class SignUser with ChangeNotifier {
         users.add(newUser);
       });
     } catch (e) {
-      debugPrint(e.toString());
+      print(e);
     } finally {
       notifyListeners();
     }
@@ -1118,7 +1128,7 @@ class SignUser with ChangeNotifier {
         users.add(newUser);
       });
     } catch (e) {
-      debugPrint(e.toString());
+      print(e);
     } finally {
       notifyListeners();
     }
@@ -1143,20 +1153,29 @@ class SignUser with ChangeNotifier {
         throw res.body;
       }
 
+      print(parsedUserBody);
+
       _friends.clear();
-      _messages.clear();
+      _roomMessages.clear();
+      _friendRoomId.clear();
 
       await parsedUserBody.forEach((user) {
+        String roomId = Functions.genHash(user["id"], _user.id);
+
+        _friendRoomId.putIfAbsent(
+          user["id"],
+          () => roomId,
+        );
         user["messages"].forEach((message) {
-          if (_messages.containsKey(user["id"])) {
-            _messages[user["id"]]?.add(Message(
+          if (_roomMessages.containsKey(roomId)) {
+            _roomMessages[roomId]?.add(Message(
                 from: message["from"],
                 message: message["message"],
                 time: int.parse(message["time"]),
                 to: message["to"]));
           } else {
-            _messages.putIfAbsent(
-                user["id"].toString(),
+            _roomMessages.putIfAbsent(
+                roomId.toString(),
                 () => [
                       Message(
                           from: message["from"],
@@ -1188,7 +1207,7 @@ class SignUser with ChangeNotifier {
         _friends.add(newUser);
       });
     } catch (e) {
-      debugPrint(e.toString());
+      print(e);
     } finally {
       notifyListeners();
     }
@@ -1230,7 +1249,7 @@ class SignUser with ChangeNotifier {
         users.add(newUser);
       });
     } catch (e) {
-      debugPrint(e.toString());
+      print(e);
     } finally {
       notifyListeners();
     }
@@ -1261,7 +1280,7 @@ class SignUser with ChangeNotifier {
 
       return true;
     } catch (e) {
-      debugPrint(e.toString());
+      print(e);
       return false;
     } finally {
       notifyListeners();
@@ -1292,7 +1311,7 @@ class SignUser with ChangeNotifier {
 
       return true;
     } catch (e) {
-      debugPrint(e.toString());
+      print(e);
       return false;
     } finally {
       notifyListeners();
@@ -1334,7 +1353,7 @@ class SignUser with ChangeNotifier {
         users.add(newUser);
       });
     } catch (e) {
-      debugPrint(e.toString());
+      print(e);
     } finally {
       notifyListeners();
     }
@@ -1348,7 +1367,7 @@ class SignUser with ChangeNotifier {
     final accessToken = await prefs.get("shore_accessToken") as String;
     final currentTime = DateTime.now().millisecondsSinceEpoch.toString();
     try {
-      _messages[recieverUserId]?.add(Message(
+      _roomMessages[Functions.genHash(recieverUserId, _user.id)]?.add(Message(
           from: _user.id.toString(),
           message: message,
           time: int.parse(currentTime),
@@ -1369,7 +1388,7 @@ class SignUser with ChangeNotifier {
 
       return true;
     } catch (e) {
-      debugPrint(e.toString());
+      print(e);
       return false;
     }
   }

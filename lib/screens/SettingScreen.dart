@@ -22,7 +22,7 @@ class _SettingScreenState extends State<SettingScreen> {
     });
   }
 
-  @override
+  @override 
   Widget build(BuildContext context) {
     return Stack(
       children: [

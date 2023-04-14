@@ -53,7 +53,7 @@ class _AuthScreenState extends State<AuthScreen> {
   // }
 
   void changeRoute(String routeName, BuildContext context) {
-    Navigator.of(context).pushReplacementNamed(routeName);
+    Navigator.of(context).popAndPushNamed(routeName);
   }
 
   bool get isCodeValidation {

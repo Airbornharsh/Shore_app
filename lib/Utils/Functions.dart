@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'package:crypto/crypto.dart';
 
 class Functions {
-  String genHash(String s1, String s2) {
+  static String genHash(String s1, String s2) {
     if (s1.compareTo(s2) > 0)
       return md5
           .convert(utf8.encode("$s1${s1.length}$s2${s2.length}"))

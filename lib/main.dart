@@ -48,6 +48,7 @@ Future main() async {
 
   prefs.setString("shore_device_token", value!);
   prefs.setString("shore_backend_uri", "https://shore.vercel.app");
+  // prefs.setString("shore_backend_uri", "http://192.168.1.42:3000");
   // prefs.setString("shore_backend_socket_uri", "http://192.168.1.37:4000");
 
   print("FCM Token: $value");
@@ -63,23 +64,32 @@ Future main() async {
   FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage? message) async {
     if (message != null) {
       print('Message clicked: ${message.data}');
-      Navigator.pushNamed(
-          navigatorKey.currentState!.context, MessageClicked.routeName,
-          arguments: message.data);
+      // Provider.of<SignUser>(navigatorKey.currentState!.context, listen: false)
+      //     .addMessage(message.data);
+      Navigator.of(navigatorKey.currentState!.context)
+          .popUntil((route) => route == HomeScreen.routeName);
+      Navigator.of(navigatorKey.currentState!.context)
+          .pushNamed(HomeScreen.routeName);
+      Navigator.of(
+        navigatorKey.currentState!.context,
+      ).pushNamed(ChatScreen.routeName,
+          arguments: message.data["senderUserId"]);
+    } else {
+      print("Message is null");
     }
   });
 
   //Application is Terminateed or Killed
-  FirebaseMessaging.instance
-      .getInitialMessage()
-      .then((RemoteMessage? message) async {
-    if (message != null) {
-      print('Message clicked: ${message.data} 09');
-      Navigator.pushNamed(
-          navigatorKey.currentState!.context, MessageClicked.routeName,
-          arguments: message.data);
-    }
-  });
+  // FirebaseMessaging.instance
+  //     .getInitialMessage()
+  //     .then((RemoteMessage? message) async {
+  //   if (message != null) {
+  //     print('Message clicked: ${message.data} 09');
+  //     Navigator.popAndPushNamed(
+  //         navigatorKey.currentState!.context, MessageClicked.routeName,
+  //         arguments: message.data);
+  //   }
+  // });
 
   FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
 
@@ -90,9 +100,13 @@ Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   if (message != null) {
     await Firebase.initializeApp();
     print("Handling a background message: ${message.data}");
-    Navigator.pushNamed(
-        navigatorKey.currentState!.context, MessageClicked.routeName,
-        arguments: message.data);
+    Navigator.of(navigatorKey.currentState!.context)
+        .popUntil((route) => route == HomeScreen.routeName);
+    Navigator.of(navigatorKey.currentState!.context)
+        .pushNamed(HomeScreen.routeName);
+    Navigator.of(
+      navigatorKey.currentState!.context,
+    ).pushNamed(ChatScreen.routeName, arguments: message.data["senderUserId"]);
   }
 }
 
