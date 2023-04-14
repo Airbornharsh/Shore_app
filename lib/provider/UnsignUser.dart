@@ -34,7 +34,6 @@ class UnsignUser with ChangeNotifier {
           emailIdFirebaseId: user["emailIdFirebaseId"].toString(),
           phoneNumberFirebaseId: user["phoneNumberFirebaseId"].toString(),
           isPrivate: user["isPrivate"],
-          socketIds: List<String>.from(user["socketIds"]),
           posts: List<String>.from(user["posts"]),
           followers: List<String>.from(user["followers"]),
           followings: List<String>.from(user["followings"]),
@@ -76,7 +75,6 @@ class UnsignUser with ChangeNotifier {
           emailIdFirebaseId: user["emailIdFirebaseId"].toString(),
           phoneNumberFirebaseId: user["phoneNumberFirebaseId"].toString(),
           isPrivate: user["isPrivate"],
-          socketIds: List<String>.from(user["socketIds"]),
           posts: List<String>.from(user["posts"]),
           followers: List<String>.from(user["followers"]),
           followings: List<String>.from(user["followings"]),
@@ -118,7 +116,6 @@ class UnsignUser with ChangeNotifier {
         phoneNumberFirebaseId:
             parsedUserBody["phoneNumberFirebaseId"].toString(),
         isPrivate: parsedUserBody["isPrivate"],
-        socketIds: List<String>.from(parsedUserBody["socketIds"]),
         posts: List<String>.from(parsedUserBody["posts"]),
         followers: List<String>.from(parsedUserBody["followers"]),
         followings: List<String>.from(parsedUserBody["followings"]),

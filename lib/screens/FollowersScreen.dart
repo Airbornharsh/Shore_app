@@ -25,8 +25,11 @@ class _FollowersScreenState extends State<FollowersScreen> {
       userId = ModalRoute.of(context)?.settings.arguments as String;
     });
 
+    print(userId);
+
     if (widget.start) {
       setState(() {
+        widget.start = false;
         _isLoading = true;
       });
       Provider.of<SignUser>(context, listen: false)
@@ -37,8 +40,6 @@ class _FollowersScreenState extends State<FollowersScreen> {
           followersUsers = el;
         });
       });
-
-      widget.start = false;
     }
 
     return Stack(

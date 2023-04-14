@@ -148,6 +148,7 @@ class _ProfileDetailsState extends State<ProfileDetails> {
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
             Container(
+              color: Colors.white,
               width: (MediaQuery.of(context).size.width - 4) / 3,
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -183,6 +184,7 @@ class _ProfileDetailsState extends State<ProfileDetails> {
                     arguments: widget.user.id);
               },
               child: Container(
+                color: Colors.white,
                 width: (MediaQuery.of(context).size.width - 4) / 3,
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -219,6 +221,7 @@ class _ProfileDetailsState extends State<ProfileDetails> {
                     arguments: widget.user.id);
               },
               child: Container(
+                color: Colors.white,
                 width: (MediaQuery.of(context).size.width - 4) / 3,
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,

@@ -83,7 +83,9 @@ class SignUser with ChangeNotifier {
             from: message["senderUserId"].toString(),
             message: message["message"],
             time: int.parse(message["time"]),
-            to: _user.id));
+            to: _user.id,
+            type: message["type"].toString(),
+            read: message["read"]));
 
     notifyListeners();
   }
@@ -1068,7 +1070,6 @@ class SignUser with ChangeNotifier {
           emailIdFirebaseId: user["emailIdFirebaseId"].toString(),
           phoneNumberFirebaseId: user["phoneNumberFirebaseId"].toString(),
           isPrivate: user["isPrivate"],
-          socketIds: List<String>.from(user["socketIds"]),
           posts: List<String>.from(user["posts"]),
           followers: List<String>.from(user["followers"]),
           followings: List<String>.from(user["followings"]),
@@ -1119,7 +1120,6 @@ class SignUser with ChangeNotifier {
           emailIdFirebaseId: user["emailIdFirebaseId"].toString(),
           phoneNumberFirebaseId: user["phoneNumberFirebaseId"].toString(),
           isPrivate: user["isPrivate"],
-          socketIds: List<String>.from(user["socketIds"]),
           posts: List<String>.from(user["posts"]),
           followers: List<String>.from(user["followers"]),
           followings: List<String>.from(user["followings"]),
@@ -1128,6 +1128,7 @@ class SignUser with ChangeNotifier {
         users.add(newUser);
       });
     } catch (e) {
+      print("Error in loadFollowersUsers");
       print(e);
     } finally {
       notifyListeners();
@@ -1153,8 +1154,6 @@ class SignUser with ChangeNotifier {
         throw res.body;
       }
 
-      print(parsedUserBody);
-
       _friends.clear();
       _roomMessages.clear();
       _friendRoomId.clear();
@@ -1172,7 +1171,9 @@ class SignUser with ChangeNotifier {
                 from: message["from"],
                 message: message["message"],
                 time: int.parse(message["time"]),
-                to: message["to"]));
+                to: message["to"],
+                read: message["read"],
+                type: message["type"]));
           } else {
             _roomMessages.putIfAbsent(
                 roomId.toString(),
@@ -1181,10 +1182,16 @@ class SignUser with ChangeNotifier {
                           from: message["from"],
                           message: message["message"],
                           time: int.parse(message["time"]),
-                          to: message["to"])
+                          to: message["to"],
+                          read: message["read"],
+                          type: message["type"])
                     ]);
           }
         });
+
+        if (user["messages"].length == 0) {
+          _roomMessages.putIfAbsent(roomId.toString(), () => []);
+        }
 
         UnsignUserModel newUser = UnsignUserModel(
           id: user["id"].toString(),
@@ -1198,7 +1205,6 @@ class SignUser with ChangeNotifier {
           emailIdFirebaseId: user["emailIdFirebaseId"].toString(),
           phoneNumberFirebaseId: user["phoneNumberFirebaseId"].toString(),
           isPrivate: user["isPrivate"],
-          socketIds: List<String>.from(user["socketIds"]),
           posts: List<String>.from(user["posts"]),
           followers: List<String>.from(user["followers"]),
           followings: List<String>.from(user["followings"]),
@@ -1240,7 +1246,6 @@ class SignUser with ChangeNotifier {
           emailIdFirebaseId: user["emailIdFirebaseId"].toString(),
           phoneNumberFirebaseId: user["phoneNumberFirebaseId"].toString(),
           isPrivate: user["isPrivate"],
-          socketIds: List<String>.from(user["socketIds"]),
           posts: List<String>.from(user["posts"]),
           followers: List<String>.from(user["followers"]),
           followings: List<String>.from(user["followings"]),
@@ -1344,7 +1349,6 @@ class SignUser with ChangeNotifier {
           emailIdFirebaseId: user["emailIdFirebaseId"].toString(),
           phoneNumberFirebaseId: user["phoneNumberFirebaseId"].toString(),
           isPrivate: user["isPrivate"],
-          socketIds: List<String>.from(user["socketIds"]),
           posts: List<String>.from(user["posts"]),
           followers: List<String>.from(user["followers"]),
           followings: List<String>.from(user["followings"]),
@@ -1367,11 +1371,38 @@ class SignUser with ChangeNotifier {
     final accessToken = await prefs.get("shore_accessToken") as String;
     final currentTime = DateTime.now().millisecondsSinceEpoch.toString();
     try {
-      _roomMessages[Functions.genHash(recieverUserId, _user.id)]?.add(Message(
-          from: _user.id.toString(),
-          message: message,
-          time: int.parse(currentTime),
-          to: recieverUserId));
+      final roomId = Functions.genHash(recieverUserId, _user.id);
+      if (_roomMessages.containsKey(roomId)) {
+        _roomMessages[roomId]?.add(Message(
+            from: _user.id.toString(),
+            message: message,
+            time: int.parse(currentTime),
+            to: recieverUserId,
+            read: false,
+            type: "text"));
+      } else {
+        // _roomMessages.putIfAbsent(
+        //     roomId.toString(),
+        //     () => [
+        //           Message(
+        //               from: _user.id.toString(),
+        //               message: message,
+        //               time: int.parse(currentTime),
+        //               to: recieverUserId,
+        //               read: false,
+        //               type: "text")
+        //         ]);
+
+        _roomMessages[roomId] = [
+          Message(
+              from: _user.id.toString(),
+              message: message,
+              time: int.parse(currentTime),
+              to: recieverUserId,
+              read: false,
+              type: "text")
+        ];
+      }
 
       notifyListeners();
 
@@ -1379,7 +1410,8 @@ class SignUser with ChangeNotifier {
           body: json.encode({
             "recieverUserId": recieverUserId,
             "message": message,
-            "currentTime": currentTime
+            "currentTime": currentTime,
+            "type": "text"
           }),
           headers: {
             "authorization": "Bearer $accessToken",

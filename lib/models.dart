@@ -68,7 +68,6 @@ class UnsignUserModel {
   final String phoneNumberFirebaseId;
   final String emailIdFirebaseId;
   final bool isPrivate;
-  final List<String> socketIds;
   final List<String> posts;
   final List<String> followers;
   final List<String> followings;
@@ -85,7 +84,6 @@ class UnsignUserModel {
     required this.emailIdFirebaseId,
     required this.phoneNumberFirebaseId,
     required this.isPrivate,
-    required this.socketIds,
     required this.posts,
     required this.followers,
     required this.followings,
@@ -159,10 +157,14 @@ class Message {
   String message;
   int time;
   String to;
+  String type;
+  bool read;
 
   Message(
       {required this.from,
       required this.message,
       required this.time,
+      required this.read,
+      required this.type,
       required this.to});
 }
