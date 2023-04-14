@@ -5,11 +5,13 @@ class UserModel {
   final String id;
   final String name;
   final String emailId;
+  final String emailIdFirebaseId;
   final String gender;
   final String userName;
   final String imgUrl;
   final String joinedDate;
   final String phoneNumber;
+  final String phoneNumberFirebaseId;
   final bool isPrivate;
   final List<String> posts;
   final List<String> followers;
@@ -30,6 +32,8 @@ class UserModel {
       {required this.id,
       required this.name,
       required this.emailId,
+      required this.emailIdFirebaseId,
+      required this.phoneNumberFirebaseId,
       required this.gender,
       required this.userName,
       required this.imgUrl,
@@ -57,9 +61,12 @@ class UnsignUserModel {
   final String name;
   final String gender;
   final String userName;
+  final String emailId;
   final String imgUrl;
   final String joinedDate;
   final String phoneNumber;
+  final String phoneNumberFirebaseId;
+  final String emailIdFirebaseId;
   final bool isPrivate;
   final List<String> socketIds;
   final List<String> posts;
@@ -71,9 +78,12 @@ class UnsignUserModel {
     required this.name,
     required this.gender,
     required this.userName,
+    required this.emailId,
     required this.imgUrl,
     required this.joinedDate,
     required this.phoneNumber,
+    required this.emailIdFirebaseId,
+    required this.phoneNumberFirebaseId,
     required this.isPrivate,
     required this.socketIds,
     required this.posts,

@@ -5,7 +5,9 @@ import 'package:shore_app/provider/SignUser.dart';
 import 'package:shore_app/screens/AuthScreen.dart';
 
 class AccountList extends StatefulWidget {
-  const AccountList({super.key});
+  bool isLoading;
+  Function setIsLoading;
+  AccountList({super.key, required this.isLoading, required this.setIsLoading});
 
   @override
   State<AccountList> createState() => _AccountListState();
@@ -33,10 +35,12 @@ class _AccountListState extends State<AccountList> {
           )),
       children: [
         ListTile(
-          onTap: () {
-            Provider.of<SignUser>(context, listen: false).logout();
+          onTap: () async {
+            widget.setIsLoading(true);
+            await Provider.of<SignUser>(context, listen: false).logout();
             Navigator.of(context).pop();
             Navigator.of(context).pushReplacementNamed(AuthScreen.routeName);
+            widget.setIsLoading(false);
           },
           title: Text("Log Out",
               style: TextStyle(

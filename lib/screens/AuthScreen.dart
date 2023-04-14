@@ -1,4 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_auth_platform_interface/src/auth_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -20,6 +21,7 @@ class _AuthScreenState extends State<AuthScreen> {
   var isLogin = true;
   var isConfirmCode = false;
   var isLoading = false;
+  bool isLoggedChecked = false;
   final _nameController = TextEditingController();
   final _userNameController = TextEditingController();
   final _phoneNumberController = TextEditingController();
@@ -128,36 +130,79 @@ class _AuthScreenState extends State<AuthScreen> {
   Future codeSubmit() async {
     changeLoading(true);
 
+    late final String emailIdFirebaseId;
+    late final String phoneNumberFirebaseId;
+    late final phoneAuthCredential;
+
     if (!isCodeValidation) {
       return;
     }
 
     try {
-      PhoneAuthCredential credential = PhoneAuthProvider.credential(
+      phoneAuthCredential = await PhoneAuthProvider.credential(
           verificationId: this.verificationId,
           smsCode: _confirmCodeController.text.trim());
 
       print("step 1");
 
       // Sign the user in (or link) with the credential
-      final authCredential = await auth.signInWithCredential(credential);
+      final authCredential =
+          await auth.signInWithCredential(phoneAuthCredential);
+
+      phoneNumberFirebaseId = authCredential.user!.uid;
 
       print("step 2");
 
       if (authCredential.user == null) {
         snackBar(context, "Invalid Code");
         changeLoading(false);
-
         return;
       }
+    } catch (e) {
+      print(e);
+      snackBar(context, "Invalid Code");
+      changeLoading(false);
+      return;
+    }
 
+    try {
+      final credential = await auth.createUserWithEmailAndPassword(
+        email: _emailIdController.text,
+        password: _passwordController.text,
+      );
+
+      credential.user?.sendEmailVerification();
+
+      emailIdFirebaseId = credential.user?.uid as String;
+
+      print("Send Email Verification");
+    } on FirebaseAuthException catch (e) {
+      if (e.code == 'weak-password') {
+        print('The password provided is too weak.');
+        snackBar(context, "Weak Password");
+      } else if (e.code == 'email-already-in-use') {
+        print('The account already exists for that email.');
+        snackBar(context, "Account already exists for this email.");
+      }
+      changeLoading(false);
+      return;
+    } catch (e) {
+      print("Email Auth Error$e");
+      changeLoading(false);
+      return;
+    }
+
+    try {
       String Res = await Provider.of<SignUser>(context, listen: false).signUp(
           _nameController.text,
           _userNameController.text,
           int.parse(_phoneNumberController.text),
           _emailIdController.text,
           _passwordController.text,
-          _confirmPasswordController.text);
+          _confirmPasswordController.text,
+          emailIdFirebaseId,
+          phoneNumberFirebaseId,
+          phoneAuthCredential);
 
       if (Res == "Done") {
         changeLogin(true);
@@ -183,45 +228,138 @@ class _AuthScreenState extends State<AuthScreen> {
       }
     } catch (e) {
       print(e);
-      snackBar(context, "Invalid Code");
+      return;
     } finally {
       changeLoading(false);
     }
   }
 
+  Future registerHandler() async {
+    changeLoading(true);
+
+    if (!isRegisterValidation) {
+      changeLoading(false);
+      return;
+    }
+    try {
+      auth.verifyPhoneNumber(
+          phoneNumber: "+91${_phoneNumberController.text}",
+          verificationCompleted: (PhoneAuthCredential credential) async {
+            print("Completed: ${credential}}");
+            changeLoading(false);
+          },
+          verificationFailed: (FirebaseAuthException e) {
+            print("Failed: $e");
+            changeLoading(false);
+          },
+          codeSent: (String verificationId, int? resendToken) {
+            setState(() {
+              this.verificationId = verificationId;
+            });
+            changeConfirmCode(true);
+            changeLoading(false);
+            print("Code Sent: $verificationId and $resendToken");
+          },
+          codeAutoRetrievalTimeout: (String verificationId) {
+            print("Timeout: $verificationId");
+            changeLoading(false);
+          });
+    } catch (e) {
+      print(e);
+      changeLoading(false);
+    }
+  }
+
+  Future loginHandler() async {
+    changeLoading(true);
+
+    if (!isLoginValidation) {
+      changeLoading(false);
+      return;
+    }
+
+    try {
+      String loginRes = await Provider.of<SignUser>(context, listen: false)
+          .signIn(_authController.text, _passwordController.text);
+
+      auth.signInWithEmailAndPassword(
+          email: Provider.of<SignUser>(context, listen: false)
+              .getUserDetails
+              .emailId,
+          password: _passwordController.text);
+
+      if (loginRes == "Done") {
+        snackBar(context, "Logged In");
+        Navigator.of(context).popAndPushNamed(HomeScreen.routeName);
+      } else {
+        var snackBar = SnackBar(
+          content: Text(loginRes),
+        );
+        ScaffoldMessenger.of(context).showSnackBar(snackBar);
+        // _authController.clear();
+        // _passwordController.clear();
+      }
+    } catch (e) {
+      print(e);
+    }
+
+    changeLoading(false);
+  }
+
   @override
   Widget build(BuildContext context) {
-    setState(() {
-      if (widget.start) {
-        isLoading = true;
-        // changeLoading(true);
-        void onLoad() async {
-          final prefs = await SharedPreferences.getInstance();
+    // setState(() {
+    if (widget.start) {
+      setState(() {
+        widget.start = false;
+      });
 
-          try {
-            if (prefs.containsKey("shore_accessToken")) {
-              bool isValid = await Provider.of<SignUser>(context, listen: false)
-                  .isValidAccessToken();
-              print(isValid);
-              // changeLoading(false);
-              if (isValid) {
-                changeRoute(HomeScreen.routeName, context);
-              }
+      auth.authStateChanges().listen((User? user) {
+        if (user == null) {
+          print('User is currently signed out!');
+        } else {
+          print('User is signed in!');
+        }
+      });
+      // changeLoading(true);
+      void onLoad() async {
+        final prefs = await SharedPreferences.getInstance();
+
+        try {
+          if (prefs.containsKey("shore_accessToken")) {
+            bool isValid = await Provider.of<SignUser>(context, listen: false)
+                .isValidAccessToken();
+            print(isValid);
+
+            // changeLoading(false);
+            if (isValid) {
+              changeRoute(HomeScreen.routeName, context);
             }
             setState(() {
+              changeLoading(false);
               isLoading = false;
               widget.start = false;
+              isLoggedChecked = true;
             });
-          } catch (e) {
-            print(e);
-            isLoading = false;
-            widget.start = false;
           }
+          setState(() {
+            changeLoading(false);
+            widget.start = false;
+            isLoggedChecked = true;
+          });
+        } catch (e) {
+          print(e);
+          changeLoading(false);
+          widget.start = false;
+          isLoggedChecked = true;
         }
-
-        onLoad();
       }
-    });
+
+      onLoad();
+
+      widget.start = false;
+    }
+    // });
 
     var login = Column(
       mainAxisAlignment: MainAxisAlignment.center,
@@ -316,29 +454,7 @@ class _AuthScreenState extends State<AuthScreen> {
           ]),
           child: TextButton(
               onPressed: () async {
-                changeLoading(true);
-
-                if (!isLoginValidation) {
-                  changeLoading(false);
-                  return;
-                }
-
-                String loginRes =
-                    await Provider.of<SignUser>(context, listen: false)
-                        .signIn(_authController.text, _passwordController.text);
-
-                if (loginRes == "Done") {
-                  snackBar(context, "Logged In");
-                  Navigator.of(context).popAndPushNamed(HomeScreen.routeName);
-                } else {
-                  var snackBar = SnackBar(
-                    content: Text(loginRes),
-                  );
-                  ScaffoldMessenger.of(context).showSnackBar(snackBar);
-                  // _authController.clear();
-                  // _passwordController.clear();
-                }
-                changeLoading(false);
+                await loginHandler();
               },
               style: ButtonStyle(
                   backgroundColor: MaterialStateProperty.all<Color>(
@@ -568,40 +684,7 @@ class _AuthScreenState extends State<AuthScreen> {
           ]),
           child: TextButton(
               onPressed: () async {
-                changeLoading(true);
-
-                if (!isRegisterValidation) {
-                  changeLoading(false);
-                  return;
-                }
-                try {
-                  auth.verifyPhoneNumber(
-                      phoneNumber: "+91${_phoneNumberController.text}",
-                      verificationCompleted:
-                          (PhoneAuthCredential credential) async {
-                        print("Completed: ${credential}}");
-                        changeLoading(false);
-                      },
-                      verificationFailed: (FirebaseAuthException e) {
-                        print("Failed: $e");
-                        changeLoading(false);
-                      },
-                      codeSent: (String verificationId, int? resendToken) {
-                        setState(() {
-                          this.verificationId = verificationId;
-                        });
-                        changeConfirmCode(true);
-                        changeLoading(false);
-                        print("Code Sent: $verificationId and $resendToken");
-                      },
-                      codeAutoRetrievalTimeout: (String verificationId) {
-                        print("Timeout: $verificationId");
-                        changeLoading(false);
-                      });
-                } catch (e) {
-                  print(e);
-                  changeLoading(false);
-                }
+                await registerHandler();
               },
               style: ButtonStyle(
                   backgroundColor: MaterialStateProperty.all<Color>(
@@ -756,26 +839,35 @@ class _AuthScreenState extends State<AuthScreen> {
       body: SingleChildScrollView(
         child: Stack(
           children: <Widget>[
-            Container(
-              height: MediaQuery.of(context).size.height,
-              width: MediaQuery.of(context).size.width,
-              padding: const EdgeInsets.only(
-                  top: 20, left: 10, right: 10, bottom: 20),
-              decoration: BoxDecoration(color: Colors.white),
-              child: Container(
-                width: (MediaQuery.of(context).size.width - 70),
+            if (isLoggedChecked)
+              Container(
                 height: MediaQuery.of(context).size.height,
-                child: Center(
-                  child: Container(
-                    child: isConfirmCode
-                        ? verify
-                        : isLogin
-                            ? login
-                            : register,
+                width: MediaQuery.of(context).size.width,
+                padding: const EdgeInsets.only(
+                    top: 20, left: 10, right: 10, bottom: 20),
+                decoration: BoxDecoration(color: Colors.white),
+                child: Container(
+                  width: (MediaQuery.of(context).size.width - 70),
+                  height: MediaQuery.of(context).size.height,
+                  child: Center(
+                    child: Container(
+                      child: isConfirmCode
+                          ? verify
+                          : isLogin
+                              ? login
+                              : register,
+                    ),
                   ),
                 ),
               ),
-            ),
+            if (!isLoggedChecked)
+              Container(
+                  height: MediaQuery.of(context).size.height,
+                  width: MediaQuery.of(context).size.width,
+                  child: Center(
+                    child: Image.asset("lib/assets/images/Shore_Logo.png",
+                        width: MediaQuery.of(context).size.width * 0.6),
+                  )),
             if (isLoading)
               Positioned(
                 top: 0,

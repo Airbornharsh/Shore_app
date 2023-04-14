@@ -52,6 +52,10 @@ dependencies:
   socket_io_client: ^2.0.1
   firebase_messaging: ^14.4.0
   pinput: ^2.2.31
+  flutterfire_ui: ^0.4.3+20
+  cloud_firestore: ^4.5.0
+  uuid: ^3.0.7
+  crypto: ^3.0.2
   # socket_io_client: ^2.0.1
 
 dev_dependencies:
@@ -95,6 +99,8 @@ flutter:
     - lib/assets/images/error.png
     - lib/assets/images/login/profile_login.png
     - lib/assets/images/login/otp.png
+    - lib/assets/images/Shore_Logo.png
+    - lib/assets/images/New_Shore_Logo.png
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware

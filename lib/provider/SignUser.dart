@@ -1,10 +1,12 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:http/http.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:shore_app/Components/HomeScreen/PhoneNumber.dart';
 import 'package:shore_app/models.dart';
 
 class SignUser with ChangeNotifier {
@@ -17,6 +19,8 @@ class SignUser with ChangeNotifier {
       imgUrl: "",
       joinedDate: DateTime.now().toString(),
       phoneNumber: "000000000",
+      emailIdFirebaseId: "",
+      phoneNumberFirebaseId: "",
       isPrivate: false,
       posts: [],
       followers: [],
@@ -76,33 +80,36 @@ class SignUser with ChangeNotifier {
 
   Future logout() async {
     final prefs = await SharedPreferences.getInstance();
+
+    FirebaseAuth.instance.signOut();
     // prefs.setString("shore_accessToken", "");
-    // _accessToken = "";
-    // _isAuth = false;
-    // _user = UserModel(
-    //     id: "1",
-    //     name: "",
-    //     emailId: "",
-    //     gender: "",
-    //     userName: "",
-    //     imgUrl: "",
-    //     joinedDate: DateTime.now().toString(),
-    //     phoneNumber: "000000000",
-    //     isPrivate: false,
-    //     posts: [],
-    //     followers: [],
-    //     followings: [],
-    //     closeFriends: [],
-    //     acceptedFollowerRequests: [],
-    //     declinedFollowerRequests: [],
-    //     requestingFollowers: [],
-    //     acceptedFollowingRequests: [],
-    //     declinedFollowingRequests: [],
-    //     requestingFollowing: [],
-    //     postLiked: [],
-    //     commentLiked: [],
-    //     commented: [],
-    //     fav: []);
+    _isAuth = false;
+    _user = UserModel(
+        id: "1",
+        name: "",
+        emailId: "",
+        gender: "",
+        userName: "",
+        imgUrl: "",
+        emailIdFirebaseId: "",
+        phoneNumberFirebaseId: "",
+        joinedDate: DateTime.now().toString(),
+        phoneNumber: "000000000",
+        isPrivate: false,
+        posts: [],
+        followers: [],
+        followings: [],
+        closeFriends: [],
+        acceptedFollowerRequests: [],
+        declinedFollowerRequests: [],
+        requestingFollowers: [],
+        acceptedFollowingRequests: [],
+        declinedFollowingRequests: [],
+        requestingFollowing: [],
+        postLiked: [],
+        commentLiked: [],
+        commented: [],
+        fav: []);
     notifyListeners();
 
     final deviceToken = await prefs.getString("shore_device_token") as String;
@@ -120,8 +127,10 @@ class SignUser with ChangeNotifier {
             "authorization": "Bearer $accessToken",
             "Content-Type": "application/json",
           });
+
+      await prefs.remove("shore_accessToken");
     } catch (e) {
-      print(e);
+      debugPrint(e.toString());
     }
   }
 
@@ -157,6 +166,9 @@ class SignUser with ChangeNotifier {
           imgUrl: parsedUserBody["imgUrl"].toString(),
           joinedDate: parsedUserBody["joinedDate"].toString(),
           phoneNumber: parsedUserBody["phoneNumber"].toString(),
+          emailIdFirebaseId: parsedUserBody["emailIdFirebaseId"].toString(),
+          phoneNumberFirebaseId:
+              parsedUserBody["phoneNumberFirebaseId"].toString(),
           isPrivate: parsedUserBody["isPrivate"],
           posts: List<String>.from(parsedUserBody["posts"]),
           followers: List<String>.from(parsedUserBody["followers"]),
@@ -181,7 +193,7 @@ class SignUser with ChangeNotifier {
 
       return true;
     } catch (e) {
-      print(e);
+      debugPrint(e.toString());
       return false;
     } finally {
       client.close();
@@ -214,6 +226,9 @@ class SignUser with ChangeNotifier {
           imgUrl: parsedUserBody["imgUrl"].toString(),
           joinedDate: parsedUserBody["joinedDate"].toString(),
           phoneNumber: parsedUserBody["phoneNumber"].toString(),
+          emailIdFirebaseId: parsedUserBody["emailIdFirebaseId"].toString(),
+          phoneNumberFirebaseId:
+              parsedUserBody["phoneNumberFirebaseId"].toString(),
           isPrivate: parsedUserBody["isPrivate"],
           posts: List<String>.from(parsedUserBody["posts"]),
           followers: List<String>.from(parsedUserBody["followers"]),
@@ -238,7 +253,7 @@ class SignUser with ChangeNotifier {
 
       return _user;
     } catch (e) {
-      print(e);
+      debugPrint(e.toString());
       return _user;
     } finally {
       client.close();
@@ -307,6 +322,9 @@ class SignUser with ChangeNotifier {
           imgUrl: parsedUserBody["imgUrl"].toString(),
           joinedDate: parsedUserBody["joinedDate"].toString(),
           phoneNumber: parsedUserBody["phoneNumber"].toString(),
+          emailIdFirebaseId: parsedUserBody["emailIdFirebaseId"].toString(),
+          phoneNumberFirebaseId:
+              parsedUserBody["phoneNumberFirebaseId"].toString(),
           isPrivate: parsedUserBody["isPrivate"],
           posts: List<String>.from(parsedUserBody["posts"]),
           followers: List<String>.from(parsedUserBody["followers"]),
@@ -331,7 +349,7 @@ class SignUser with ChangeNotifier {
 
       return "Done";
     } catch (e) {
-      print(e);
+      debugPrint(e.toString());
       return "Error";
     } finally {
       client.close();
@@ -372,6 +390,9 @@ class SignUser with ChangeNotifier {
           imgUrl: parsedUserBody["imgUrl"].toString(),
           joinedDate: parsedUserBody["joinedDate"].toString(),
           phoneNumber: parsedUserBody["phoneNumber"].toString(),
+          emailIdFirebaseId: parsedUserBody["emailIdFirebaseId"].toString(),
+          phoneNumberFirebaseId:
+              parsedUserBody["phoneNumberFirebaseId"].toString(),
           isPrivate: parsedUserBody["isPrivate"],
           posts: List<String>.from(parsedUserBody["posts"]),
           followers: List<String>.from(parsedUserBody["followers"]),
@@ -398,7 +419,7 @@ class SignUser with ChangeNotifier {
 
       return true;
     } catch (e) {
-      print(e);
+      debugPrint(e.toString());
       return false;
     } finally {
       client.close();
@@ -407,13 +428,15 @@ class SignUser with ChangeNotifier {
   }
 
   Future<String> signUp(
-    String name,
-    String userName,
-    int phoneNumber,
-    String emailId,
-    String password,
-    String confirmPasssword,
-  ) async {
+      String name,
+      String userName,
+      int phoneNumber,
+      String emailId,
+      String password,
+      String confirmPasssword,
+      String emailIdFirebaseId,
+      String phoneNumberFirebaseId,
+      PhoneAuthCredential phoneAuthCredential) async {
     var client = Client();
     final prefs = await SharedPreferences.getInstance();
     String domainUri = prefs.get("shore_backend_uri") as String;
@@ -431,7 +454,9 @@ class SignUser with ChangeNotifier {
             "userName": userName,
             "emailId": emailId,
             "password": password,
-            "deviceToken": deviceToken
+            "deviceToken": deviceToken,
+            "emailIdFirebaseId": emailIdFirebaseId,
+            "phoneNumberFirebaseId": phoneNumberFirebaseId
           }),
           headers: {"Content-Type": "application/json"});
 
@@ -439,11 +464,19 @@ class SignUser with ChangeNotifier {
         return json.decode(res.body)["message"];
       }
 
+      final credential = await FirebaseAuth.instance
+          .signInWithEmailAndPassword(email: emailId, password: password);
+
+      debugPrint("Started Updating");
+
+      await credential.user!.updateDisplayName(userName.toString());
+
+      debugPrint("Updated Display Name");
       // var parsedBody = json.decode(res.body);
 
       return "Done";
     } catch (e) {
-      print(e);
+      debugPrint(e.toString());
       return "Error";
     } finally {
       client.close();
@@ -478,7 +511,7 @@ class SignUser with ChangeNotifier {
 
       return true;
     } catch (e) {
-      print(e);
+      debugPrint(e.toString());
       return false;
     } finally {
       notifyListeners();
@@ -499,7 +532,7 @@ class SignUser with ChangeNotifier {
 
       return fileUrl;
     } catch (e) {
-      print(e);
+      debugPrint(e.toString());
       return "";
     } finally {}
   }
@@ -525,7 +558,7 @@ class SignUser with ChangeNotifier {
 
       return true;
     } catch (e) {
-      print(e);
+      debugPrint(e.toString());
       return false;
     } finally {
       notifyListeners();
@@ -553,7 +586,7 @@ class SignUser with ChangeNotifier {
 
       return true;
     } catch (e) {
-      print(e);
+      debugPrint(e.toString());
       return false;
     } finally {
       notifyListeners();
@@ -579,7 +612,7 @@ class SignUser with ChangeNotifier {
 
       return true;
     } catch (e) {
-      print(e);
+      debugPrint(e.toString());
       return false;
     } finally {
       notifyListeners();
@@ -606,7 +639,7 @@ class SignUser with ChangeNotifier {
 
       return true;
     } catch (e) {
-      print(e);
+      debugPrint(e.toString());
       return false;
     } finally {
       notifyListeners();
@@ -643,7 +676,7 @@ class SignUser with ChangeNotifier {
         _userPosts.add(newPost);
       });
     } catch (e) {
-      print(e);
+      debugPrint(e.toString());
     } finally {
       notifyListeners();
     }
@@ -702,7 +735,7 @@ class SignUser with ChangeNotifier {
 
       return "withoutImg";
     } catch (e) {
-      print(e);
+      debugPrint(e.toString());
       return "Error";
     } finally {
       notifyListeners();
@@ -779,7 +812,7 @@ class SignUser with ChangeNotifier {
 
       return "withImg";
     } catch (e) {
-      print(e);
+      debugPrint(e.toString());
       return "Error";
     } finally {
       notifyListeners();
@@ -812,7 +845,7 @@ class SignUser with ChangeNotifier {
 
       return "withoutImg";
     } catch (e) {
-      print(e);
+      debugPrint(e.toString());
       return "Error";
     } finally {
       notifyListeners();
@@ -863,7 +896,7 @@ class SignUser with ChangeNotifier {
 
       return "withImg";
     } catch (e) {
-      print(e);
+      debugPrint(e.toString());
       return "Error";
     } finally {
       notifyListeners();
@@ -899,7 +932,7 @@ class SignUser with ChangeNotifier {
 
       return "withImg";
     } catch (e) {
-      print(e);
+      debugPrint(e.toString());
       return "Error";
     } finally {
       notifyListeners();
@@ -954,7 +987,7 @@ class SignUser with ChangeNotifier {
 
       return resBody["message"];
     } catch (e) {
-      print(e);
+      debugPrint(e.toString());
       return "Server Error";
     } finally {
       notifyListeners();
@@ -983,7 +1016,7 @@ class SignUser with ChangeNotifier {
 
       return true;
     } catch (e) {
-      print(e);
+      debugPrint(e.toString());
       return false;
     } finally {
       notifyListeners();
@@ -1021,6 +1054,9 @@ class SignUser with ChangeNotifier {
           imgUrl: user["imgUrl"].toString(),
           joinedDate: user["joinedDate"].toString(),
           phoneNumber: user["phoneNumber"].toString(),
+          emailId: user["emailId"].toString(),
+          emailIdFirebaseId: user["emailIdFirebaseId"].toString(),
+          phoneNumberFirebaseId: user["phoneNumberFirebaseId"].toString(),
           isPrivate: user["isPrivate"],
           socketIds: List<String>.from(user["socketIds"]),
           posts: List<String>.from(user["posts"]),
@@ -1031,7 +1067,7 @@ class SignUser with ChangeNotifier {
         users.add(newUser);
       });
     } catch (e) {
-      print(e);
+      debugPrint(e.toString());
     } finally {
       notifyListeners();
     }
@@ -1069,6 +1105,9 @@ class SignUser with ChangeNotifier {
           imgUrl: user["imgUrl"].toString(),
           joinedDate: user["joinedDate"].toString(),
           phoneNumber: user["phoneNumber"].toString(),
+          emailId: user["emailId"].toString(),
+          emailIdFirebaseId: user["emailIdFirebaseId"].toString(),
+          phoneNumberFirebaseId: user["phoneNumberFirebaseId"].toString(),
           isPrivate: user["isPrivate"],
           socketIds: List<String>.from(user["socketIds"]),
           posts: List<String>.from(user["posts"]),
@@ -1079,7 +1118,7 @@ class SignUser with ChangeNotifier {
         users.add(newUser);
       });
     } catch (e) {
-      print(e);
+      debugPrint(e.toString());
     } finally {
       notifyListeners();
     }
@@ -1136,6 +1175,9 @@ class SignUser with ChangeNotifier {
           imgUrl: user["imgUrl"].toString(),
           joinedDate: user["joinedDate"].toString(),
           phoneNumber: user["phoneNumber"].toString(),
+          emailId: user["emailId"].toString(),
+          emailIdFirebaseId: user["emailIdFirebaseId"].toString(),
+          phoneNumberFirebaseId: user["phoneNumberFirebaseId"].toString(),
           isPrivate: user["isPrivate"],
           socketIds: List<String>.from(user["socketIds"]),
           posts: List<String>.from(user["posts"]),
@@ -1146,7 +1188,7 @@ class SignUser with ChangeNotifier {
         _friends.add(newUser);
       });
     } catch (e) {
-      print(e);
+      debugPrint(e.toString());
     } finally {
       notifyListeners();
     }
@@ -1175,6 +1217,9 @@ class SignUser with ChangeNotifier {
           imgUrl: user["imgUrl"].toString(),
           joinedDate: user["joinedDate"].toString(),
           phoneNumber: user["phoneNumber"].toString(),
+          emailId: user["emailId"].toString(),
+          emailIdFirebaseId: user["emailIdFirebaseId"].toString(),
+          phoneNumberFirebaseId: user["phoneNumberFirebaseId"].toString(),
           isPrivate: user["isPrivate"],
           socketIds: List<String>.from(user["socketIds"]),
           posts: List<String>.from(user["posts"]),
@@ -1185,7 +1230,7 @@ class SignUser with ChangeNotifier {
         users.add(newUser);
       });
     } catch (e) {
-      print(e);
+      debugPrint(e.toString());
     } finally {
       notifyListeners();
     }
@@ -1216,7 +1261,7 @@ class SignUser with ChangeNotifier {
 
       return true;
     } catch (e) {
-      print(e);
+      debugPrint(e.toString());
       return false;
     } finally {
       notifyListeners();
@@ -1247,7 +1292,7 @@ class SignUser with ChangeNotifier {
 
       return true;
     } catch (e) {
-      print(e);
+      debugPrint(e.toString());
       return false;
     } finally {
       notifyListeners();
@@ -1276,6 +1321,9 @@ class SignUser with ChangeNotifier {
           imgUrl: user["imgUrl"].toString(),
           joinedDate: user["joinedDate"].toString(),
           phoneNumber: user["phoneNumber"].toString(),
+          emailId: user["emailId"].toString(),
+          emailIdFirebaseId: user["emailIdFirebaseId"].toString(),
+          phoneNumberFirebaseId: user["phoneNumberFirebaseId"].toString(),
           isPrivate: user["isPrivate"],
           socketIds: List<String>.from(user["socketIds"]),
           posts: List<String>.from(user["posts"]),
@@ -1286,7 +1334,7 @@ class SignUser with ChangeNotifier {
         users.add(newUser);
       });
     } catch (e) {
-      print(e);
+      debugPrint(e.toString());
     } finally {
       notifyListeners();
     }
@@ -1321,7 +1369,7 @@ class SignUser with ChangeNotifier {
 
       return true;
     } catch (e) {
-      print(e);
+      debugPrint(e.toString());
       return false;
     }
   }

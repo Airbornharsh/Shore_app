@@ -6,6 +6,7 @@ import 'package:shore_app/Components/ChatScreen/Chats.dart';
 import 'package:shore_app/Components/CustomAppBar.dart';
 import 'package:shore_app/Components/HomeScreen/Home.dart';
 import 'package:shore_app/Components/Profile/Profile.dart';
+import 'package:shore_app/Utils/cloud_firestore.dart';
 import 'package:shore_app/models.dart';
 import 'package:shore_app/provider/AppSetting.dart';
 import 'package:shore_app/provider/Posts.dart';
@@ -56,9 +57,8 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     // TODO: implement initState
-    super.initState();
-
     notificationSetting();
+    cloud_firestore.updateAvailability();
 
     _pageController = PageController(initialPage: 1);
 
@@ -69,6 +69,8 @@ class _HomeScreenState extends State<HomeScreen> {
     }
 
     onLoad();
+
+    super.initState();
   }
 
   @override
