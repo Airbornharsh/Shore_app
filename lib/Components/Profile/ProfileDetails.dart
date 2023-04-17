@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shore_app/models.dart';
@@ -41,23 +42,23 @@ class _ProfileDetailsState extends State<ProfileDetails> {
                   tag: "user-${widget.user.id}",
                   child: ClipRRect(
                       borderRadius: BorderRadius.circular(10),
-                      child: Image.network(
-                          widget.user.imgUrl.isNotEmpty
-                              ? widget.user.imgUrl
-                              : "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png",
-                          height: 90,
-                          width: 90,
-                          fit: BoxFit.cover,
-                          filterQuality: FilterQuality.low, errorBuilder:
-                              (BuildContext context, Object exception,
-                                  StackTrace? stackTrace) {
-                        return Container(
-                            width: 90,
+                      child: CachedNetworkImage(
+                        imageUrl: widget.user.imgUrl.isNotEmpty
+                            ? widget.user.imgUrl
+                            : "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png",
+                        height: 90,
+                        width: 90,
+                        memCacheWidth: 90,
+                        memCacheHeight: 90,
+                        fit: BoxFit.cover,
+                        filterQuality: FilterQuality.low,
+                        errorWidget: (context, url, error) => Container(
                             height: 90,
+                            width: 90,
                             child: Center(
                                 child: Image.asset(
-                                    "lib/assets/images/error.png")));
-                      })),
+                                    "lib/assets/images/error.png"))),
+                      )),
                 ),
                 const SizedBox(
                   height: 50,

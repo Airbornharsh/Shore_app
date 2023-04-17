@@ -108,12 +108,18 @@ class _HomeScreenState extends State<HomeScreen> {
       Provider.of<SignUser>(context, listen: false).loadUserPosts().then((el) {
         setState(() {
           userPostList = el;
+          setState(() {
+            widget.start = false;
+          });
         });
       });
 
       Provider.of<Posts>(context, listen: false).loadPosts().then((el) {
         setState(() {
           postList = el;
+          setState(() {
+            widget.start = false;
+          });
         });
       });
 
@@ -121,10 +127,6 @@ class _HomeScreenState extends State<HomeScreen> {
         context,
         listen: false,
       ).loadFriendsUsers();
-
-      setState(() {
-        widget.start = false;
-      });
     }
 
     Provider.of<AppSetting>(context, listen: false).onLoad();
