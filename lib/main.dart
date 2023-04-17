@@ -100,8 +100,8 @@ Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   if (message != null) {
     await Firebase.initializeApp();
     print("Handling a background message: ${message.data}");
-    Navigator.of(navigatorKey.currentState!.context)
-        .popUntil((route) => route == HomeScreen.routeName);
+    // Navigator.of(navigatorKey.currentState!.context)
+    //     .popUntil((route) => route == HomeScreen.routeName);
     Navigator.of(navigatorKey.currentState!.context)
         .pushNamed(HomeScreen.routeName);
     Navigator.of(

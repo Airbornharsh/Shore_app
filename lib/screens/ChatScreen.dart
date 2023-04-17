@@ -4,6 +4,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:shore_app/Utils/Functions.dart';
 import 'package:shore_app/Utils/cloud_firestore.dart';
@@ -44,6 +45,14 @@ class _ChatScreenState extends State<ChatScreen> {
         widget.start = false;
         _isLoading = false;
       });
+      // Timer(Duration(milliseconds: 400), () {
+      //   _scrollController.jumpTo(_scrollController.position.maxScrollExtent);
+      //   // _scrollController.animateTo(
+      //   //   0.0,
+      //   //   curve: Curves.easeOut,
+      //   //   duration: const Duration(milliseconds: 300),
+      //   // );
+      // });
       // socketClient = SocketClient.staticInstance.socket!;
 
       // socketClient.on("receive-message-id", (data) {
@@ -61,15 +70,6 @@ class _ChatScreenState extends State<ChatScreen> {
       // });
     }
 
-    Timer(Duration(milliseconds: 4), () {
-      _scrollController.jumpTo(_scrollController.position.maxScrollExtent);
-      // _scrollController.animateTo(
-      //   0.0,
-      //   curve: Curves.easeOut,
-      //   duration: const Duration(milliseconds: 300),
-      // );
-    });
-
     // print(messages.length);
 
     // if (socketClient.connected) {
@@ -84,7 +84,9 @@ class _ChatScreenState extends State<ChatScreen> {
       if (messageText.trim().isEmpty) return;
       messageController.clear();
       bool res = await Provider.of<SignUser>(context, listen: false)
-          .sendMessage(userId, messageText);
+          .sendMessage(userId, messageText, _scrollController);
+
+      _scrollController.jumpTo(_scrollController.position.maxScrollExtent);
     }
 
     return Stack(
@@ -177,50 +179,109 @@ class _ChatScreenState extends State<ChatScreen> {
                         physics: BouncingScrollPhysics(),
                         shrinkWrap: true,
                         itemBuilder: (context, index) {
+                          Timer(Duration.zero, () {
+                            _scrollController.jumpTo(
+                                _scrollController.position.maxScrollExtent);
+                          });
+
                           final messageData = messages[index];
                           print("${messageData.from} $signUserId");
                           if (messageData.from == signUserId) {
-                            return Container(
-                              decoration: BoxDecoration(
-                                  color: const Color.fromARGB(255, 0, 190, 184),
-                                  borderRadius: BorderRadius.circular(4)),
-                              padding: EdgeInsets.symmetric(
-                                  horizontal: 10, vertical: 13),
-                              width: MediaQuery.of(context).size.width,
-                              margin: EdgeInsets.only(
-                                  left: MediaQuery.of(context).size.width * 0.2,
-                                  bottom: 8,
-                                  top: 8,
-                                  right: 12),
-                              alignment: AlignmentDirectional.centerStart,
-                              child: Text(
-                                messageData.message,
-                                overflow: TextOverflow.visible,
-                                style: TextStyle(
-                                    fontSize: 16, color: Colors.white),
-                              ),
+                            return Column(
+                              children: [
+                                Container(
+                                  decoration: BoxDecoration(
+                                      color: const Color.fromARGB(
+                                          255, 0, 190, 184),
+                                      borderRadius: BorderRadius.only(
+                                          bottomLeft: Radius.circular(12),
+                                          topLeft: Radius.circular(12),
+                                          bottomRight: Radius.circular(0),
+                                          topRight: Radius.circular(12))),
+                                  padding: EdgeInsets.symmetric(
+                                      horizontal: 10, vertical: 13),
+                                  width: MediaQuery.of(context).size.width,
+                                  margin: EdgeInsets.only(
+                                      left: MediaQuery.of(context).size.width *
+                                          0.2,
+                                      bottom: 8,
+                                      top: 8,
+                                      right: 12),
+                                  alignment: AlignmentDirectional.centerStart,
+                                  child: Text(
+                                    messageData.message,
+                                    overflow: TextOverflow.visible,
+                                    style: TextStyle(
+                                        fontSize: 16, color: Colors.white),
+                                  ),
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 12),
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.end,
+                                    children: [
+                                      Text(
+                                        DateFormat.jm().format(
+                                            DateTime.fromMillisecondsSinceEpoch(
+                                                messageData.time)),
+                                        style: TextStyle(
+                                          fontSize: 10,
+                                          color: Colors.grey.shade400,
+                                        ),
+                                      )
+                                    ],
+                                  ),
+                                )
+                              ],
                             );
                           } else {
-                            return Container(
-                              decoration: BoxDecoration(
-                                  color: Colors.grey.shade400,
-                                  borderRadius: BorderRadius.circular(4)),
-                              padding: EdgeInsets.symmetric(
-                                  horizontal: 10, vertical: 13),
-                              width: MediaQuery.of(context).size.width,
-                              margin: EdgeInsets.only(
-                                  right:
-                                      MediaQuery.of(context).size.width * 0.2,
-                                  bottom: 8,
-                                  top: 8,
-                                  left: 12),
-                              alignment: AlignmentDirectional.centerStart,
-                              child: Text(
-                                messageData.message,
-                                overflow: TextOverflow.visible,
-                                style: TextStyle(
-                                    fontSize: 16, color: Colors.white),
-                              ),
+                            return Column(
+                              children: [
+                                Container(
+                                  decoration: BoxDecoration(
+                                      color: Colors.grey.shade400,
+                                      borderRadius: BorderRadius.only(
+                                          bottomLeft: Radius.circular(0),
+                                          topLeft: Radius.circular(12),
+                                          bottomRight: Radius.circular(12),
+                                          topRight: Radius.circular(12))),
+                                  padding: EdgeInsets.symmetric(
+                                      horizontal: 10, vertical: 13),
+                                  width: MediaQuery.of(context).size.width,
+                                  margin: EdgeInsets.only(
+                                      right: MediaQuery.of(context).size.width *
+                                          0.2,
+                                      bottom: 8,
+                                      top: 8,
+                                      left: 12),
+                                  alignment: AlignmentDirectional.centerStart,
+                                  child: Text(
+                                    messageData.message,
+                                    overflow: TextOverflow.visible,
+                                    style: TextStyle(
+                                        fontSize: 16, color: Colors.white),
+                                  ),
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 12),
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        DateFormat.jm().format(
+                                            DateTime.fromMillisecondsSinceEpoch(
+                                                messageData.time)),
+                                        style: TextStyle(
+                                          fontSize: 10,
+                                          color: Colors.grey.shade400,
+                                        ),
+                                      )
+                                    ],
+                                  ),
+                                )
+                              ],
                             );
                           }
                         },

@@ -1416,46 +1416,53 @@ class SignUser with ChangeNotifier {
     return users;
   }
 
-  Future<bool> sendMessage(String recieverUserId, String message) async {
-    var client = Client();
-    final prefs = await SharedPreferences.getInstance();
-    final domainUri = await prefs.get("shore_backend_uri") as String;
-    final accessToken = await prefs.get("shore_accessToken") as String;
+  Future<bool> sendMessage(String recieverUserId, String message,
+      ScrollController scrollController) async {
     final currentTime = DateTime.now().millisecondsSinceEpoch.toString();
-    try {
-      final roomId = Functions.genHash(recieverUserId, _user.id);
-      if (_roomMessages.containsKey(roomId)) {
-        _roomMessages[roomId]?.add(Message(
+    final roomId = Functions.genHash(recieverUserId, _user.id);
+    if (_roomMessages.containsKey(roomId)) {
+      _roomMessages[roomId]?.add(Message(
+          from: _user.id.toString(),
+          message: message,
+          time: int.parse(currentTime),
+          to: recieverUserId,
+          read: false,
+          type: "text"));
+    } else {
+      // _roomMessages.putIfAbsent(
+      //     roomId.toString(),
+      //     () => [
+      //           Message(
+      //               from: _user.id.toString(),
+      //               message: message,
+      //               time: int.parse(currentTime),
+      //               to: recieverUserId,
+      //               read: false,
+      //               type: "text")
+      //         ]);
+
+      _roomMessages[roomId] = [
+        Message(
             from: _user.id.toString(),
             message: message,
             time: int.parse(currentTime),
             to: recieverUserId,
             read: false,
-            type: "text"));
-      } else {
-        // _roomMessages.putIfAbsent(
-        //     roomId.toString(),
-        //     () => [
-        //           Message(
-        //               from: _user.id.toString(),
-        //               message: message,
-        //               time: int.parse(currentTime),
-        //               to: recieverUserId,
-        //               read: false,
-        //               type: "text")
-        //         ]);
+            type: "text")
+      ];
+    }
 
-        _roomMessages[roomId] = [
-          Message(
-              from: _user.id.toString(),
-              message: message,
-              time: int.parse(currentTime),
-              to: recieverUserId,
-              read: false,
-              type: "text")
-        ];
-      }
+    scrollController.jumpTo(
+      scrollController.position.maxScrollExtent,
+    );
 
+    notifyListeners();
+
+    var client = Client();
+    final prefs = await SharedPreferences.getInstance();
+    final domainUri = await prefs.get("shore_backend_uri") as String;
+    final accessToken = await prefs.get("shore_accessToken") as String;
+    try {
       cloud_firestore.sendMessage(
           roomId: roomId,
           from: _user.id.toString(),
@@ -1465,19 +1472,17 @@ class SignUser with ChangeNotifier {
           read: false,
           type: "text");
 
-      notifyListeners();
-
-      // await client.post(Uri.parse("$domainUri/api/user/message/one"),
-      //     body: json.encode({
-      //       "recieverUserId": recieverUserId,
-      //       "message": message,
-      //       "currentTime": currentTime,
-      //       "type": "text"
-      //     }),
-      //     headers: {
-      //       "authorization": "Bearer $accessToken",
-      //       "Content-Type": "application/json",
-      //     });
+      await client.post(Uri.parse("$domainUri/api/user/message/one"),
+          body: json.encode({
+            "recieverUserId": recieverUserId,
+            "message": message,
+            "currentTime": currentTime,
+            "type": "text"
+          }),
+          headers: {
+            "authorization": "Bearer $accessToken",
+            "Content-Type": "application/json",
+          });
 
       return true;
     } catch (e) {
