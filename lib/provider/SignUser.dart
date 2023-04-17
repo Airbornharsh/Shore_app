@@ -7,6 +7,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:http/http.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:shore_app/Utils/Functions.dart';
+import 'package:shore_app/Utils/cloud_firestore.dart';
 import 'package:shore_app/models.dart';
 
 class SignUser with ChangeNotifier {
@@ -106,9 +107,13 @@ class SignUser with ChangeNotifier {
     return _roomMessages;
   }
 
-  List<Message>? getRoomMessage(String id) {
-    return _roomMessages[Functions.genHash(id, _user.id)];
-  }
+  // Future<List<Message>?> getRoomMessage(String id) async {
+  //   final messages =
+  //       await cloud_firestore.getMessages(Functions.genHash(_user.id, id));
+
+  //   print("Hii");
+  //   return messages;
+  // }
 
   Map<String, String> get getRoomIds {
     return _friendRoomId;
@@ -530,6 +535,8 @@ class SignUser with ChangeNotifier {
 
       debugPrint("Updated Display Name");
       // var parsedBody = json.decode(res.body);
+
+      cloud_firestore.createUser(name, phoneNumber);
 
       return "Done";
     } catch (e) {
@@ -1449,19 +1456,28 @@ class SignUser with ChangeNotifier {
         ];
       }
 
+      cloud_firestore.sendMessage(
+          roomId: roomId,
+          from: _user.id.toString(),
+          message: message,
+          time: int.parse(currentTime),
+          to: recieverUserId,
+          read: false,
+          type: "text");
+
       notifyListeners();
 
-      await client.post(Uri.parse("$domainUri/api/user/message/one"),
-          body: json.encode({
-            "recieverUserId": recieverUserId,
-            "message": message,
-            "currentTime": currentTime,
-            "type": "text"
-          }),
-          headers: {
-            "authorization": "Bearer $accessToken",
-            "Content-Type": "application/json",
-          });
+      // await client.post(Uri.parse("$domainUri/api/user/message/one"),
+      //     body: json.encode({
+      //       "recieverUserId": recieverUserId,
+      //       "message": message,
+      //       "currentTime": currentTime,
+      //       "type": "text"
+      //     }),
+      //     headers: {
+      //       "authorization": "Bearer $accessToken",
+      //       "Content-Type": "application/json",
+      //     });
 
       return true;
     } catch (e) {

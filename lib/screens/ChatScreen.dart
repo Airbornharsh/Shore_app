@@ -1,8 +1,12 @@
 import 'dart:async';
 
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:shore_app/Utils/Functions.dart';
+import 'package:shore_app/Utils/cloud_firestore.dart';
 import 'package:shore_app/models.dart';
 import 'package:shore_app/provider/SignUser.dart';
 
@@ -34,7 +38,12 @@ class _ChatScreenState extends State<ChatScreen> {
     final userId = ModalRoute.of(context)!.settings.arguments as String;
     final unsignUser = Provider.of<SignUser>(context).getFriend(userId);
     final signUserId = Provider.of<SignUser>(context).getUserDetails.id;
+    final roomId = Functions.genHash(signUserId, userId);
     if (widget.start) {
+      setState(() {
+        widget.start = false;
+        _isLoading = false;
+      });
       // socketClient = SocketClient.staticInstance.socket!;
 
       // socketClient.on("receive-message-id", (data) {
@@ -44,14 +53,15 @@ class _ChatScreenState extends State<ChatScreen> {
       //   });
       // });
 
-      setState(() {
-        messages = Provider.of<SignUser>(context).getRoomMessage(userId) ?? [];
-        widget.start = false;
-        _isLoading = false;
-      });
+      // Provider.of<SignUser>(context).getRoomMessage(userId).then((value) {
+      //   setState(() {
+      //     // messages = value!;
+      //     _isLoading = false;
+      //   });
+      // });
     }
 
-    Timer(Duration(milliseconds: 1), () {
+    Timer(Duration(milliseconds: 4), () {
       _scrollController.jumpTo(_scrollController.position.maxScrollExtent);
       // _scrollController.animateTo(
       //   0.0,
@@ -71,6 +81,7 @@ class _ChatScreenState extends State<ChatScreen> {
 
     void sendMessage() async {
       String messageText = messageController.text;
+      if (messageText.trim().isEmpty) return;
       messageController.clear();
       bool res = await Provider.of<SignUser>(context, listen: false)
           .sendMessage(userId, messageText);
@@ -135,57 +146,86 @@ class _ChatScreenState extends State<ChatScreen> {
           body: Column(
             children: [
               Expanded(
-                child: ListView.builder(
-                  controller: _scrollController,
-                  itemCount: messages.length,
-                  physics: BouncingScrollPhysics(),
-                  shrinkWrap: true,
-                  itemBuilder: (context, index) {
-                    final messageData = messages[index];
-                    print("${messageData.from} $signUserId");
-                    if (messageData.from == signUserId) {
-                      return Container(
-                        decoration: BoxDecoration(
-                            color: const Color.fromARGB(255, 0, 190, 184),
-                            borderRadius: BorderRadius.circular(4)),
-                        padding:
-                            EdgeInsets.symmetric(horizontal: 10, vertical: 13),
-                        width: MediaQuery.of(context).size.width,
-                        margin: EdgeInsets.only(
-                            left: MediaQuery.of(context).size.width * 0.2,
-                            bottom: 8,
-                            top: 8,
-                            right: 12),
-                        alignment: AlignmentDirectional.centerStart,
-                        child: Text(
-                          messageData.message,
-                          overflow: TextOverflow.visible,
-                          style: TextStyle(fontSize: 16, color: Colors.white),
-                        ),
+                child: StreamBuilder<Object>(
+                    stream: FirebaseFirestore.instance
+                        .collection('messages/$roomId/messages')
+                        .orderBy("time", descending: false)
+                        .snapshots(),
+                    builder: (context, snapshot) {
+                      if (snapshot.hasData) {
+                        messages.clear();
+                        final data = (snapshot.data as QuerySnapshot).docs;
+
+                        for (var i in data) {
+                          final message = Message(
+                              from: (i.data() as dynamic)["from"],
+                              message: (i.data() as dynamic)["message"],
+                              time: (i.data() as dynamic)["time"],
+                              read: (i.data() as dynamic)["read"],
+                              type: (i.data() as dynamic)["type"],
+                              to: (i.data() as dynamic)["to"]);
+
+                          messages.add(message);
+                        }
+                      } else {
+                        return SizedBox();
+                      }
+
+                      return ListView.builder(
+                        controller: _scrollController,
+                        itemCount: messages.length,
+                        physics: BouncingScrollPhysics(),
+                        shrinkWrap: true,
+                        itemBuilder: (context, index) {
+                          final messageData = messages[index];
+                          print("${messageData.from} $signUserId");
+                          if (messageData.from == signUserId) {
+                            return Container(
+                              decoration: BoxDecoration(
+                                  color: const Color.fromARGB(255, 0, 190, 184),
+                                  borderRadius: BorderRadius.circular(4)),
+                              padding: EdgeInsets.symmetric(
+                                  horizontal: 10, vertical: 13),
+                              width: MediaQuery.of(context).size.width,
+                              margin: EdgeInsets.only(
+                                  left: MediaQuery.of(context).size.width * 0.2,
+                                  bottom: 8,
+                                  top: 8,
+                                  right: 12),
+                              alignment: AlignmentDirectional.centerStart,
+                              child: Text(
+                                messageData.message,
+                                overflow: TextOverflow.visible,
+                                style: TextStyle(
+                                    fontSize: 16, color: Colors.white),
+                              ),
+                            );
+                          } else {
+                            return Container(
+                              decoration: BoxDecoration(
+                                  color: Colors.grey.shade400,
+                                  borderRadius: BorderRadius.circular(4)),
+                              padding: EdgeInsets.symmetric(
+                                  horizontal: 10, vertical: 13),
+                              width: MediaQuery.of(context).size.width,
+                              margin: EdgeInsets.only(
+                                  right:
+                                      MediaQuery.of(context).size.width * 0.2,
+                                  bottom: 8,
+                                  top: 8,
+                                  left: 12),
+                              alignment: AlignmentDirectional.centerStart,
+                              child: Text(
+                                messageData.message,
+                                overflow: TextOverflow.visible,
+                                style: TextStyle(
+                                    fontSize: 16, color: Colors.white),
+                              ),
+                            );
+                          }
+                        },
                       );
-                    } else {
-                      return Container(
-                        decoration: BoxDecoration(
-                            color: Colors.grey.shade400,
-                            borderRadius: BorderRadius.circular(4)),
-                        padding:
-                            EdgeInsets.symmetric(horizontal: 10, vertical: 13),
-                        width: MediaQuery.of(context).size.width,
-                        margin: EdgeInsets.only(
-                            right: MediaQuery.of(context).size.width * 0.2,
-                            bottom: 8,
-                            top: 8,
-                            left: 12),
-                        alignment: AlignmentDirectional.centerStart,
-                        child: Text(
-                          messageData.message,
-                          overflow: TextOverflow.visible,
-                          style: TextStyle(fontSize: 16, color: Colors.white),
-                        ),
-                      );
-                    }
-                  },
-                ),
+                    }),
               ),
               Stack(
                 children: [

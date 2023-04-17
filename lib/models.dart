@@ -167,4 +167,6 @@ class Message {
       required this.read,
       required this.type,
       required this.to});
+
+  static fromMap(Object? data) {}
 }
