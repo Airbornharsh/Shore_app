@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shore_app/models.dart';
@@ -83,22 +84,38 @@ class _ChatScreenState extends State<ChatScreen> {
             children: [
               ClipRRect(
                   borderRadius: BorderRadius.circular(100),
-                  child: Image.network(
-                      unsignUser.imgUrl.isNotEmpty
-                          ? unsignUser.imgUrl
-                          : "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png",
-                      height: 35,
-                      width: 35,
-                      fit: BoxFit.cover,
-                      filterQuality: FilterQuality.low, errorBuilder:
-                          (BuildContext context, Object exception,
-                              StackTrace? stackTrace) {
-                    return Container(
+                  // child: Image.network(
+                  //     unsignUser.imgUrl.isNotEmpty
+                  //         ? unsignUser.imgUrl
+                  //         : "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png",
+                  //     height: 35,
+                  //     width: 35,
+                  //     fit: BoxFit.cover,
+                  //     filterQuality: FilterQuality.low, errorBuilder:
+                  //         (BuildContext context, Object exception,
+                  //             StackTrace? stackTrace) {
+                  //   return Container(
+                  //       height: 35,
+                  //       width: 35,
+                  //       decoration: const BoxDecoration(),
+                  //       child: const Center(child: Text('😊')));
+                  // })),
+                  child: CachedNetworkImage(
+                    imageUrl: unsignUser.imgUrl.isNotEmpty
+                        ? unsignUser.imgUrl
+                        : "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png",
+                    height: 35,
+                    width: 35,
+                    memCacheHeight: 35,
+                    memCacheWidth: 35,
+                    fit: BoxFit.cover,
+                    filterQuality: FilterQuality.low,
+                    errorWidget: (context, url, error) => Container(
                         height: 35,
                         width: 35,
                         decoration: const BoxDecoration(),
-                        child: const Center(child: Text('😊')));
-                  })),
+                        child: const Center(child: Text('😊'))),
+                  )),
               SizedBox(
                 width: 4,
               ),

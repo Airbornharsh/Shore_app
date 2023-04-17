@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shore_app/models.dart';
@@ -53,22 +54,36 @@ class _UserPostListItemState extends State<UserPostListItem> {
                   children: [
                     ClipRRect(
                         borderRadius: BorderRadius.circular(10),
-                        child: Image.network(
-                            userDetails.imgUrl.isNotEmpty
-                                ? userDetails.imgUrl
-                                : "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png",
-                            height: 50,
-                            width: 50,
-                            fit: BoxFit.cover,
-                            filterQuality: FilterQuality.low, errorBuilder:
-                                (BuildContext context, Object exception,
-                                    StackTrace? stackTrace) {
-                          return Container(
+                        // child: Image.network(
+                        //     userDetails.imgUrl.isNotEmpty
+                        //         ? userDetails.imgUrl
+                        //         : "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png",
+                        //     height: 50,
+                        //     width: 50,
+                        //     fit: BoxFit.cover,
+                        //     filterQuality: FilterQuality.low, errorBuilder:
+                        //         (BuildContext context, Object exception,
+                        //             StackTrace? stackTrace) {
+                        //   return Container(
+                        //       height: 50,
+                        //       width: 50,
+                        //       decoration: const BoxDecoration(),
+                        //       child: const Center(child: Text('😊')));
+                        // })),
+                        child: CachedNetworkImage(
+                          imageUrl: userDetails.imgUrl.isNotEmpty
+                              ? userDetails.imgUrl
+                              : "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png",
+                          memCacheWidth: 50,
+                          memCacheHeight: 50,
+                          fit: BoxFit.cover,
+                          filterQuality: FilterQuality.low,
+                          errorWidget: (context, url, error) => Container(
                               height: 50,
                               width: 50,
                               decoration: const BoxDecoration(),
-                              child: const Center(child: Text('😊')));
-                        })),
+                              child: const Center(child: Text('😊'))),
+                        )),
                     const SizedBox(
                       width: 7,
                     ),
@@ -147,31 +162,52 @@ class _UserPostListItemState extends State<UserPostListItem> {
                   child: widget.post.url.isNotEmpty
                       ? Hero(
                           tag: widget.post.id,
-                          child: Image.network(widget.post.url,
-                              filterQuality: FilterQuality.low,
-                              cacheHeight:
-                                  MediaQuery.of(context).size.width.toInt(),
-                              loadingBuilder: (ctx, child, loadingProgress) {
-                            if (loadingProgress == null) return child;
-                            return SizedBox(
-                                height: MediaQuery.of(ctx).size.width,
-                                width: MediaQuery.of(ctx).size.width,
+                          // child: Image.network(widget.post.url,
+                          //     filterQuality: FilterQuality.low,
+                          //     cacheHeight:
+                          //         MediaQuery.of(context).size.width.toInt(),
+                          //     loadingBuilder: (ctx, child, loadingProgress) {
+                          //   if (loadingProgress == null) return child;
+                          //   return SizedBox(
+                          //       height: MediaQuery.of(ctx).size.width,
+                          //       width: MediaQuery.of(ctx).size.width,
+                          //       child: const Center(
+                          //         child: CircularProgressIndicator.adaptive(),
+                          //       ));
+                          // }, errorBuilder: (BuildContext context,
+                          //         Object exception, StackTrace? stackTrace) {
+                          //   return Container(
+                          //       width: MediaQuery.of(context).size.width,
+                          //       height: MediaQuery.of(context).size.width,
+                          //       decoration: const BoxDecoration(),
+                          //       child: Center(
+                          //           child: Image.asset(
+                          //               "lib/assets/images/error.png")));
+                          // }
+                          //     // cacheHeight: MediaQuery.of(context).size.width.toInt(),
+                          //     // cacheWidth: MediaQuery.of(context).size.width.toInt(),
+                          //     ),
+                          child: CachedNetworkImage(
+                            imageUrl: widget.post.url,
+                            memCacheWidth: MediaQuery.of(context)
+                                .size
+                                .width
+                                .toInt(), //  cacheWidth: MediaQuery.of(context).size.width.toInt(),
+                            filterQuality: FilterQuality.low,
+                            placeholder: (context, url) => SizedBox(
+                                height: MediaQuery.of(context).size.width,
+                                width: MediaQuery.of(context).size.width,
                                 child: const Center(
                                   child: CircularProgressIndicator.adaptive(),
-                                ));
-                          }, errorBuilder: (BuildContext context,
-                                  Object exception, StackTrace? stackTrace) {
-                            return Container(
+                                )),
+                            errorWidget: (context, url, error) => Container(
                                 width: MediaQuery.of(context).size.width,
                                 height: MediaQuery.of(context).size.width,
                                 decoration: const BoxDecoration(),
                                 child: Center(
                                     child: Image.asset(
-                                        "lib/assets/images/error.png")));
-                          }
-                              // cacheHeight: MediaQuery.of(context).size.width.toInt(),
-                              // cacheWidth: MediaQuery.of(context).size.width.toInt(),
-                              ),
+                                        "lib/assets/images/error.png"))),
+                          ),
                         )
                       : null,
                 ),

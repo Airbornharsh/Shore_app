@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:shore_app/models.dart';
 
@@ -19,15 +20,24 @@ class _UserPostItemState extends State<UserPostItem> {
           BoxDecoration(border: Border.all(color: Colors.white, width: 1)),
       child: Hero(
         tag: widget.userPostItem.id,
-        child: Image.network(widget.userPostItem.url,
-            filterQuality: FilterQuality.low,
-            fit: BoxFit.cover, errorBuilder: (BuildContext context,
-                Object exception, StackTrace? stackTrace) {
-          return SizedBox(
+        // child: Image.network(widget.userPostItem.url,
+        //     filterQuality: FilterQuality.low,
+        //     fit: BoxFit.cover, errorBuilder: (BuildContext context,
+        //         Object exception, StackTrace? stackTrace) {
+        //   return SizedBox(
+        //       width: MediaQuery.of(context).size.width / 3,
+        //       child:
+        //           Center(child: Image.asset("lib/assets/images/error.png")));
+        // }),
+        child: CachedNetworkImage(
+          imageUrl: widget.userPostItem.url,
+          memCacheWidth: MediaQuery.of(context).size.width ~/ 3,
+          filterQuality: FilterQuality.low,
+          fit: BoxFit.cover,
+          errorWidget: (context, url, error) => SizedBox(
               width: MediaQuery.of(context).size.width / 3,
-              child:
-                  Center(child: Image.asset("lib/assets/images/error.png")));
-        }),
+              child: Center(child: Image.asset("lib/assets/images/error.png"))),
+        ),
       ),
     );
   }

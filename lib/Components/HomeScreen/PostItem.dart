@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shore_app/models.dart';
@@ -7,6 +8,7 @@ import 'package:shore_app/provider/SignUser.dart';
 import 'package:shore_app/provider/UnsignUser.dart';
 import 'package:shore_app/screens/AuthScreen.dart';
 import 'package:shore_app/screens/UserScreen.dart';
+// import "package:cached_network_image/cached_network_image.dart"
 
 class PostItem extends StatefulWidget {
   String newDate;
@@ -91,21 +93,36 @@ class _PostItemState extends State<PostItem> {
                     children: [
                       ClipRRect(
                           borderRadius: BorderRadius.circular(10),
-                          child: Image.network(
-                              widget.post.profileUrl.isNotEmpty
-                                  ? widget.post.profileUrl
-                                  : "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png",
-                              height: 50,
-                              width: 50,
-                              fit: BoxFit.cover,
-                              filterQuality: FilterQuality.low, errorBuilder:
-                                  (BuildContext context, Object exception,
-                                      StackTrace? stackTrace) {
-                            return const SizedBox(
-                                height: 50,
-                                width: 50,
-                                child: Center(child: Text('😊')));
-                          })),
+                          // child: Image.network(
+                          //     widget.post.profileUrl.isNotEmpty
+                          //         ? widget.post.profileUrl
+                          //         : "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png",
+                          //     height: 50,
+                          //     width: 50,
+                          //     fit: BoxFit.cover,
+                          //     filterQuality: FilterQuality.low, errorBuilder:
+                          //         (BuildContext context, Object exception,
+                          //             StackTrace? stackTrace) {
+                          //   return const SizedBox(
+                          //       height: 50,
+                          //       width: 50,
+                          //       child: Center(child: Text('😊')));
+                          // })),
+                          child: CachedNetworkImage(
+                            imageUrl: widget.post.profileUrl.isNotEmpty
+                                ? widget.post.profileUrl
+                                : "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png",
+                            height: 50,
+                            width: 50,
+                            memCacheWidth: 50,
+                            fit: BoxFit.cover,
+                            filterQuality: FilterQuality.low,
+                            errorWidget: (context, url, error) =>
+                                const SizedBox(
+                                    height: 50,
+                                    width: 50,
+                                    child: Center(child: Text('😊'))),
+                          )),
                       const SizedBox(
                         width: 7,
                       ),
@@ -183,30 +200,64 @@ class _PostItemState extends State<PostItem> {
                   decoration: const BoxDecoration(
                       color: Color.fromARGB(31, 165, 165, 165)),
                   child: widget.post.url.isNotEmpty
-                      ? Image.network(widget.post.url,
+                      // ? Image.network(widget.post.url,
+                      //     filterQuality: FilterQuality.low,
+                      //     width: MediaQuery.of(context).size.width,
+                      //     cacheHeight:
+                      //         MediaQuery.of(context).size.width.toInt(),
+                      //     loadingBuilder: (ctx, child, loadingProgress) {
+                      //     if (loadingProgress == null) return child;
+                      //     return SizedBox(
+                      //         height: MediaQuery.of(ctx).size.width,
+                      //         width: MediaQuery.of(ctx).size.width,
+                      //         child: const Center(
+                      //           child: CircularProgressIndicator.adaptive(),
+                      //         ));
+                      //   }, errorBuilder: (BuildContext context,
+                      //         Object exception, StackTrace? stackTrace) {
+                      //     return SizedBox(
+                      //         width: MediaQuery.of(context).size.width,
+                      //         height: MediaQuery.of(context).size.width,
+                      //         child: Center(
+                      //             child: Image.asset(
+                      //                 "lib/assets/images/error.png")));
+                      //   }
+                      //     // cacheHeight: MediaQuery.of(context).size.width.toInt(),
+                      //     // cacheWidth: MediaQuery.of(context).size.width.toInt(),
+                      //     )
+
+                      ? CachedNetworkImage(
+                          imageUrl: widget.post.url,
                           filterQuality: FilterQuality.low,
-                          cacheHeight:
+                          width: MediaQuery.of(context).size.width,
+                          fit: BoxFit.cover,
+                          memCacheWidth:
                               MediaQuery.of(context).size.width.toInt(),
-                          loadingBuilder: (ctx, child, loadingProgress) {
-                          if (loadingProgress == null) return child;
-                          return SizedBox(
-                              height: MediaQuery.of(ctx).size.width,
-                              width: MediaQuery.of(ctx).size.width,
-                              child: const Center(
-                                child: CircularProgressIndicator.adaptive(),
-                              ));
-                        }, errorBuilder: (BuildContext context,
-                              Object exception, StackTrace? stackTrace) {
-                          return SizedBox(
+                          progressIndicatorBuilder:
+                              (context, url, downloadProgress) {
+                            return SizedBox(
+                                height: MediaQuery.of(context).size.width * 0.8,
+                                width: MediaQuery.of(context).size.width,
+                                child: const Center(
+                                  child: CircularProgressIndicator.adaptive(),
+                                ));
+                          },
+                          // placeholder: (context, url) {
+                          //   print("reloaded");
+                          //   return SizedBox(
+                          //       height: MediaQuery.of(context).size.width,
+                          //       width: MediaQuery.of(context).size.width,
+                          //       child: const Center(
+                          //         child: CircularProgressIndicator.adaptive(),
+                          //       ));
+                          // },
+                          errorWidget: (context, url, error) => SizedBox(
                               width: MediaQuery.of(context).size.width,
                               height: MediaQuery.of(context).size.width,
                               child: Center(
                                   child: Image.asset(
-                                      "lib/assets/images/error.png")));
-                        }
-                          // cacheHeight: MediaQuery.of(context).size.width.toInt(),
-                          // cacheWidth: MediaQuery.of(context).size.width.toInt(),
-                          )
+                                      "lib/assets/images/error.png"))),
+                        )
                       : null,
                 ),
               ),

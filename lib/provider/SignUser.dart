@@ -45,6 +45,47 @@ class SignUser with ChangeNotifier {
   // late String _accessToken;
   late bool _isAuth = false;
 
+  void init() async {
+    final prefs = await SharedPreferences.getInstance();
+    final user = await prefs.getString("shore_user_details");
+
+    final parsedUserBody = json.decode(user!);
+
+    _user = UserModel( 
+        id: parsedUserBody["_id"].toString(),
+        name: parsedUserBody["name"].toString(),
+        emailId: parsedUserBody["emailId"].toString(),
+        gender: parsedUserBody["gender"].toString(),
+        userName: parsedUserBody["userName"].toString(),
+        imgUrl: parsedUserBody["imgUrl"].toString(),
+        joinedDate: parsedUserBody["joinedDate"].toString(),
+        phoneNumber: parsedUserBody["phoneNumber"].toString(),
+        emailIdFirebaseId: parsedUserBody["emailIdFirebaseId"].toString(),
+        phoneNumberFirebaseId:
+            parsedUserBody["phoneNumberFirebaseId"].toString(),
+        isPrivate: parsedUserBody["isPrivate"],
+        posts: List<String>.from(parsedUserBody["posts"]),
+        followers: List<String>.from(parsedUserBody["followers"]),
+        followings: List<String>.from(parsedUserBody["followings"]),
+        closeFriends: List<String>.from(parsedUserBody["closeFriends"]),
+        acceptedFollowerRequests:
+            List<String>.from(parsedUserBody["acceptedFollowerRequests"]),
+        declinedFollowerRequests:
+            List<String>.from(parsedUserBody["declinedFollowerRequests"]),
+        requestingFollowers:
+            List<String>.from(parsedUserBody["requestingFollowers"]),
+        acceptedFollowingRequests:
+            List<String>.from(parsedUserBody["acceptedFollowingRequests"]),
+        declinedFollowingRequests:
+            List<String>.from(parsedUserBody["declinedFollowingRequests"]),
+        requestingFollowing:
+            List<String>.from(parsedUserBody["requestingFollowing"]),
+        postLiked: List<String>.from(parsedUserBody["postLiked"]),
+        commentLiked: List<String>.from(parsedUserBody["commentLiked"]),
+        commented: List<String>.from(parsedUserBody["commented"]),
+        fav: List<String>.from(parsedUserBody["fav"]));
+  }
+
   bool get getIsAuth {
     return _isAuth;
   }
@@ -325,6 +366,8 @@ class SignUser with ChangeNotifier {
 
       var parsedUserBody = json.decode(userRes.body);
 
+      prefs.setString("shore_user_details", json.encode(parsedUserBody));
+
       _user = UserModel(
           id: parsedUserBody["_id"].toString(),
           name: parsedUserBody["name"].toString(),
@@ -392,6 +435,8 @@ class SignUser with ChangeNotifier {
       if (res.statusCode != 200) {
         return false;
       }
+
+      prefs.setString("shore_user_details", json.encode(parsedUserBody));
 
       _user = UserModel(
           id: parsedUserBody["_id"].toString(),

@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_native_image/flutter_native_image.dart';
@@ -129,30 +130,55 @@ class _PostEditScreenState extends State<PostEditScreen> {
                                         : (post.url.isNotEmpty
                                             ? Hero(
                                                 tag: post.id,
-                                                child: Image.network(post.url,
-                                                    height: 400,
-                                                    width:
-                                                        MediaQuery.of(context)
-                                                            .size
-                                                            .width,
-                                                    filterQuality:
-                                                        FilterQuality.low,
-                                                    errorBuilder:
-                                                        (BuildContext context,
-                                                            Object exception,
-                                                            StackTrace?
-                                                                stackTrace) {
-                                                  return Container(
-                                                      width:
-                                                          MediaQuery.of(context)
-                                                              .size
-                                                              .width,
-                                                      height: 400,
-                                                      child: Center(
-                                                          child: Image.asset(
-                                                              "lib/assets/images/error.png")));
-                                                }),
-                                              )
+                                                // child: Image.network(post.url,
+                                                //     height: 400,
+                                                //     width:
+                                                //         MediaQuery.of(context)
+                                                //             .size
+                                                //             .width,
+                                                //     filterQuality:
+                                                //         FilterQuality.low,
+                                                //     errorBuilder:
+                                                //         (BuildContext context,
+                                                //             Object exception,
+                                                //             StackTrace?
+                                                //                 stackTrace) {
+                                                //   return Container(
+                                                //       width:
+                                                //           MediaQuery.of(context)
+                                                //               .size
+                                                //               .width,
+                                                //       height: 400,
+                                                //       child: Center(
+                                                //           child: Image.asset(
+                                                //               "lib/assets/images/error.png")));
+                                                // }),
+                                                child: CachedNetworkImage(
+                                                  imageUrl: post.url,
+                                                  height: 400,
+                                                  width: MediaQuery.of(context)
+                                                      .size
+                                                      .width,
+                                                  memCacheWidth:
+                                                      MediaQuery.of(context)
+                                                          .size
+                                                          .width
+                                                          .toInt(),
+                                                  filterQuality:
+                                                      FilterQuality.low,
+                                                  errorWidget: (context, url,
+                                                          error) =>
+                                                      Container(
+                                                          width: MediaQuery.of(
+                                                                      context)
+                                                                  .size
+                                                                  .width /
+                                                              2,
+                                                          height: 400,
+                                                          child: Center(
+                                                              child: Image.asset(
+                                                                  "lib/assets/images/error.png"))),
+                                                ))
                                             : null)),
                                 Positioned(
                                   right: 0,
