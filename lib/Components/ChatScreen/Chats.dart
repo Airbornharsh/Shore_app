@@ -79,6 +79,7 @@ class _ChatsState extends State<Chats> {
     return RefreshIndicator(
       onRefresh: () async {
         // socketClient.emit("list-ids-request");
+        Provider.of<SignUser>(context, listen: false).loadFriendsUsers();
       },
       child: Container(
         decoration: BoxDecoration(

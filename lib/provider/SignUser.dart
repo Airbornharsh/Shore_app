@@ -51,7 +51,7 @@ class SignUser with ChangeNotifier {
 
     final parsedUserBody = json.decode(user!);
 
-    _user = UserModel( 
+    _user = UserModel(
         id: parsedUserBody["_id"].toString(),
         name: parsedUserBody["name"].toString(),
         emailId: parsedUserBody["emailId"].toString(),
@@ -508,7 +508,7 @@ class SignUser with ChangeNotifier {
           body: json.encode({
             "name": name,
             "phoneNumber": phoneNumber,
-            "userName": userName,
+            "userName": userName.toLowerCase().trim(),
             "emailId": emailId,
             "password": password,
             "deviceToken": deviceToken,
@@ -769,7 +769,7 @@ class SignUser with ChangeNotifier {
       }
 
       if (userName.trim() != _user.userName) {
-        data["userName"] = userName;
+        data["userName"] = userName.toLowerCase().trim();
       }
 
       if (emailId.trim() != _user.emailId) {
@@ -835,7 +835,7 @@ class SignUser with ChangeNotifier {
       }
 
       if (userName.trim() != _user.userName) {
-        data["userName"] = userName;
+        data["userName"] = userName.toLowerCase().trim();
       }
 
       if (emailId.trim() != _user.emailId) {

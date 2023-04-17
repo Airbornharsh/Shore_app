@@ -97,6 +97,7 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     // setState(() {
     if (widget.start) {
+      Provider.of<SignUser>(context, listen: false).init();
       // _pageController.animateToPage(1,
       //     duration: const Duration(milliseconds: 500),
       //     curve: Curves.easeInOutQuart);
