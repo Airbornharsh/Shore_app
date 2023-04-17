@@ -38,7 +38,7 @@ AppBar CustomAppBar(BuildContext context) {
             },
             icon: const Icon(Icons.post_add)),
     ],
-    toolbarHeight: 130,
+    toolbarHeight: 96,
     title: Center(
       child: GestureDetector(
         onTap: () {

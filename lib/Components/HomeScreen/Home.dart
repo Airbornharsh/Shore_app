@@ -32,7 +32,7 @@ class _HomeState extends State<Home> {
         onRefresh: () async {
           widget.reloadPosts();
         },
-        child: Column(
+        child: Stack(
           children: [
             // if (Provider.of<SignUser>(context).getIsAuth) const Upload(),
             // const Upload(),
@@ -40,17 +40,27 @@ class _HomeState extends State<Home> {
             // height: 8,
             // ),
             // PhoneNumber(),
-            PostList(
-              addLoad: widget.addLoad,
-              postList: widget.postList,
-              isLoading: widget.isLoading,
-              setIsLoading: widget.setIsLoading,
+            Column(
+              children: [
+                PostList(
+                  addLoad: widget.addLoad,
+                  postList: widget.postList,
+                  isLoading: widget.isLoading,
+                  setIsLoading: widget.setIsLoading,
+                ),
+              ],
             ),
-            if (widget.isLoadingMore)
-              Container(
-                padding: const EdgeInsets.symmetric(vertical: 10),
-                child: const CircularProgressIndicator(),
-              )
+            Positioned(
+                child: widget.isLoadingMore
+                    ? SizedBox(
+                        height: 25,
+                        width: 25,
+                        child: CircularProgressIndicator(
+                          strokeWidth: 3,
+                        ))
+                    : const SizedBox(),
+                bottom: 9,
+                left: MediaQuery.of(context).size.width / 2 - 12),
           ],
         ),
       ),
