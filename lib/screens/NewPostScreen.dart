@@ -8,7 +8,6 @@ import 'package:provider/provider.dart';
 import 'package:shore_app/Utils/snackBar.dart';
 import 'package:shore_app/provider/AppSetting.dart';
 import 'package:shore_app/provider/SignUser.dart';
-import 'package:video_player/video_player.dart';
 
 class NewPostScreen extends StatefulWidget {
   static String routeName = "new-post";

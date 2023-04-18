@@ -44,7 +44,7 @@ class SignUser with ChangeNotifier {
   Map<String, List<Message>> _roomMessages = {};
 
   // late String _accessToken;
-  late bool _isAuth = false;
+  bool _isAuth = FirebaseAuth.instance.currentUser == null ? false : true;
 
   void init() async {
     final prefs = await SharedPreferences.getInstance();

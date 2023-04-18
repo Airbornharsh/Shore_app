@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:shore_app/provider/AppSetting.dart';
 import 'package:shore_app/provider/SignUser.dart';
-// import 'package:shore_app/screens/ChatsScreen.dart';
 import 'package:shore_app/screens/NewPostScreen.dart';
 import 'package:shore_app/screens/SearchScreen.dart';
 
@@ -27,9 +25,7 @@ Route _createRoute() {
 
 AppBar CustomAppBar(BuildContext context) {
   return AppBar(
-    backgroundColor: Provider.of<AppSetting>(context).getdarkMode
-        ? const Color.fromARGB(255, 0, 99, 95)
-        : const Color.fromARGB(255, 0, 190, 184),
+    backgroundColor: const Color.fromARGB(255, 0, 190, 184),
     actions: [
       if (Provider.of<SignUser>(context).getIsAuth)
         IconButton(
@@ -48,9 +44,7 @@ AppBar CustomAppBar(BuildContext context) {
             width: MediaQuery.of(context).size.width * 80 / 100,
             padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 3),
             decoration: BoxDecoration(
-                color: Provider.of<AppSetting>(context).getdarkMode
-                    ? Color.fromARGB(255, 0, 141, 136)
-                    : const Color.fromARGB(255, 1, 214, 207),
+                color: const Color.fromARGB(255, 1, 214, 207),
                 borderRadius: BorderRadius.circular(60)),
             child: const IgnorePointer(
               child: TextField(
