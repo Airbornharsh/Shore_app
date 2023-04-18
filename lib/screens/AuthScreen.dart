@@ -748,6 +748,15 @@ class _AuthScreenState extends State<AuthScreen> {
               fontWeight: FontWeight.w400,
               color: Colors.grey.shade400),
         ),
+        Text(
+          "Email Verification sent after Number Verification ${_emailIdController.text} skjkfmskmkmv sskgfposogosog",
+          overflow: TextOverflow.visible,
+          textAlign: TextAlign.center,
+          style: TextStyle(
+              fontSize: 15,
+              fontWeight: FontWeight.w400,
+              color: Colors.grey.shade400),
+        ),
         SizedBox(
           height: 18,
         ),
