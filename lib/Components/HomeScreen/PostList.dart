@@ -11,12 +11,14 @@ class PostList extends StatefulWidget {
   Function setIsLoading;
   bool isLoading;
   ScrollController scrollController;
+  Function setTop;
   PostList(
       {required this.postList,
       required this.addLoad,
       required this.isLoading,
       required this.setIsLoading,
       required this.scrollController,
+      required this.setTop,
       super.key});
 
   @override
@@ -37,8 +39,15 @@ class _PostListState extends State<PostList> {
       if (widget.scrollController.position.atEdge) {
         bool isTop = widget.scrollController.position.pixels == 0;
         if (!isTop) {
+          widget.setTop(false);
           await widget.addLoad();
+        } else {
+          widget.setTop(true);
         }
+      } else {
+        setState(() {
+          widget.setTop(false);
+        });
       }
     });
   }

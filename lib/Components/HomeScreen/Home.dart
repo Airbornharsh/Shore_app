@@ -26,6 +26,12 @@ class _HomeState extends State<Home> {
   bool _isTop = true;
   ScrollController _scrollController = ScrollController();
 
+  void setTop(bool isTop) {
+    setState(() {
+      _isTop = isTop;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -46,15 +52,15 @@ class _HomeState extends State<Home> {
             Column(
               children: [
                 PostList(
-                  addLoad: widget.addLoad,
-                  postList: widget.postList,
-                  isLoading: widget.isLoading,
-                  setIsLoading: widget.setIsLoading,
-                  scrollController: _scrollController
-                ),
+                    addLoad: widget.addLoad,
+                    postList: widget.postList,
+                    isLoading: widget.isLoading,
+                    setIsLoading: widget.setIsLoading,
+                    scrollController: _scrollController,
+                    setTop: setTop),
               ],
             ),
-            // if (!_isTop)
+            if (!_isTop)
               Positioned(
                   child: GestureDetector(
                     onTap: () {
