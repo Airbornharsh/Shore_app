@@ -1417,14 +1417,13 @@ class SignUser with ChangeNotifier {
   }
 
   Future<bool> sendMessage(String recieverUserId, String message,
-      ScrollController scrollController) async {
-    final currentTime = DateTime.now().millisecondsSinceEpoch.toString();
+      ScrollController scrollController, int currentTime) async {
     final roomId = Functions.genHash(recieverUserId, _user.id);
     if (_roomMessages.containsKey(roomId)) {
       _roomMessages[roomId]?.add(Message(
           from: _user.id.toString(),
           message: message,
-          time: int.parse(currentTime),
+          time: currentTime,
           to: recieverUserId,
           read: false,
           type: "text"));
@@ -1445,7 +1444,7 @@ class SignUser with ChangeNotifier {
         Message(
             from: _user.id.toString(),
             message: message,
-            time: int.parse(currentTime),
+            time: currentTime,
             to: recieverUserId,
             read: false,
             type: "text")
@@ -1467,7 +1466,7 @@ class SignUser with ChangeNotifier {
           roomId: roomId,
           from: _user.id.toString(),
           message: message,
-          time: int.parse(currentTime),
+          time: currentTime,
           to: recieverUserId,
           read: false,
           type: "text");

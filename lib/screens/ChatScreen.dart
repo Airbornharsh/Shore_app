@@ -1,13 +1,9 @@
-import 'dart:async';
-
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:shore_app/Utils/Functions.dart';
-import 'package:shore_app/Utils/cloud_firestore.dart';
 import 'package:shore_app/models.dart';
 import 'package:shore_app/provider/SignUser.dart';
 
@@ -22,10 +18,35 @@ class ChatScreen extends StatefulWidget {
 
 class _ChatScreenState extends State<ChatScreen> {
   bool _isLoading = true;
+  bool _isMoreMessage = true;
   // late Socket socketClient;
   List<Message> messages = [];
   final messageController = TextEditingController();
   final ScrollController _scrollController = ScrollController();
+
+  @override
+  void initState() {
+    super.initState();
+
+    _scrollController.addListener(() async {
+      if (_scrollController.position.atEdge) {
+        bool isTop = _scrollController.position.pixels == 0;
+        if (isTop) {
+          setState(() {
+            _isMoreMessage = true;
+          });
+        } else {
+          setState(() {
+            _isMoreMessage = false;
+          });
+        }
+      } else {
+        setState(() {
+          _isMoreMessage = true;
+        });
+      }
+    });
+  }
 
   @override
   void dispose() {
@@ -81,10 +102,11 @@ class _ChatScreenState extends State<ChatScreen> {
 
     void sendMessage() async {
       String messageText = messageController.text;
+      final currentTime = DateTime.now().millisecondsSinceEpoch;
       if (messageText.trim().isEmpty) return;
       messageController.clear();
       bool res = await Provider.of<SignUser>(context, listen: false)
-          .sendMessage(userId, messageText, _scrollController);
+          .sendMessage(userId, messageText, _scrollController, currentTime);
 
       _scrollController.jumpTo(_scrollController.position.maxScrollExtent);
     }
@@ -179,13 +201,12 @@ class _ChatScreenState extends State<ChatScreen> {
                         physics: BouncingScrollPhysics(),
                         shrinkWrap: true,
                         itemBuilder: (context, index) {
-                          Timer(Duration.zero, () {
-                            _scrollController.jumpTo(
-                                _scrollController.position.maxScrollExtent);
-                          });
+                          // Timer(Duration.zero, () {
+                          //   _scrollController.jumpTo(
+                          //       _scrollController.position.maxScrollExtent);
+                          // });
 
                           final messageData = messages[index];
-                          print("${messageData.from} $signUserId");
                           if (messageData.from == signUserId) {
                             return Column(
                               children: [
@@ -196,8 +217,8 @@ class _ChatScreenState extends State<ChatScreen> {
                                       borderRadius: BorderRadius.only(
                                           bottomLeft: Radius.circular(12),
                                           topLeft: Radius.circular(12),
-                                          bottomRight: Radius.circular(0),
-                                          topRight: Radius.circular(12))),
+                                          bottomRight: Radius.circular(12),
+                                          topRight: Radius.circular(0))),
                                   padding: EdgeInsets.symmetric(
                                       horizontal: 10, vertical: 13),
                                   width: MediaQuery.of(context).size.width,
@@ -242,10 +263,10 @@ class _ChatScreenState extends State<ChatScreen> {
                                   decoration: BoxDecoration(
                                       color: Colors.grey.shade400,
                                       borderRadius: BorderRadius.only(
-                                          bottomLeft: Radius.circular(0),
-                                          topLeft: Radius.circular(12),
+                                          bottomLeft: Radius.circular(12),
+                                          topLeft: Radius.circular(0),
                                           bottomRight: Radius.circular(12),
-                                          topRight: Radius.circular(12))),
+                                          topRight: Radius.circular(0))),
                                   padding: EdgeInsets.symmetric(
                                       horizontal: 10, vertical: 13),
                                   width: MediaQuery.of(context).size.width,
@@ -343,6 +364,28 @@ class _ChatScreenState extends State<ChatScreen> {
             ],
           ),
         ),
+        if (_isMoreMessage)
+          Positioned(
+              child: GestureDetector(
+                onTap: () {
+                  _scrollController.animateTo(
+                      _scrollController.position.maxScrollExtent,
+                      curve: Curves.bounceInOut,
+                      duration: Duration(milliseconds: 500));
+                },
+                child: Container(
+                    padding: EdgeInsets.all(6),
+                    decoration: BoxDecoration(
+                        color: const Color.fromARGB(255, 0, 190, 184),
+                        borderRadius: BorderRadius.circular(100)),
+                    child: Icon(
+                      Icons.keyboard_double_arrow_down_outlined,
+                      size: 23,
+                      color: Colors.white,
+                    )),
+              ),
+              bottom: 80,
+              right: 16),
         if (_isLoading)
           Positioned(
             top: 0,

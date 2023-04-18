@@ -56,8 +56,8 @@ Future main() async {
   FirebaseMessaging.onMessage.listen((RemoteMessage message) {
     print('Got a message whilst in the foreground!');
     print('Message data: ${message.data}');
-    Provider.of<SignUser>(navigatorKey.currentState!.context, listen: false)
-        .addMessage(message.data);
+    // Provider.of<SignUser>(navigatorKey.currentState!.context, listen: false)
+    //     .addMessage(message.data);
   });
 
 //Application in Background

@@ -334,7 +334,10 @@ class _NewPostContainerState extends State<NewPostContainer> {
                                         type: FileType.image,
                                         allowMultiple: false);
 
-                                if (result == null) return;
+                                if (result == null) {
+                                  widget.setIsLoading(false);
+                                  return;
+                                }
 
                                 _isFile = "image";
                                 String path = result.files[0].path as String;
@@ -342,6 +345,7 @@ class _NewPostContainerState extends State<NewPostContainer> {
                                 final fileHeight = (await decodeImageFromList(
                                         (File(path)).readAsBytesSync()))
                                     .height;
+
                                 final fileWidth = (await decodeImageFromList(
                                         (File(path)).readAsBytesSync()))
                                     .width;
@@ -371,6 +375,7 @@ class _NewPostContainerState extends State<NewPostContainer> {
                                 });
                                 widget.setIsLoading(false);
                               } catch (e) {
+                                print("Cannot to Select File");
                                 print(e);
                                 _isFile = "";
                                 widget.setIsLoading(false);
