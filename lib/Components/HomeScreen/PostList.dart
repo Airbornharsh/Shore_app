@@ -10,11 +10,13 @@ class PostList extends StatefulWidget {
   Function addLoad;
   Function setIsLoading;
   bool isLoading;
+  ScrollController scrollController;
   PostList(
       {required this.postList,
       required this.addLoad,
       required this.isLoading,
       required this.setIsLoading,
+      required this.scrollController,
       super.key});
 
   @override
@@ -22,16 +24,18 @@ class PostList extends StatefulWidget {
 }
 
 class _PostListState extends State<PostList> {
-  ScrollController _controller = ScrollController();
+  // ScrollController _controller = ScrollController();
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
 
-    _controller.addListener(() async {
-      if (_controller.position.atEdge) {
-        bool isTop = _controller.position.pixels == 0;
+    // widget.scrollController = _controller;
+
+    widget.scrollController.addListener(() async {
+      if (widget.scrollController.position.atEdge) {
+        bool isTop = widget.scrollController.position.pixels == 0;
         if (!isTop) {
           await widget.addLoad();
         }
@@ -47,7 +51,7 @@ class _PostListState extends State<PostList> {
     return Expanded(
         child: ListView.separated(
       itemCount: widget.postList.length,
-      controller: _controller,
+      controller: widget.scrollController,
       itemBuilder: ((ctx, i) {
         DateTime date = DateTime.fromMillisecondsSinceEpoch(
                 int.parse(widget.postList[i].postedDate))

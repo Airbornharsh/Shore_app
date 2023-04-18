@@ -23,6 +23,9 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
+  bool _isTop = true;
+  ScrollController _scrollController = ScrollController();
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -47,9 +50,32 @@ class _HomeState extends State<Home> {
                   postList: widget.postList,
                   isLoading: widget.isLoading,
                   setIsLoading: widget.setIsLoading,
+                  scrollController: _scrollController
                 ),
               ],
             ),
+            // if (!_isTop)
+              Positioned(
+                  child: GestureDetector(
+                    onTap: () {
+                      _scrollController.animateTo(
+                          _scrollController.position.minScrollExtent,
+                          curve: Curves.bounceInOut,
+                          duration: Duration(milliseconds: 500));
+                    },
+                    child: Container(
+                        padding: EdgeInsets.all(6),
+                        decoration: BoxDecoration(
+                            color: const Color.fromARGB(255, 0, 190, 184),
+                            borderRadius: BorderRadius.circular(100)),
+                        child: Icon(
+                          Icons.keyboard_double_arrow_up_outlined,
+                          size: 23,
+                          color: Colors.white,
+                        )),
+                  ),
+                  bottom: 16,
+                  right: 16),
             Positioned(
                 child: widget.isLoadingMore
                     ? SizedBox(
