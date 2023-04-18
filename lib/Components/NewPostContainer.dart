@@ -26,7 +26,7 @@ class _NewPostContainerState extends State<NewPostContainer> {
   late File _originalFile;
   String _isFile = "";
   bool _isCroppped = false;
-  late VideoPlayerController _controller;
+  // late VideoPlayerController _controller;
   final _descriptionController = TextEditingController();
   // bool _isLoading = false;
 
@@ -285,7 +285,7 @@ class _NewPostContainerState extends State<NewPostContainer> {
 
                                   widget.setIsLoading(false);
                                   if (res) {
-                                    snackBar(context, "Post 5Uploaded");
+                                    snackBar(context, "Post Uploaded");
                                     setState(() {
                                       _descriptionController.clear();
                                       _isFile = "";
@@ -319,164 +319,164 @@ class _NewPostContainerState extends State<NewPostContainer> {
                       const SizedBox(
                         height: 10,
                       ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceAround,
-                        children: [
-                          GestureDetector(
-                            onTap: () async {
-                              try {
-                                setState(() {
-                                  _isCroppped = false;
-                                });
-                                widget.setIsLoading(true);
-                                FilePickerResult? result =
-                                    await FilePicker.platform.pickFiles(
-                                        type: FileType.image,
-                                        allowMultiple: false);
+                      // Row(
+                      //   mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      //   children: [
+                      //     GestureDetector(
+                      //       onTap: () async {
+                      //         try {
+                      //           setState(() {
+                      //             _isCroppped = false;
+                      //           });
+                      //           widget.setIsLoading(true);
+                      //           FilePickerResult? result =
+                      //               await FilePicker.platform.pickFiles(
+                      //                   type: FileType.image,
+                      //                   allowMultiple: false);
 
-                                if (result == null) {
-                                  widget.setIsLoading(false);
-                                  return;
-                                }
+                      //           if (result == null) {
+                      //             widget.setIsLoading(false);
+                      //             return;
+                      //           }
 
-                                _isFile = "image";
-                                String path = result.files[0].path as String;
+                      //           _isFile = "image";
+                      //           String path = result.files[0].path as String;
 
-                                final fileHeight = (await decodeImageFromList(
-                                        (File(path)).readAsBytesSync()))
-                                    .height;
+                      //           final fileHeight = (await decodeImageFromList(
+                      //                   (File(path)).readAsBytesSync()))
+                      //               .height;
 
-                                final fileWidth = (await decodeImageFromList(
-                                        (File(path)).readAsBytesSync()))
-                                    .width;
+                      //           final fileWidth = (await decodeImageFromList(
+                      //                   (File(path)).readAsBytesSync()))
+                      //               .width;
 
-                                final compressedtargetwidth =
-                                    (400 / fileHeight) * fileWidth;
+                      //           final compressedtargetwidth =
+                      //               (400 / fileHeight) * fileWidth;
 
-                                File? compressedFile = 400 /
-                                            compressedtargetwidth !=
-                                        4 / 3
-                                    ? await FlutterNativeImage.compressImage(
-                                        path,
-                                        quality: 40,
-                                        targetHeight: 400 * 5,
-                                        targetWidth:
-                                            compressedtargetwidth.toInt() * 5)
-                                    : await FlutterNativeImage.compressImage(
-                                        path,
-                                        quality: 40,
-                                        targetHeight:
-                                            compressedtargetwidth.toInt() * 5,
-                                        targetWidth: 400 * 5);
+                      //           File? compressedFile = 400 /
+                      //                       compressedtargetwidth !=
+                      //                   4 / 3
+                      //               ? await FlutterNativeImage.compressImage(
+                      //                   path,
+                      //                   quality: 40,
+                      //                   targetHeight: 400 * 5,
+                      //                   targetWidth:
+                      //                       compressedtargetwidth.toInt() * 5)
+                      //               : await FlutterNativeImage.compressImage(
+                      //                   path,
+                      //                   quality: 40,
+                      //                   targetHeight:
+                      //                       compressedtargetwidth.toInt() * 5,
+                      //                   targetWidth: 400 * 5);
 
-                                setState(() {
-                                  _tempFile = compressedFile;
-                                  _originalFile = compressedFile;
-                                });
-                                widget.setIsLoading(false);
-                              } catch (e) {
-                                print("Cannot to Select File");
-                                print(e);
-                                _isFile = "";
-                                widget.setIsLoading(false);
-                              }
-                            },
-                            child: Row(children: [
-                              const Icon(
-                                Icons.photo,
-                                color: Colors.red,
-                              ),
-                              const SizedBox(
-                                width: 5,
-                              ),
-                              Text(
-                                "Photo",
-                                style: TextStyle(
-                                    color: Provider.of<AppSetting>(context)
-                                            .getdarkMode
-                                        ? Colors.grey.shade400
-                                        : Colors.black45),
-                              )
-                            ]),
-                          ),
-                          Container(
-                            width: 1.5,
-                            color: Provider.of<AppSetting>(context).getdarkMode
-                                ? Colors.grey.shade400
-                                : Colors.black38,
-                            height: 30,
-                          ),
-                          GestureDetector(
-                            onTap: () async {
-                              try {
-                                FilePickerResult? result =
-                                    await FilePicker.platform.pickFiles(
-                                        type: FileType.video,
-                                        allowMultiple: false);
+                      //           setState(() {
+                      //             _tempFile = compressedFile;
+                      //             _originalFile = compressedFile;
+                      //           });
+                      //           widget.setIsLoading(false);
+                      //         } catch (e) {
+                      //           print("Cannot to Select File");
+                      //           print(e);
+                      //           _isFile = "";
+                      //           widget.setIsLoading(false);
+                      //         }
+                      //       },
+                      //       child: Row(children: [
+                      //         const Icon(
+                      //           Icons.photo,
+                      //           color: Colors.red,
+                      //         ),
+                      //         const SizedBox(
+                      //           width: 5,
+                      //         ),
+                      //         Text(
+                      //           "Photo",
+                      //           style: TextStyle(
+                      //               color: Provider.of<AppSetting>(context)
+                      //                       .getdarkMode
+                      //                   ? Colors.grey.shade400
+                      //                   : Colors.black45),
+                      //         )
+                      //       ]),
+                      //     ),
+                      //     Container(
+                      //       width: 1.5,
+                      //       color: Provider.of<AppSetting>(context).getdarkMode
+                      //           ? Colors.grey.shade400
+                      //           : Colors.black38,
+                      //       height: 30,
+                      //     ),
+                      //     GestureDetector(
+                      //       onTap: () async {
+                      //         try {
+                      //           FilePickerResult? result =
+                      //               await FilePicker.platform.pickFiles(
+                      //                   type: FileType.video,
+                      //                   allowMultiple: false);
 
-                                if (result == null) return;
+                      //           if (result == null) return;
 
-                                setState(() {
-                                  _isFile = "video";
-                                  final path = result.files[0].path;
+                      //           setState(() {
+                      //             _isFile = "video";
+                      //             final path = result.files[0].path;
 
-                                  _tempFile = File(path as String);
+                      //             _tempFile = File(path as String);
 
-                                  _controller =
-                                      VideoPlayerController.file(_tempFile);
-                                });
-                              } catch (e) {
-                                print(e);
-                                _isFile = "";
-                              }
-                            },
-                            child: Row(children: [
-                              const Icon(
-                                Icons.video_collection_rounded,
-                                color: Colors.greenAccent,
-                              ),
-                              const SizedBox(
-                                width: 5,
-                              ),
-                              Text(
-                                "Video",
-                                style: TextStyle(
-                                    color: Provider.of<AppSetting>(context)
-                                            .getdarkMode
-                                        ? Colors.grey.shade400
-                                        : Colors.black45),
-                              )
-                            ]),
-                          ),
-                          Container(
-                            width: 1.5,
-                            color: Provider.of<AppSetting>(context).getdarkMode
-                                ? Colors.grey.shade400
-                                : Colors.black38,
-                            height: 30,
-                          ),
-                          GestureDetector(
-                            onTap: () {},
-                            child: Row(children: [
-                              const Icon(
-                                Icons.photo,
-                                color: Colors.orange,
-                              ),
-                              const SizedBox(
-                                width: 5,
-                              ),
-                              Text(
-                                "File",
-                                style: TextStyle(
-                                    color: Provider.of<AppSetting>(context)
-                                            .getdarkMode
-                                        ? Colors.grey.shade400
-                                        : Colors.black45),
-                              )
-                            ]),
-                          ),
-                        ],
-                      ),
+                      //             _controller =
+                      //                 VideoPlayerController.file(_tempFile);
+                      //           });
+                      //         } catch (e) {
+                      //           print(e);
+                      //           _isFile = "";
+                      //         }
+                      //       },
+                      //       child: Row(children: [
+                      //         const Icon(
+                      //           Icons.video_collection_rounded,
+                      //           color: Colors.greenAccent,
+                      //         ),
+                      //         const SizedBox(
+                      //           width: 5,
+                      //         ),
+                      //         Text(
+                      //           "Video",
+                      //           style: TextStyle(
+                      //               color: Provider.of<AppSetting>(context)
+                      //                       .getdarkMode
+                      //                   ? Colors.grey.shade400
+                      //                   : Colors.black45),
+                      //         )
+                      //       ]),
+                      //     ),
+                      //     Container(
+                      //       width: 1.5,
+                      //       color: Provider.of<AppSetting>(context).getdarkMode
+                      //           ? Colors.grey.shade400
+                      //           : Colors.black38,
+                      //       height: 30,
+                      //     ),
+                      //     GestureDetector(
+                      //       onTap: () {},
+                      //       child: Row(children: [
+                      //         const Icon(
+                      //           Icons.photo,
+                      //           color: Colors.orange,
+                      //         ),
+                      //         const SizedBox(
+                      //           width: 5,
+                      //         ),
+                      //         Text(
+                      //           "File",
+                      //           style: TextStyle(
+                      //               color: Provider.of<AppSetting>(context)
+                      //                       .getdarkMode
+                      //                   ? Colors.grey.shade400
+                      //                   : Colors.black45),
+                      //         )
+                      //       ]),
+                      //     ),
+                      //   ],
+                      // ),
                       const SizedBox(
                         height: 10,
                       ),
@@ -487,6 +487,71 @@ class _NewPostContainerState extends State<NewPostContainer> {
             ),
           ],
         ),
+        Positioned(
+            child: GestureDetector(
+              onTap: () async {
+                try {
+                  setState(() {
+                    _isCroppped = false;
+                  });
+                  widget.setIsLoading(true);
+                  FilePickerResult? result = await FilePicker.platform
+                      .pickFiles(type: FileType.image, allowMultiple: false);
+
+                  if (result == null) {
+                    widget.setIsLoading(false);
+                    return;
+                  }
+
+                  _isFile = "image";
+                  String path = result.files[0].path as String;
+
+                  final fileHeight = (await decodeImageFromList(
+                          (File(path)).readAsBytesSync()))
+                      .height;
+
+                  final fileWidth = (await decodeImageFromList(
+                          (File(path)).readAsBytesSync()))
+                      .width;
+
+                  final compressedtargetwidth = (400 / fileHeight) * fileWidth;
+
+                  File? compressedFile = 400 / compressedtargetwidth != 4 / 3
+                      ? await FlutterNativeImage.compressImage(path,
+                          quality: 40,
+                          targetHeight: 400 * 5,
+                          targetWidth: compressedtargetwidth.toInt() * 5)
+                      : await FlutterNativeImage.compressImage(path,
+                          quality: 40,
+                          targetHeight: compressedtargetwidth.toInt() * 5,
+                          targetWidth: 400 * 5);
+
+                  setState(() {
+                    _tempFile = compressedFile;
+                    _originalFile = compressedFile;
+                  });
+                  widget.setIsLoading(false);
+                } catch (e) {
+                  print("Cannot to Select File");
+                  print(e);
+                  _isFile = "";
+                  widget.setIsLoading(false);
+                }
+                
+              },
+              child: Container(
+                  child: Icon(
+                    _isFile == "image" ? Icons.edit : Icons.add_a_photo,
+                    size: 20,
+                    color: Colors.white,
+                  ),
+                  padding: EdgeInsets.all(13),
+                  decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(100),
+                      color: Color.fromARGB(255, 0, 190, 184))),
+            ),
+            bottom: 16,
+            right: 16),
         if (widget.isLoading)
           Positioned(
             top: 0,
