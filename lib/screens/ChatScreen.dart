@@ -217,6 +217,17 @@ class _ChatScreenState extends State<ChatScreen> {
                           if (messageData.from == signUserId) {
                             return Column(
                               children: [
+                                // Container(
+                                //   alignment: AlignmentDirectional.center,
+                                //   child: Text(
+                                //     DateFormat.MMMMEEEEd()
+                                //         .format(DateTime.fromMillisecondsSinceEpoch(
+                                //             messageData.time))
+                                //         .toString(),
+                                //     style: TextStyle(
+                                //         fontSize: 12, color: Colors.grey),
+                                //   ),
+                                // ),
                                 Container(
                                   decoration: BoxDecoration(
                                       color: const Color.fromARGB(

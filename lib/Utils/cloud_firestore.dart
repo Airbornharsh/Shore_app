@@ -106,7 +106,7 @@ class cloud_firestore {
     }
   }
 
-  static void sendMessage(
+  static Future<String> sendMessage(
       {required String roomId,
       required String from,
       required String message,
@@ -116,7 +116,7 @@ class cloud_firestore {
       required String type}) async {
     final _firestore = FirebaseFirestore.instance;
     final _auth = FirebaseAuth.instance;
-    if (_auth.currentUser == null) return;
+    if (_auth.currentUser == null) return "";
 
     // await _firestore.collection('messages').doc(roomId).add({
     //   "from": from,
@@ -128,9 +128,7 @@ class cloud_firestore {
     // });
 
     try {
-      print("roomId: $roomId");
-
-      await _firestore.collection('messages/$roomId/messages').add({
+      final ok = await _firestore.collection('messages/$roomId/messages').add({
         "from": from,
         "message": message,
         "time": time,
@@ -138,8 +136,34 @@ class cloud_firestore {
         "read": read,
         "type": type,
       });
+
+      final s = ok.toString().split("/");
+      final s1 = s[s.length - 1].split(")")[0];
+
+      return s1;
     } catch (e) {
       print(e);
+      return "";
+    }
+  }
+
+  static Future<bool> removeRoom(String roomId) async {
+    final _firestore = FirebaseFirestore.instance;
+    final _auth = FirebaseAuth.instance;
+    if (_auth.currentUser == null) return false;
+
+    try {
+      await _firestore.collection('messages').doc(roomId).collection("messages").get().then((snapshot) {
+        for (DocumentSnapshot ds in snapshot.docs) {
+          ds.reference.delete();
+        }
+      });
+
+      print("Delete Room: $roomId");
+      return true;
+    } catch (e) {
+      print(e);
+      return false;
     }
   }
 

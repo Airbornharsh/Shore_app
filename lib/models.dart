@@ -136,20 +136,30 @@ class UserPostModel {
       required this.comments});
 }
 
-class CommentModel {
+class Comment {
   final String id;
   final String commented;
   final String description;
   final String to;
+  final String time;
+  final String reply;
   final String postId;
+  final String name;
+  final String userName;
+  final String imgUrl;
   final List<String> likes;
 
-  CommentModel({
+  Comment({
     required this.id,
+    required this.time,
     required this.commented,
     required this.description,
     required this.to,
+    required this.reply,
     required this.postId,
+    required this.name,
+    required this.userName,
+    required this.imgUrl,
     required this.likes,
   });
 }

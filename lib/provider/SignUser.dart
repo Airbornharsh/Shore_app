@@ -43,6 +43,7 @@ class SignUser with ChangeNotifier {
   List<UnsignUserModel> _friends = [];
   Map<String, String> _friendRoomId = {};
   Map<String, List<Message>> _roomMessages = {};
+  Map<String, List<Comment>> _postComments = {};
 
   // late String _accessToken;
   bool _isAuth = FirebaseAuth.instance.currentUser == null ? false : true;
@@ -122,6 +123,14 @@ class SignUser with ChangeNotifier {
 
   String getRoomId(String id) {
     return _friendRoomId[id]!;
+  }
+
+  List<Comment> getComments(String postId) {
+    if (_postComments.containsKey(postId)) {
+      return _postComments[postId]!;
+    } else {
+      return [];
+    }
   }
 
   void addMessage(Map<String, dynamic> message) {
@@ -205,11 +214,11 @@ class SignUser with ChangeNotifier {
 
       if (accessToken.isEmpty) return false;
 
-      var userRes = await client.get(Uri.parse("$domainUri/api/user/get"),
-           headers: {
-            "authorization": "Bearer $accessToken",
-            "Content-Type": "application/json",
-          });
+      var userRes =
+          await client.get(Uri.parse("$domainUri/api/user/get"), headers: {
+        "authorization": "Bearer $accessToken",
+        "Content-Type": "application/json",
+      });
 
       if (userRes.statusCode != 200) {
         throw userRes.body;
@@ -270,11 +279,11 @@ class SignUser with ChangeNotifier {
     final accessToken = prefs.getString("shore_accessToken") as String;
 
     try {
-      var userRes = await client.get(Uri.parse("$domainUri/api/user/get"),
-           headers: {
-            "authorization": "Bearer $accessToken",
-            "Content-Type": "application/json",
-          });
+      var userRes =
+          await client.get(Uri.parse("$domainUri/api/user/get"), headers: {
+        "authorization": "Bearer $accessToken",
+        "Content-Type": "application/json",
+      });
 
       if (userRes.statusCode != 200) {
         throw userRes.body;
@@ -369,11 +378,11 @@ class SignUser with ChangeNotifier {
       final accessToken = parsedBody["accessToken"];
 
       _isAuth = true;
-      var userRes = await client.get(Uri.parse("$domainUri/api/user/get"),
-           headers: {
-            "authorization": "Bearer $accessToken",
-            "Content-Type": "application/json",
-          });
+      var userRes =
+          await client.get(Uri.parse("$domainUri/api/user/get"), headers: {
+        "authorization": "Bearer $accessToken",
+        "Content-Type": "application/json",
+      });
 
       if (userRes.statusCode != 200) {
         return json.decode(userRes.body)["message"];
@@ -575,7 +584,7 @@ class SignUser with ChangeNotifier {
 
       var postRes = await client.post(Uri.parse("$domainUri/api/user/post/add"),
           body: json.encode({"url": fileUrl, "description": description}),
-           headers: {
+          headers: {
             "authorization": "Bearer $accessToken",
             "Content-Type": "application/json",
           });
@@ -625,7 +634,7 @@ class SignUser with ChangeNotifier {
       var res = await client.post(
           Uri.parse("$domainUri/api/user/post/like/add"),
           body: json.encode({"postId": postId}),
-           headers: {
+          headers: {
             "authorization": "Bearer $accessToken",
             "Content-Type": "application/json",
           });
@@ -656,7 +665,7 @@ class SignUser with ChangeNotifier {
       var res = await client.post(
           Uri.parse("$domainUri/api/user/post/like/remove"),
           body: json.encode({"postId": postId}),
-           headers: {
+          headers: {
             "authorization": "Bearer $accessToken",
             "Content-Type": "application/json",
           });
@@ -685,7 +694,7 @@ class SignUser with ChangeNotifier {
 
       var res = await client.post(Uri.parse("$domainUri/api/user/post/fav/add"),
           body: json.encode({"postId": postId}),
-           headers: {
+          headers: {
             "authorization": "Bearer $accessToken",
             "Content-Type": "application/json",
           });
@@ -715,7 +724,7 @@ class SignUser with ChangeNotifier {
       var res = await client.post(
           Uri.parse("$domainUri/api/user/post/fav/remove"),
           body: json.encode({"postId": postId}),
-           headers: {
+          headers: {
             "authorization": "Bearer $accessToken",
             "Content-Type": "application/json",
           });
@@ -742,11 +751,11 @@ class SignUser with ChangeNotifier {
     try {
       final accessToken = prefs.get("shore_accessToken") as String;
 
-      var postRes = await client.post(Uri.parse("$domainUri/api/user/post/get"),
-           headers: {
-            "authorization": "Bearer $accessToken",
-            "Content-Type": "application/json",
-          });
+      var postRes = await client
+          .post(Uri.parse("$domainUri/api/user/post/get"), headers: {
+        "authorization": "Bearer $accessToken",
+        "Content-Type": "application/json",
+      });
 
       if (postRes.statusCode != 200) {
         throw postRes.body;
@@ -817,7 +826,7 @@ class SignUser with ChangeNotifier {
 
       var res = await client.post(Uri.parse("$domainUri/api/user/edit"),
           body: json.encode(data),
-           headers: {
+          headers: {
             "authorization": "Bearer $accessToken",
             "Content-Type": "application/json",
           });
@@ -886,7 +895,7 @@ class SignUser with ChangeNotifier {
 
       var res = await client.post(Uri.parse("$domainUri/api/user/edit"),
           body: json.encode(data),
-           headers: {
+          headers: {
             "authorization": "Bearer $accessToken",
             "Content-Type": "application/json",
           });
@@ -935,7 +944,7 @@ class SignUser with ChangeNotifier {
 
       var res = await client.post(Uri.parse("$domainUri/api/user/post/edit"),
           body: json.encode(data),
-           headers: {
+          headers: {
             "authorization": "Bearer $accessToken",
             "Content-Type": "application/json",
           });
@@ -980,7 +989,7 @@ class SignUser with ChangeNotifier {
 
       var res = await client.post(Uri.parse("$domainUri/api/user/post/edit"),
           body: json.encode(data),
-           headers: {
+          headers: {
             "authorization": "Bearer $accessToken",
             "Content-Type": "application/json",
           });
@@ -1019,7 +1028,7 @@ class SignUser with ChangeNotifier {
 
       var res = await client.post(Uri.parse("$domainUri/api/user/post/delete"),
           body: json.encode(data),
-           headers: {
+          headers: {
             "authorization": "Bearer $accessToken",
             "Content-Type": "application/json",
           });
@@ -1078,7 +1087,7 @@ class SignUser with ChangeNotifier {
       var res = await client.post(
           Uri.parse("$domainUri/api/user/unsign-user/follow"),
           body: json.encode({"userId": userId}),
-           headers: {
+          headers: {
             "authorization": "Bearer $accessToken",
             "Content-Type": "application/json",
           });
@@ -1114,7 +1123,7 @@ class SignUser with ChangeNotifier {
       var res = await client.post(
           Uri.parse("$domainUri/api/user/unsign-user/unfollow"),
           body: json.encode({"userId": userId}),
-           headers: {
+          headers: {
             "authorization": "Bearer $accessToken",
             "Content-Type": "application/json",
           });
@@ -1154,10 +1163,10 @@ class SignUser with ChangeNotifier {
           : res = await client.post(
               Uri.parse("$domainUri/api/unsignuser/followings/list"),
               body: json.encode({"userId": userId}),
-               headers: {
-            "authorization": "Bearer $accessToken",
-            "Content-Type": "application/json",
-          });
+              headers: {
+                  "authorization": "Bearer $accessToken",
+                  "Content-Type": "application/json",
+                });
 
       var parsedUserBody = json.decode(res.body);
 
@@ -1208,10 +1217,10 @@ class SignUser with ChangeNotifier {
           : res = await client.post(
               Uri.parse("$domainUri/api/unsignuser/followers/list"),
               body: json.encode({"userId": userId}),
-               headers: {
-            "authorization": "Bearer $accessToken",
-            "Content-Type": "application/json",
-          });
+              headers: {
+                  "authorization": "Bearer $accessToken",
+                  "Content-Type": "application/json",
+                });
 
       var parsedUserBody = json.decode(res.body);
 
@@ -1255,7 +1264,7 @@ class SignUser with ChangeNotifier {
     try {
       Response res = await client.post(
           Uri.parse("$domainUri/api/user/friends/message-list"),
-           headers: {
+          headers: {
             "authorization": "Bearer $accessToken",
             "Content-Type": "application/json",
           });
@@ -1341,12 +1350,11 @@ class SignUser with ChangeNotifier {
     final accessToken = prefs.getString("shore_accessToken") as String;
 
     try {
-      var res = await client.post(
-          Uri.parse("$domainUri/api/user/requesting/list"),
-           headers: {
-            "authorization": "Bearer $accessToken",
-            "Content-Type": "application/json",
-          });
+      var res = await client
+          .post(Uri.parse("$domainUri/api/user/requesting/list"), headers: {
+        "authorization": "Bearer $accessToken",
+        "Content-Type": "application/json",
+      });
       var parsedUserBody = json.decode(res.body);
 
       await parsedUserBody.forEach((user) {
@@ -1388,7 +1396,7 @@ class SignUser with ChangeNotifier {
       var res = await client.post(
           Uri.parse("$domainUri/api/user/requesting/accept"),
           body: json.encode({"userId": userId}),
-           headers: {
+          headers: {
             "authorization": "Bearer $accessToken",
             "Content-Type": "application/json",
           });
@@ -1422,7 +1430,7 @@ class SignUser with ChangeNotifier {
       var res = await client.post(
           Uri.parse("$domainUri/api/user/requesting/decline"),
           body: json.encode({"userId": userId}),
-           headers: {
+          headers: {
             "authorization": "Bearer $accessToken",
             "Content-Type": "application/json",
           });
@@ -1454,12 +1462,11 @@ class SignUser with ChangeNotifier {
     final accessToken = prefs.getString("shore_accessToken") as String;
 
     try {
-      var res = await client.post(
-          Uri.parse("$domainUri/api/user/requested/list"),
-           headers: {
-            "authorization": "Bearer $accessToken",
-            "Content-Type": "application/json",
-          });
+      var res = await client
+          .post(Uri.parse("$domainUri/api/user/requested/list"), headers: {
+        "authorization": "Bearer $accessToken",
+        "Content-Type": "application/json",
+      });
       var parsedUserBody = json.decode(res.body);
 
       await parsedUserBody.forEach((user) {
@@ -1570,9 +1577,126 @@ class SignUser with ChangeNotifier {
       print(e);
       return false;
     }
-  }  
+  }
 
-  Future readMessage()async{
+  Future loadComments(String postId) async {
+    var client = Client();
+    final prefs = await SharedPreferences.getInstance();
+    final domainUri = await prefs.get("shore_backend_uri") as String;
+    final accessToken = await prefs.get("shore_accessToken") as String;
+    try {
+      Response res = await client.post(
+          Uri.parse("$domainUri/api/user/post/comment/get/post-render"),
+          body: json.encode({"postId": postId}),
+          headers: {
+            "authorization": "Bearer $accessToken",
+            "Content-Type": "application/json",
+          });
 
+      var parsedBody = json.decode(res.body);
+
+      if (res.statusCode != 200) {
+        throw parsedBody["message"];
+      }
+
+      // Comment comment = Comment(
+      //     id: parsedBody["_id"],
+      //     description: parsedBody["description"],
+      //     reply: parsedBody["reply"] == null ? "" : parsedBody["reply"],
+      //     commented: parsedBody["commented"],
+      //     likes: List<String>.from(parsedBody["likes"]),
+      //     to: parsedBody["to"],
+      //     postId: parsedBody["postId"],
+      //     time: parsedBody["time"]);
+
+      // _user.commented.add(parsedBody["_id"]);
+
+      _postComments.clear();
+
+      parsedBody.forEach((comment) {
+        Comment newComment = Comment(
+            id: comment["_id"],
+            description: comment["description"],
+            reply: comment["reply"] == null ? "" : comment["reply"],
+            commented: comment["commented"],
+            likes: List<String>.from(comment["likes"]),
+            to: comment["to"],
+            postId: comment["postId"],
+            imgUrl: _user.imgUrl,
+            name: _user.name,
+            userName: _user.userName,
+            time: comment["time"]);
+
+        if (_postComments.containsKey(postId)) {
+          _postComments[postId]?.add(newComment);
+        } else {
+          _postComments.putIfAbsent(postId, () => [newComment]);
+        }
+      });
+
+      // if (_postComments.containsKey(postId)) {
+      //   _postComments[postId]?.add(comment);
+      // } else {
+      //   _postComments.putIfAbsent(postId, () => [comment]);
+      // }
+
+      return true;
+    } catch (e) {
+      print(e);
+      return false;
+    } finally {
+      notifyListeners();
+    }
+  }
+
+  Future<bool> sendComment(String postId, String description) async {
+    var client = Client();
+    final prefs = await SharedPreferences.getInstance();
+    final domainUri = await prefs.get("shore_backend_uri") as String;
+    final accessToken = await prefs.get("shore_accessToken") as String;
+    try {
+      Response res = await client.post(
+          Uri.parse("$domainUri/api/user/post/comment/add"),
+          body: json.encode(
+              {"postId": postId, "description": description, "reply": ""}),
+          headers: {
+            "authorization": "Bearer $accessToken",
+            "Content-Type": "application/json",
+          });
+
+      var parsedBody = json.decode(res.body);
+
+      if (res.statusCode != 200) {
+        throw parsedBody["message"];
+      }
+
+      Comment comment = Comment(
+          id: parsedBody["_id"],
+          description: parsedBody["description"],
+          reply: parsedBody["reply"] == null ? "" : parsedBody["reply"],
+          commented: parsedBody["commented"],
+          likes: List<String>.from(parsedBody["likes"]),
+          to: parsedBody["to"],
+          postId: parsedBody["postId"],
+          imgUrl: _user.imgUrl,
+          name: _user.name,
+          userName: _user.userName,
+          time: parsedBody["time"]);
+
+      _user.commented.add(parsedBody["_id"]);
+
+      if (_postComments.containsKey(postId)) {
+        _postComments[postId]?.add(comment);
+      } else {
+        _postComments.putIfAbsent(postId, () => [comment]);
+      }
+
+      return true;
+    } catch (e) {
+      print(e);
+      return false;
+    } finally {
+      notifyListeners();
+    }
   }
 }

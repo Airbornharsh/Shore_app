@@ -8,6 +8,7 @@ import 'package:shore_app/provider/Posts.dart';
 import 'package:shore_app/provider/SignUser.dart';
 import 'package:shore_app/provider/UnsignUser.dart';
 import 'package:shore_app/screens/AuthScreen.dart';
+import 'package:shore_app/screens/CommentScreen.dart';
 import 'package:shore_app/screens/UserScreen.dart';
 // import "package:cached_network_image/cached_network_image.dart"
 
@@ -52,17 +53,13 @@ class _PostItemState extends State<PostItem> {
     return Column(
       children: [
         Container(
-          color: Provider.of<AppSetting>(context).getdarkMode
-              ? Color.fromARGB(255, 32, 32, 32)
-              : Colors.white,
+          color: Colors.white,
           child: SizedBox(
               child: Column(
             children: [
               Container(
                 height: 5,
-                color: Provider.of<AppSetting>(context).getdarkMode
-                    ? Colors.grey.shade800
-                    : Colors.grey.shade300,
+                color: Colors.grey.shade300,
               ),
               GestureDetector(
                 onTap: () async {
@@ -141,10 +138,7 @@ class _PostItemState extends State<PostItem> {
                                   style: TextStyle(
                                       fontWeight: FontWeight.w600,
                                       fontSize: 15,
-                                      color: Provider.of<AppSetting>(context)
-                                              .getdarkMode
-                                          ? Colors.grey.shade300
-                                          : Colors.grey.shade800),
+                                      color: Colors.grey.shade800),
                                 ),
                                 const SizedBox(
                                   height: 3,
@@ -154,10 +148,7 @@ class _PostItemState extends State<PostItem> {
                                   style: TextStyle(
                                       fontWeight: FontWeight.w300,
                                       fontSize: 15,
-                                      color: Provider.of<AppSetting>(context)
-                                              .getdarkMode
-                                          ? Colors.grey.shade300
-                                          : Colors.grey.shade800),
+                                      color: Colors.grey.shade800),
                                 ),
                               ],
                             ),
@@ -170,10 +161,7 @@ class _PostItemState extends State<PostItem> {
                                       .format(widget.newDate),
                                   style: TextStyle(
                                       fontSize: 12,
-                                      color: Provider.of<AppSetting>(context)
-                                              .getdarkMode
-                                          ? Colors.grey.shade300
-                                          : Colors.grey.shade800),
+                                      color: Colors.grey.shade800),
                                 ),
                                 SizedBox(
                                   height: 3,
@@ -182,10 +170,7 @@ class _PostItemState extends State<PostItem> {
                                   DateFormat("kk:hh").format(widget.newDate),
                                   style: TextStyle(
                                       fontSize: 12,
-                                      color: Provider.of<AppSetting>(context)
-                                              .getdarkMode
-                                          ? Colors.grey.shade300
-                                          : Colors.grey.shade800),
+                                      color: Colors.grey.shade800),
                                 )
                               ],
                             )
@@ -332,10 +317,7 @@ class _PostItemState extends State<PostItem> {
                     height: 50,
                     width: MediaQuery.of(context).size.width / 3,
                     decoration: BoxDecoration(
-                      border: Border.all(
-                          color: Provider.of<AppSetting>(context).getdarkMode
-                              ? Colors.grey.shade800
-                              : Colors.grey),
+                      border: Border.all(color: Colors.grey),
                     ),
                     child: Center(
                         child: Row(
@@ -355,30 +337,29 @@ class _PostItemState extends State<PostItem> {
                         ),
                         Text(
                           _likes.toString(),
-                          style: TextStyle(
-                              color:
-                                  Provider.of<AppSetting>(context).getdarkMode
-                                      ? Colors.grey.shade300
-                                      : Colors.black),
+                          style: TextStyle(color: Colors.black),
                         )
                       ],
                     )),
                   ),
                 ),
-                Container(
-                  decoration: BoxDecoration(
-                      border: Border.all(
-                          color: Provider.of<AppSetting>(context).getdarkMode
-                              ? Colors.grey.shade800
-                              : Colors.grey)),
-                  width: MediaQuery.of(context).size.width / 3,
-                  child: Center(
-                    child: IconButton(
-                        onPressed: () {},
-                        icon: const Icon(
-                          Icons.comment_bank_outlined,
-                          color: Colors.grey,
-                        )),
+                GestureDetector(
+                  onTap: () {
+                    print("comment");
+                    Navigator.of(context).pushNamed(
+                      CommentScreen.routeName,
+                      arguments: widget.post.id,
+                    );
+                  },
+                  child: Container(
+                    decoration:
+                        BoxDecoration(border: Border.all(color: Colors.grey)),
+                    width: MediaQuery.of(context).size.width / 3,
+                    height: 50,
+                    child: Center(
+                      child: const Icon(Icons.comment_bank_outlined,
+                          color: Colors.grey),
+                    ),
                   ),
                 ),
                 GestureDetector(
@@ -411,10 +392,7 @@ class _PostItemState extends State<PostItem> {
                     height: 50,
                     width: MediaQuery.of(context).size.width / 3,
                     decoration: BoxDecoration(
-                      border: Border.all(
-                          color: Provider.of<AppSetting>(context).getdarkMode
-                              ? Colors.grey.shade800
-                              : Colors.grey),
+                      border: Border.all(color: Colors.grey),
                     ),
                     child: Center(
                         child: isFav
@@ -434,9 +412,7 @@ class _PostItemState extends State<PostItem> {
         ),
         Container(
           height: 5,
-          color: Provider.of<AppSetting>(context).getdarkMode
-              ? Colors.grey.shade800
-              : Colors.grey.shade300,
+          color: Colors.grey.shade300,
         )
       ],
     );
