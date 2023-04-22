@@ -30,7 +30,9 @@ class Messages extends ChangeNotifier {
   //   try {
   //     Response res = await client.post(
   //         Uri.parse("$domainUri/api/user/friends/message-list"),
-  //         headers: {"authorization": "Bearer $accessToken"});
+  //          headers: {
+  // "authorization": "Bearer $accessToken",
+  // });
 
   //     var parsedUserBody = json.decode(res.body);
 

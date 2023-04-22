@@ -32,7 +32,7 @@ AppBar CustomAppBar(BuildContext context) {
             onPressed: () {
               Navigator.of(context).push(_createRoute());
             },
-            icon: const Icon(Icons.post_add)),
+            icon: const Icon(Icons.post_add,size: 26,)),
     ],
     toolbarHeight: 96,
     title: Center(
@@ -44,8 +44,16 @@ AppBar CustomAppBar(BuildContext context) {
             width: MediaQuery.of(context).size.width * 80 / 100,
             padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 3),
             decoration: BoxDecoration(
-                color: const Color.fromARGB(255, 1, 214, 207),
-                borderRadius: BorderRadius.circular(60)),
+                // color: const Color.fromARGB(255, 1, 214, 207),
+                color: Color.fromARGB(255, 243, 243, 243),
+                borderRadius: BorderRadius.circular(60),
+                boxShadow: [
+                  BoxShadow(
+                      color: Colors.black.withOpacity(0.2),
+                      blurRadius: 10,
+                      spreadRadius: 1,
+                      offset: const Offset(0, 3))
+                ]),
             child: const IgnorePointer(
               child: TextField(
                 style: TextStyle(color: Colors.white),
@@ -53,7 +61,7 @@ AppBar CustomAppBar(BuildContext context) {
                 decoration: InputDecoration(
                     border: InputBorder.none,
                     hintText: "Search",
-                    icon: Icon(Icons.search, color: Colors.white),
+                    icon: Icon(Icons.search, color: Colors.black),
                     iconColor: Colors.white,
                     suffixIconColor: Colors.white),
               ),

@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:shore_app/Components/HomeScreen/PostItem.dart';
 import 'package:shore_app/models.dart';
@@ -66,11 +67,9 @@ class _PostListState extends State<PostList> {
                 int.parse(widget.postList[i].postedDate))
             .toLocal();
 
-        String newDate =
-            "${date.hour}:${date.minute} ${date.day}/${date.month}/${date.year}";
-
         return PostItem(
-            newDate: newDate,
+            newDate: DateTime.fromMillisecondsSinceEpoch(
+                int.parse(widget.postList[i].postedDate)),
             post: widget.postList[i],
             isLoading: widget.isLoading,
             setIsLoading: widget.setIsLoading);

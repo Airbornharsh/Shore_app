@@ -34,6 +34,7 @@ class UnsignUser with ChangeNotifier {
           emailIdFirebaseId: user["emailIdFirebaseId"].toString(),
           phoneNumberFirebaseId: user["phoneNumberFirebaseId"].toString(),
           isPrivate: user["isPrivate"],
+          deviceTokens: List<String>.from(user["deviceTokens"]),
           posts: List<String>.from(user["posts"]),
           followers: List<String>.from(user["followers"]),
           followings: List<String>.from(user["followings"]),
@@ -75,6 +76,7 @@ class UnsignUser with ChangeNotifier {
           emailIdFirebaseId: user["emailIdFirebaseId"].toString(),
           phoneNumberFirebaseId: user["phoneNumberFirebaseId"].toString(),
           isPrivate: user["isPrivate"],
+          deviceTokens: List<String>.from(user["deviceTokens"]),
           posts: List<String>.from(user["posts"]),
           followers: List<String>.from(user["followers"]),
           followings: List<String>.from(user["followings"]),
@@ -116,6 +118,7 @@ class UnsignUser with ChangeNotifier {
         phoneNumberFirebaseId:
             parsedUserBody["phoneNumberFirebaseId"].toString(),
         isPrivate: parsedUserBody["isPrivate"],
+        deviceTokens: List<String>.from(parsedUserBody["deviceTokens"]),
         posts: List<String>.from(parsedUserBody["posts"]),
         followers: List<String>.from(parsedUserBody["followers"]),
         followings: List<String>.from(parsedUserBody["followings"]),
@@ -139,7 +142,10 @@ class UnsignUser with ChangeNotifier {
       var postRes = await client.post(
           Uri.parse("$domainUri/api/unsignuser/post/list"),
           body: json.encode({"userId": userId}),
-          headers: {"authorization": "Bearer $accessToken"});
+           headers: {
+            "authorization": "Bearer $accessToken",
+            "Content-Type": "application/json",
+          });
 
       if (postRes.statusCode != 200) {
         throw postRes.body;

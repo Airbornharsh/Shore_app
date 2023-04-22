@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:http/http.dart';
@@ -205,7 +206,10 @@ class SignUser with ChangeNotifier {
       if (accessToken.isEmpty) return false;
 
       var userRes = await client.get(Uri.parse("$domainUri/api/user/get"),
-          headers: {"authorization": "Bearer $accessToken"});
+           headers: {
+            "authorization": "Bearer $accessToken",
+            "Content-Type": "application/json",
+          });
 
       if (userRes.statusCode != 200) {
         throw userRes.body;
@@ -267,7 +271,10 @@ class SignUser with ChangeNotifier {
 
     try {
       var userRes = await client.get(Uri.parse("$domainUri/api/user/get"),
-          headers: {"authorization": "Bearer $accessToken"});
+           headers: {
+            "authorization": "Bearer $accessToken",
+            "Content-Type": "application/json",
+          });
 
       if (userRes.statusCode != 200) {
         throw userRes.body;
@@ -363,7 +370,10 @@ class SignUser with ChangeNotifier {
 
       _isAuth = true;
       var userRes = await client.get(Uri.parse("$domainUri/api/user/get"),
-          headers: {"authorization": "Bearer $accessToken"});
+           headers: {
+            "authorization": "Bearer $accessToken",
+            "Content-Type": "application/json",
+          });
 
       if (userRes.statusCode != 200) {
         return json.decode(userRes.body)["message"];
@@ -565,7 +575,10 @@ class SignUser with ChangeNotifier {
 
       var postRes = await client.post(Uri.parse("$domainUri/api/user/post/add"),
           body: json.encode({"url": fileUrl, "description": description}),
-          headers: {"authorization": "Bearer $accessToken"});
+           headers: {
+            "authorization": "Bearer $accessToken",
+            "Content-Type": "application/json",
+          });
 
       if (postRes.statusCode != 200) {
         throw postRes.body;
@@ -612,7 +625,10 @@ class SignUser with ChangeNotifier {
       var res = await client.post(
           Uri.parse("$domainUri/api/user/post/like/add"),
           body: json.encode({"postId": postId}),
-          headers: {"authorization": "Bearer $accessToken"});
+           headers: {
+            "authorization": "Bearer $accessToken",
+            "Content-Type": "application/json",
+          });
 
       if (res.statusCode != 200) {
         throw res.body;
@@ -640,7 +656,10 @@ class SignUser with ChangeNotifier {
       var res = await client.post(
           Uri.parse("$domainUri/api/user/post/like/remove"),
           body: json.encode({"postId": postId}),
-          headers: {"authorization": "Bearer $accessToken"});
+           headers: {
+            "authorization": "Bearer $accessToken",
+            "Content-Type": "application/json",
+          });
 
       if (res.statusCode != 200) {
         throw res.body;
@@ -666,7 +685,10 @@ class SignUser with ChangeNotifier {
 
       var res = await client.post(Uri.parse("$domainUri/api/user/post/fav/add"),
           body: json.encode({"postId": postId}),
-          headers: {"authorization": "Bearer $accessToken"});
+           headers: {
+            "authorization": "Bearer $accessToken",
+            "Content-Type": "application/json",
+          });
 
       if (res.statusCode != 200) {
         throw res.body;
@@ -693,7 +715,10 @@ class SignUser with ChangeNotifier {
       var res = await client.post(
           Uri.parse("$domainUri/api/user/post/fav/remove"),
           body: json.encode({"postId": postId}),
-          headers: {"authorization": "Bearer $accessToken"});
+           headers: {
+            "authorization": "Bearer $accessToken",
+            "Content-Type": "application/json",
+          });
 
       if (res.statusCode != 200) {
         throw res.body;
@@ -718,7 +743,10 @@ class SignUser with ChangeNotifier {
       final accessToken = prefs.get("shore_accessToken") as String;
 
       var postRes = await client.post(Uri.parse("$domainUri/api/user/post/get"),
-          headers: {"authorization": "Bearer $accessToken"});
+           headers: {
+            "authorization": "Bearer $accessToken",
+            "Content-Type": "application/json",
+          });
 
       if (postRes.statusCode != 200) {
         throw postRes.body;
@@ -789,7 +817,10 @@ class SignUser with ChangeNotifier {
 
       var res = await client.post(Uri.parse("$domainUri/api/user/edit"),
           body: json.encode(data),
-          headers: {"authorization": "Bearer $accessToken"});
+           headers: {
+            "authorization": "Bearer $accessToken",
+            "Content-Type": "application/json",
+          });
 
       if (res.statusCode != 200) {
         return json.decode(res.body)["message"];
@@ -855,7 +886,10 @@ class SignUser with ChangeNotifier {
 
       var res = await client.post(Uri.parse("$domainUri/api/user/edit"),
           body: json.encode(data),
-          headers: {"authorization": "Bearer $accessToken"});
+           headers: {
+            "authorization": "Bearer $accessToken",
+            "Content-Type": "application/json",
+          });
 
       if (res.statusCode != 200) {
         return json.decode(res.body)["message"];
@@ -901,7 +935,10 @@ class SignUser with ChangeNotifier {
 
       var res = await client.post(Uri.parse("$domainUri/api/user/post/edit"),
           body: json.encode(data),
-          headers: {"authorization": "Bearer $accessToken"});
+           headers: {
+            "authorization": "Bearer $accessToken",
+            "Content-Type": "application/json",
+          });
 
       if (res.statusCode != 200) {
         return json.decode(res.body)["message"];
@@ -943,7 +980,10 @@ class SignUser with ChangeNotifier {
 
       var res = await client.post(Uri.parse("$domainUri/api/user/post/edit"),
           body: json.encode(data),
-          headers: {"authorization": "Bearer $accessToken"});
+           headers: {
+            "authorization": "Bearer $accessToken",
+            "Content-Type": "application/json",
+          });
 
       if (res.statusCode != 200) {
         return json.decode(res.body)["message"];
@@ -979,7 +1019,10 @@ class SignUser with ChangeNotifier {
 
       var res = await client.post(Uri.parse("$domainUri/api/user/post/delete"),
           body: json.encode(data),
-          headers: {"authorization": "Bearer $accessToken"});
+           headers: {
+            "authorization": "Bearer $accessToken",
+            "Content-Type": "application/json",
+          });
 
       if (res.statusCode != 200) {
         return json.decode(res.body)["message"];
@@ -1035,7 +1078,10 @@ class SignUser with ChangeNotifier {
       var res = await client.post(
           Uri.parse("$domainUri/api/user/unsign-user/follow"),
           body: json.encode({"userId": userId}),
-          headers: {"authorization": "Bearer $accessToken"});
+           headers: {
+            "authorization": "Bearer $accessToken",
+            "Content-Type": "application/json",
+          });
 
       if (res.statusCode != 200) {
         throw res.body;
@@ -1068,7 +1114,10 @@ class SignUser with ChangeNotifier {
       var res = await client.post(
           Uri.parse("$domainUri/api/user/unsign-user/unfollow"),
           body: json.encode({"userId": userId}),
-          headers: {"authorization": "Bearer $accessToken"});
+           headers: {
+            "authorization": "Bearer $accessToken",
+            "Content-Type": "application/json",
+          });
 
       if (res.statusCode != 200) {
         throw res.body;
@@ -1105,7 +1154,10 @@ class SignUser with ChangeNotifier {
           : res = await client.post(
               Uri.parse("$domainUri/api/unsignuser/followings/list"),
               body: json.encode({"userId": userId}),
-              headers: {"authorization": "Bearer $accessToken"});
+               headers: {
+            "authorization": "Bearer $accessToken",
+            "Content-Type": "application/json",
+          });
 
       var parsedUserBody = json.decode(res.body);
 
@@ -1122,6 +1174,7 @@ class SignUser with ChangeNotifier {
           emailIdFirebaseId: user["emailIdFirebaseId"].toString(),
           phoneNumberFirebaseId: user["phoneNumberFirebaseId"].toString(),
           isPrivate: user["isPrivate"],
+          deviceTokens: List<String>.from(user["deviceTokens"]),
           posts: List<String>.from(user["posts"]),
           followers: List<String>.from(user["followers"]),
           followings: List<String>.from(user["followings"]),
@@ -1155,7 +1208,10 @@ class SignUser with ChangeNotifier {
           : res = await client.post(
               Uri.parse("$domainUri/api/unsignuser/followers/list"),
               body: json.encode({"userId": userId}),
-              headers: {"authorization": "Bearer $accessToken"});
+               headers: {
+            "authorization": "Bearer $accessToken",
+            "Content-Type": "application/json",
+          });
 
       var parsedUserBody = json.decode(res.body);
 
@@ -1172,6 +1228,7 @@ class SignUser with ChangeNotifier {
           emailIdFirebaseId: user["emailIdFirebaseId"].toString(),
           phoneNumberFirebaseId: user["phoneNumberFirebaseId"].toString(),
           isPrivate: user["isPrivate"],
+          deviceTokens: List<String>.from(user["deviceTokens"]),
           posts: List<String>.from(user["posts"]),
           followers: List<String>.from(user["followers"]),
           followings: List<String>.from(user["followings"]),
@@ -1198,7 +1255,10 @@ class SignUser with ChangeNotifier {
     try {
       Response res = await client.post(
           Uri.parse("$domainUri/api/user/friends/message-list"),
-          headers: {"authorization": "Bearer $accessToken"});
+           headers: {
+            "authorization": "Bearer $accessToken",
+            "Content-Type": "application/json",
+          });
 
       var parsedUserBody = json.decode(res.body);
 
@@ -1257,6 +1317,7 @@ class SignUser with ChangeNotifier {
           emailIdFirebaseId: user["emailIdFirebaseId"].toString(),
           phoneNumberFirebaseId: user["phoneNumberFirebaseId"].toString(),
           isPrivate: user["isPrivate"],
+          deviceTokens: List<String>.from(user["deviceTokens"]),
           posts: List<String>.from(user["posts"]),
           followers: List<String>.from(user["followers"]),
           followings: List<String>.from(user["followings"]),
@@ -1282,7 +1343,10 @@ class SignUser with ChangeNotifier {
     try {
       var res = await client.post(
           Uri.parse("$domainUri/api/user/requesting/list"),
-          headers: {"authorization": "Bearer $accessToken"});
+           headers: {
+            "authorization": "Bearer $accessToken",
+            "Content-Type": "application/json",
+          });
       var parsedUserBody = json.decode(res.body);
 
       await parsedUserBody.forEach((user) {
@@ -1298,6 +1362,7 @@ class SignUser with ChangeNotifier {
           emailIdFirebaseId: user["emailIdFirebaseId"].toString(),
           phoneNumberFirebaseId: user["phoneNumberFirebaseId"].toString(),
           isPrivate: user["isPrivate"],
+          deviceTokens: List<String>.from(user["deviceTokens"]),
           posts: List<String>.from(user["posts"]),
           followers: List<String>.from(user["followers"]),
           followings: List<String>.from(user["followings"]),
@@ -1323,7 +1388,10 @@ class SignUser with ChangeNotifier {
       var res = await client.post(
           Uri.parse("$domainUri/api/user/requesting/accept"),
           body: json.encode({"userId": userId}),
-          headers: {"authorization": "Bearer $accessToken"});
+           headers: {
+            "authorization": "Bearer $accessToken",
+            "Content-Type": "application/json",
+          });
 
       if (res.statusCode != 200) {
         throw res.body;
@@ -1354,7 +1422,10 @@ class SignUser with ChangeNotifier {
       var res = await client.post(
           Uri.parse("$domainUri/api/user/requesting/decline"),
           body: json.encode({"userId": userId}),
-          headers: {"authorization": "Bearer $accessToken"});
+           headers: {
+            "authorization": "Bearer $accessToken",
+            "Content-Type": "application/json",
+          });
 
       if (res.statusCode != 200) {
         throw res.body;
@@ -1385,7 +1456,10 @@ class SignUser with ChangeNotifier {
     try {
       var res = await client.post(
           Uri.parse("$domainUri/api/user/requested/list"),
-          headers: {"authorization": "Bearer $accessToken"});
+           headers: {
+            "authorization": "Bearer $accessToken",
+            "Content-Type": "application/json",
+          });
       var parsedUserBody = json.decode(res.body);
 
       await parsedUserBody.forEach((user) {
@@ -1401,6 +1475,7 @@ class SignUser with ChangeNotifier {
           emailIdFirebaseId: user["emailIdFirebaseId"].toString(),
           phoneNumberFirebaseId: user["phoneNumberFirebaseId"].toString(),
           isPrivate: user["isPrivate"],
+          deviceTokens: List<String>.from(user["deviceTokens"]),
           posts: List<String>.from(user["posts"]),
           followers: List<String>.from(user["followers"]),
           followings: List<String>.from(user["followings"]),
@@ -1419,57 +1494,62 @@ class SignUser with ChangeNotifier {
   Future<bool> sendMessage(String recieverUserId, String message,
       ScrollController scrollController, int currentTime) async {
     final roomId = Functions.genHash(recieverUserId, _user.id);
-    if (_roomMessages.containsKey(roomId)) {
-      _roomMessages[roomId]?.add(Message(
-          from: _user.id.toString(),
-          message: message,
-          time: currentTime,
-          to: recieverUserId,
-          read: false,
-          type: "text"));
-    } else {
-      // _roomMessages.putIfAbsent(
-      //     roomId.toString(),
-      //     () => [
-      //           Message(
-      //               from: _user.id.toString(),
-      //               message: message,
-      //               time: int.parse(currentTime),
-      //               to: recieverUserId,
-      //               read: false,
-      //               type: "text")
-      //         ]);
+    // if (_roomMessages.containsKey(roomId)) {
+    //   _roomMessages[roomId]?.add(Message(
+    //       from: _user.id.toString(),
+    //       message: message,
+    //       time: currentTime,
+    //       to: recieverUserId,
+    //       read: false,
+    //       type: "text"));
+    // } else {
+    //   // _roomMessages.putIfAbsent(
+    //   //     roomId.toString(),
+    //   //     () => [
+    //   //           Message(
+    //   //               from: _user.id.toString(),
+    //   //               message: message,
+    //   //               time: int.parse(currentTime),
+    //   //               to: recieverUserId,
+    //   //               read: false,
+    //   //               type: "text")
+    //   //         ]);
 
-      _roomMessages[roomId] = [
-        Message(
-            from: _user.id.toString(),
-            message: message,
-            time: currentTime,
-            to: recieverUserId,
-            read: false,
-            type: "text")
-      ];
-    }
+    //   _roomMessages[roomId] = [
+    //     Message(
+    //         from: _user.id.toString(),
+    //         message: message,
+    //         time: currentTime,
+    //         to: recieverUserId,
+    //         read: false,
+    //         type: "text")
+    //   ];
+    // }
+
+    notifyListeners();
 
     scrollController.jumpTo(
       scrollController.position.maxScrollExtent,
     );
 
-    notifyListeners();
+    cloud_firestore.sendMessage(
+        roomId: roomId,
+        from: _user.id.toString(),
+        message: message,
+        time: currentTime,
+        to: recieverUserId,
+        read: false,
+        type: "text");
 
     var client = Client();
     final prefs = await SharedPreferences.getInstance();
+    final fcm = await FirebaseMessaging.instance;
     final domainUri = await prefs.get("shore_backend_uri") as String;
     final accessToken = await prefs.get("shore_accessToken") as String;
     try {
-      cloud_firestore.sendMessage(
-          roomId: roomId,
-          from: _user.id.toString(),
-          message: message,
-          time: currentTime,
-          to: recieverUserId,
-          read: false,
-          type: "text");
+      print("Sending");
+
+      // fcm.
 
       await client.post(Uri.parse("$domainUri/api/user/message/one"),
           body: json.encode({
@@ -1483,10 +1563,16 @@ class SignUser with ChangeNotifier {
             "Content-Type": "application/json",
           });
 
+      print("Send");
+
       return true;
     } catch (e) {
       print(e);
       return false;
     }
+  }  
+
+  Future readMessage()async{
+
   }
 }

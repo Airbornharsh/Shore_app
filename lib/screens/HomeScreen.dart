@@ -29,7 +29,7 @@ class _HomeScreenState extends State<HomeScreen> {
   List<PostModel> postList = [];
   List<UserPostModel> userPostList = [];
   late final PageController _pageController;
-  bool _isLoading = false;
+  bool _isLoading = true;
   bool _isPostLoadingMore = false;
 
   void setIsPostLoadingMore(bool val) {
@@ -120,6 +120,7 @@ class _HomeScreenState extends State<HomeScreen> {
           postList = el;
           setState(() {
             widget.start = false;
+            _isLoading = false;
           });
         });
       });

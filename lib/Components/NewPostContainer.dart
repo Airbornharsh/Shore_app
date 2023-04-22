@@ -260,6 +260,11 @@ class _NewPostContainerState extends State<NewPostContainer> {
                             child: TextButton(
                               onPressed: () async {
                                 try {
+                                  if (_descriptionController.text.isEmpty) {
+                                    snackBar(
+                                        context, "Please enter description");
+                                    return;
+                                  }
                                   widget.setIsLoading(true);
                                   final user = Provider.of<SignUser>(context,
                                           listen: false)
@@ -537,7 +542,6 @@ class _NewPostContainerState extends State<NewPostContainer> {
                   _isFile = "";
                   widget.setIsLoading(false);
                 }
-                
               },
               child: Container(
                   child: Icon(

@@ -68,6 +68,7 @@ class UnsignUserModel {
   final String phoneNumberFirebaseId;
   final String emailIdFirebaseId;
   final bool isPrivate;
+  final List<String> deviceTokens;
   final List<String> posts;
   final List<String> followers;
   final List<String> followings;
@@ -84,6 +85,7 @@ class UnsignUserModel {
     required this.emailIdFirebaseId,
     required this.phoneNumberFirebaseId,
     required this.isPrivate,
+    required this.deviceTokens,
     required this.posts,
     required this.followers,
     required this.followings,

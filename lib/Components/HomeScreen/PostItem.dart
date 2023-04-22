@@ -1,5 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:shore_app/models.dart';
 import 'package:shore_app/provider/AppSetting.dart';
@@ -11,7 +12,7 @@ import 'package:shore_app/screens/UserScreen.dart';
 // import "package:cached_network_image/cached_network_image.dart"
 
 class PostItem extends StatefulWidget {
-  String newDate;
+  DateTime newDate;
   PostModel post;
   Function setIsLoading;
   bool isLoading;
@@ -124,54 +125,89 @@ class _PostItemState extends State<PostItem> {
                                     child: Center(child: Text('😊'))),
                           )),
                       const SizedBox(
-                        width: 7,
+                        width: 10,
                       ),
-                      Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            widget.post.profileName,
-                            style: TextStyle(
-                                fontWeight: FontWeight.w600,
-                                fontSize: 15,
-                                color:
-                                    Provider.of<AppSetting>(context).getdarkMode
-                                        ? Colors.grey.shade300
-                                        : Colors.grey.shade800),
-                          ),
-                          const SizedBox(
-                            height: 3,
-                          ),
-                          Text(
-                            widget.newDate,
-                            style: TextStyle(
-                                fontSize: 12,
-                                color:
-                                    Provider.of<AppSetting>(context).getdarkMode
-                                        ? Colors.grey.shade300
-                                        : Colors.grey.shade800),
-                          )
-                        ],
-                      )
+                      Expanded(
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  widget.post.profileName,
+                                  style: TextStyle(
+                                      fontWeight: FontWeight.w600,
+                                      fontSize: 15,
+                                      color: Provider.of<AppSetting>(context)
+                                              .getdarkMode
+                                          ? Colors.grey.shade300
+                                          : Colors.grey.shade800),
+                                ),
+                                const SizedBox(
+                                  height: 3,
+                                ),
+                                Text(
+                                  "@${widget.post.profileUserName}",
+                                  style: TextStyle(
+                                      fontWeight: FontWeight.w300,
+                                      fontSize: 15,
+                                      color: Provider.of<AppSetting>(context)
+                                              .getdarkMode
+                                          ? Colors.grey.shade300
+                                          : Colors.grey.shade800),
+                                ),
+                              ],
+                            ),
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.end,
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Text(
+                                  DateFormat("dd MMM yyyy")
+                                      .format(widget.newDate),
+                                  style: TextStyle(
+                                      fontSize: 12,
+                                      color: Provider.of<AppSetting>(context)
+                                              .getdarkMode
+                                          ? Colors.grey.shade300
+                                          : Colors.grey.shade800),
+                                ),
+                                SizedBox(
+                                  height: 3,
+                                ),
+                                Text(
+                                  DateFormat("kk:hh").format(widget.newDate),
+                                  style: TextStyle(
+                                      fontSize: 12,
+                                      color: Provider.of<AppSetting>(context)
+                                              .getdarkMode
+                                          ? Colors.grey.shade300
+                                          : Colors.grey.shade800),
+                                )
+                              ],
+                            )
+                          ],
+                        ),
+                      ),
                     ],
                   ),
                 ),
               ),
               if (widget.post.description.isNotEmpty)
                 Container(
-                  height: 20,
+                  // height: 20,
                   width: MediaQuery.of(context).size.width,
-                  margin: const EdgeInsets.only(left: 50),
+                  margin: const EdgeInsets.only(left: 10, bottom: 5),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
                         widget.post.description,
-                        style: TextStyle(
-                            color: Provider.of<AppSetting>(context).getdarkMode
-                                ? Colors.grey.shade300
-                                : Colors.grey.shade800),
+                        overflow: TextOverflow.visible,
+                        style: TextStyle(color: Colors.grey.shade800),
                       ),
                     ],
                   ),
