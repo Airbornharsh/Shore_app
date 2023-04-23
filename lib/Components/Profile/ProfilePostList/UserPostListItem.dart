@@ -287,8 +287,20 @@ class _UserPostListItemState extends State<UserPostListItem> {
                     width: MediaQuery.of(context).size.width / 3,
                     height: 50,
                     child: Center(
-                      child: const Icon(Icons.comment_bank_outlined,
-                          color: Colors.grey),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          const Icon(Icons.comment_bank_outlined,
+                              color: Colors.grey),
+                          const SizedBox(
+                            width: 4,
+                          ),
+                          Text(
+                            widget.post.comments.length.toString(),
+                            style: TextStyle(color: Colors.black),
+                          )
+                        ],
+                      ),
                     ),
                   ),
                 ),
