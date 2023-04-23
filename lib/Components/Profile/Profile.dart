@@ -39,27 +39,17 @@ class _ProfileState extends State<Profile> {
 
         widget.reloadUserPosts();
       },
-      child: Column(
-        children: [
-          Expanded(
-            child: Container(
-              width: MediaQuery.of(context).size.width,
-              decoration: BoxDecoration(
-                  color: Provider.of<AppSetting>(context).getdarkMode
-                      ? Colors.grey.shade800
-                      : const Color.fromARGB(31, 121, 121, 121)),
-              // height: MediaQuery.of(context).size.height - 220,
-              child: Column(
-                children: [
-                  ProfileDetails(user: user),
-                  UserPostList(
-                      userPostList: widget.userPostList,
-                      reloadUserPosts: widget.reloadUserPosts),
-                ],
-              ),
-            ),
-          ),
-        ],
+      child: Container(
+        decoration:
+            BoxDecoration(color: const Color.fromARGB(31, 121, 121, 121)),
+        child: Column(
+          children: [
+            ProfileDetails(user: user),
+            UserPostList(
+                userPostList: widget.userPostList,
+                reloadUserPosts: widget.reloadUserPosts),
+          ],
+        ),
       ),
     );
   }

@@ -68,6 +68,7 @@ class _CommentScreenState extends State<CommentScreen> {
             children: [
               Expanded(
                   child: ListView.builder(
+                physics: const AlwaysScrollableScrollPhysics(),
                 itemCount: comments.length,
                 itemBuilder: (context, index) {
                   return Stack(
@@ -193,7 +194,7 @@ class _CommentScreenState extends State<CommentScreen> {
                       },
                       decoration: InputDecoration(
                         border: InputBorder.none,
-                        hintText: "Message",
+                        hintText: "Comment",
                         hintStyle: TextStyle(
                           color: Colors.black,
                         ),

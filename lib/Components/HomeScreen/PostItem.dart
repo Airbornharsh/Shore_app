@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:shore_app/models.dart';
-import 'package:shore_app/provider/AppSetting.dart';
 import 'package:shore_app/provider/Posts.dart';
 import 'package:shore_app/provider/SignUser.dart';
 import 'package:shore_app/provider/UnsignUser.dart';

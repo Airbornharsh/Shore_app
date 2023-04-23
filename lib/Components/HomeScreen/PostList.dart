@@ -74,6 +74,8 @@ class _PostListState extends State<PostList> {
             isLoading: widget.isLoading,
             setIsLoading: widget.setIsLoading);
       }),
+      // physics: ScrollPhysics(),
+      physics: const AlwaysScrollableScrollPhysics(),
       separatorBuilder: (BuildContext context, int index) {
         // if (index % 2 == 0 && Platform.isAndroid) {
         //   return Container(
