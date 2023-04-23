@@ -1,8 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_auth_platform_interface/src/auth_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:shore_app/Utils/snackBar.dart';
 import 'package:pinput/pinput.dart';
 import 'package:shore_app/provider/SignUser.dart';
@@ -45,12 +43,6 @@ class _AuthScreenState extends State<AuthScreen> {
     _confirmCodeController.dispose();
     super.dispose();
   }
-
-  // void changeConfirmCode(bool data) {
-  //   setState(() {
-  //     isConfirmCode = data;
-  //   });
-  // }
 
   void changeRoute(String routeName, BuildContext context) {
     Navigator.of(context).popAndPushNamed(routeName);
@@ -145,7 +137,6 @@ class _AuthScreenState extends State<AuthScreen> {
 
       print("step 1");
 
-      // Sign the user in (or link) with the credential
       final authCredential =
           await auth.signInWithCredential(phoneAuthCredential);
 
@@ -296,8 +287,6 @@ class _AuthScreenState extends State<AuthScreen> {
           content: Text(loginRes),
         );
         ScaffoldMessenger.of(context).showSnackBar(snackBar);
-        // _authController.clear();
-        // _passwordController.clear();
       }
     } catch (e) {
       print(e);
@@ -308,7 +297,6 @@ class _AuthScreenState extends State<AuthScreen> {
 
   @override
   Widget build(BuildContext context) {
-    // setState(() {
     if (widget.start) {
       setState(() {
         widget.start = false;
@@ -330,33 +318,8 @@ class _AuthScreenState extends State<AuthScreen> {
           changeRoute(HomeScreen.routeName, context);
         }
       });
-      // changeLoading(true);
       void onLoad() async {
-        // final prefs = await SharedPreferences.getInstance();
-
-        try {
-          // if (prefs.containsKey("shore_accessToken")) {
-          //   bool isValid = await Provider.of<SignUser>(context, listen: false)
-          //       .isValidAccessToken();
-          //   print(isValid);
-
-          //   // changeLoading(false);
-          //   if (isValid) {
-          //     changeRoute(HomeScreen.routeName, context);
-          //   }
-          //   setState(() {
-          //     changeLoading(false);
-          //     isLoading = false;
-          //     widget.start = false;
-          //     isLoggedChecked = true;
-          //   });
-          // }
-          // setState(() {
-          //   changeLoading(false);
-          //   widget.start = false;
-          //   isLoggedChecked = true;
-          // });
-        } catch (e) {
+        try {} catch (e) {
           print(e);
           changeLoading(false);
           widget.start = false;
@@ -542,7 +505,7 @@ class _AuthScreenState extends State<AuthScreen> {
               label: Text("NAME"),
               prefixIcon: Icon(
                 Icons.person_outline,
-                color: Colors.grey.shade400,
+                color: const Color.fromARGB(255, 0, 190, 184),
               ),
               fillColor: Colors.white,
               filled: true,
@@ -567,7 +530,7 @@ class _AuthScreenState extends State<AuthScreen> {
               label: Text("USERNAME"),
               prefixIcon: Icon(
                 Icons.person,
-                color: Colors.grey.shade400,
+                color: const Color.fromARGB(255, 0, 190, 184),
               ),
               fillColor: Colors.white,
               filled: true,
@@ -592,7 +555,7 @@ class _AuthScreenState extends State<AuthScreen> {
               label: Text("PHONE NUMBER"),
               prefixIcon: Icon(
                 Icons.phone_android,
-                color: Colors.grey.shade400,
+                color: const Color.fromARGB(255, 0, 190, 184),
               ),
               fillColor: Colors.white,
               filled: true,
@@ -618,7 +581,7 @@ class _AuthScreenState extends State<AuthScreen> {
               label: Text("EMAIL ADDRESS"),
               prefixIcon: Icon(
                 Icons.email,
-                color: Colors.grey.shade400,
+                color: const Color.fromARGB(255, 0, 190, 184),
               ),
               fillColor: Colors.white,
               filled: true,
@@ -644,7 +607,7 @@ class _AuthScreenState extends State<AuthScreen> {
               label: Text("PASSWORD"),
               prefixIcon: Icon(
                 Icons.lock_sharp,
-                color: Colors.grey.shade400,
+                color: const Color.fromARGB(255, 0, 190, 184),
               ),
               fillColor: Colors.white,
               filled: true,
@@ -670,7 +633,7 @@ class _AuthScreenState extends State<AuthScreen> {
               label: Text("CONFIRM PASSWORD"),
               prefixIcon: Icon(
                 Icons.lock_sharp,
-                color: Colors.grey.shade400,
+                color: const Color.fromARGB(255, 0, 190, 184),
               ),
               fillColor: Colors.white,
               filled: true,
@@ -769,27 +732,6 @@ class _AuthScreenState extends State<AuthScreen> {
         SizedBox(
           height: 18,
         ),
-        // Container(
-        //   margin: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
-        //   decoration: BoxDecoration(color: Colors.white, boxShadow: const [
-        //     BoxShadow(
-        //       color: Colors.black12,
-        //       offset: Offset(3, 3),
-        //       blurRadius: 3,
-        //       spreadRadius: 0.5,
-        //     )
-        //   ]),
-        //   child: TextField(
-        //     keyboardType: TextInputType.number,
-        //     decoration: const InputDecoration(
-        //       border: InputBorder.none,
-        //       label: Text("Code"),
-        //       fillColor: Colors.white,
-        //       filled: true,
-        //     ),
-        //     controller: _confirmCodeController,
-        //   ),
-        // ),
         Pinput(
           length: 6,
           controller: _confirmCodeController,

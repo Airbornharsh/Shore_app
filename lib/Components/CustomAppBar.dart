@@ -44,7 +44,6 @@ AppBar CustomAppBar(BuildContext context) {
             width: MediaQuery.of(context).size.width * 80 / 100,
             padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 3),
             decoration: BoxDecoration(
-                // color: const Color.fromARGB(255, 1, 214, 207),
                 color: Color.fromARGB(255, 243, 243, 243),
                 borderRadius: BorderRadius.circular(60),
                 boxShadow: [

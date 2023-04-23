@@ -4,10 +4,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 class AppSetting with ChangeNotifier {
   bool darkMode = false;
 
-  bool get getdarkMode {
-    return darkMode;
-  }
-
   void setDarkMode(bool val) async {
     final prefs = await SharedPreferences.getInstance();
     darkMode = val;

@@ -6,7 +6,6 @@ import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 import 'package:shore_app/Components/Profile/ProfilePostList/UnsignUserPostListItem.dart';
 import 'package:shore_app/Components/Profile/ProfilePostList/UserPostListItem.dart';
 import 'package:shore_app/Utils/UserPostListScreenArgs.dart';
-import 'package:shore_app/provider/AppSetting.dart';
 import 'package:shore_app/provider/SignUser.dart';
 
 import '../models.dart';
@@ -48,18 +47,14 @@ class UnsignUserPostListScreenState extends State<UnsignUserPostListScreen> {
         Scaffold(
           appBar: AppBar(
             title: const Text("Posts"),
-            backgroundColor: Provider.of<AppSetting>(context).getdarkMode
-                ? const Color.fromARGB(255, 0, 99, 95)
-                : const Color.fromARGB(255, 0, 190, 184),
+            backgroundColor:  const Color.fromARGB(255, 0, 190, 184),
           ),
           body: RefreshIndicator(
             onRefresh: () async {
               args.reloadUserPosts();
             },
             child: Container(
-              color: Provider.of<AppSetting>(context).getdarkMode
-                  ? Colors.grey.shade700
-                  : Colors.white,
+              color: Colors.white,
               child: Column(
                 children: [
                   Expanded(

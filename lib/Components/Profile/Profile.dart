@@ -3,7 +3,6 @@ import 'package:provider/provider.dart';
 import 'package:shore_app/Components/Profile/ProfileDetails.dart';
 import 'package:shore_app/Components/Profile/UserPostList.dart';
 import 'package:shore_app/models.dart';
-import 'package:shore_app/provider/AppSetting.dart';
 import 'package:shore_app/provider/SignUser.dart';
 
 class Profile extends StatefulWidget {
@@ -18,7 +17,6 @@ class Profile extends StatefulWidget {
 }
 
 class _ProfileState extends State<Profile> {
-  // List<UserPostModel> userPostList = [];
   late UserModel user;
 
   @override

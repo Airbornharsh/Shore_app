@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:shore_app/Components/Search/UserItem.dart';
 import 'package:shore_app/models.dart';
-import 'package:shore_app/provider/AppSetting.dart';
 
 class UserListBuilder extends StatefulWidget {
   Function addMoreUser;
@@ -41,9 +39,8 @@ class _UserListBuilderState extends State<UserListBuilder> {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-          color: Provider.of<AppSetting>(context).getdarkMode
-              ? Colors.grey.shade700
-              : Colors.white),
+          color: 
+               Colors.white),
       child: Column(
         children: [
           Expanded(

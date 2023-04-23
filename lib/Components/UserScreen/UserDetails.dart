@@ -2,7 +2,6 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shore_app/models.dart';
-import 'package:shore_app/provider/AppSetting.dart';
 import 'package:shore_app/provider/SignUser.dart';
 import 'package:shore_app/screens/AuthScreen.dart';
 import 'package:shore_app/screens/FollowersScreen.dart';
@@ -37,10 +36,7 @@ class _UserDetailsState extends State<UserDetails> {
     return Column(children: [
       Container(
         height: 260,
-        decoration: BoxDecoration(
-            color: Provider.of<AppSetting>(context).getdarkMode
-                ? Colors.grey.shade900
-                : Colors.white),
+        decoration: BoxDecoration(color: Colors.white),
         child: Column(
           children: [
             const SizedBox(
@@ -50,22 +46,6 @@ class _UserDetailsState extends State<UserDetails> {
               tag: "user-${widget.user.id}",
               child: ClipRRect(
                   borderRadius: BorderRadius.circular(10),
-                  // child: Image.network(
-                  //     widget.user.imgUrl.isNotEmpty
-                  //         ? widget.user.imgUrl
-                  //         : "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png",
-                  //     height: 90,
-                  //     width: 90,
-                  //     fit: BoxFit.cover,
-                  //     filterQuality: FilterQuality.low, errorBuilder:
-                  //         (BuildContext context, Object exception,
-                  //             StackTrace? stackTrace) {
-                  //   return Container(
-                  //       width: 90,
-                  //       height: 90,
-                  //       child: Center(
-                  //           child: Image.asset("lib/assets/images/error.png")));
-                  // })),
                   child: CachedNetworkImage(
                     imageUrl: widget.user.imgUrl.isNotEmpty
                         ? widget.user.imgUrl
@@ -99,20 +79,14 @@ class _UserDetailsState extends State<UserDetails> {
                         style: TextStyle(
                             fontWeight: FontWeight.w400,
                             fontSize: 18,
-                            color: Provider.of<AppSetting>(context).getdarkMode
-                                ? Colors.grey.shade300
-                                : Colors.black),
+                            color: Colors.black),
                       ),
                       const SizedBox(
                         height: 3,
                       ),
                       Text(
                         "@${widget.user.userName}",
-                        style: TextStyle(
-                            fontSize: 12,
-                            color: Provider.of<AppSetting>(context).getdarkMode
-                                ? Colors.grey.shade300
-                                : Colors.black),
+                        style: TextStyle(fontSize: 12, color: Colors.black),
                       )
                     ],
                   ),
@@ -142,9 +116,7 @@ class _UserDetailsState extends State<UserDetails> {
                         },
                         style: ButtonStyle(
                             backgroundColor: MaterialStatePropertyAll<Color>(
-                          Provider.of<AppSetting>(context).getdarkMode
-                              ? const Color.fromARGB(255, 0, 99, 95)
-                              : const Color.fromARGB(255, 0, 190, 184),
+                          const Color.fromARGB(255, 0, 190, 184),
                         )),
                         child: Text(
                           isFollowing,
@@ -217,14 +189,10 @@ class _UserDetailsState extends State<UserDetails> {
         height: 2,
       ),
       Container(
-        decoration: BoxDecoration(
-            color: Provider.of<AppSetting>(context).getdarkMode
-                ? Colors.grey.shade900
-                : Colors.white),
+        decoration: BoxDecoration(color: Colors.white),
         height: 90,
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.center,
-          // mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
             Container(
               color: Colors.white,
@@ -237,17 +205,11 @@ class _UserDetailsState extends State<UserDetails> {
                     style: TextStyle(
                         fontWeight: FontWeight.w400,
                         fontSize: 24,
-                        color: Provider.of<AppSetting>(context).getdarkMode
-                            ? Colors.grey.shade200
-                            : Colors.black),
+                        color: Colors.black),
                   ),
                   Text(
                     "Posts",
-                    style: TextStyle(
-                        fontSize: 12,
-                        color: Provider.of<AppSetting>(context).getdarkMode
-                            ? Colors.grey.shade200
-                            : Colors.black),
+                    style: TextStyle(fontSize: 12, color: Colors.black),
                   )
                 ],
               ),
@@ -273,17 +235,11 @@ class _UserDetailsState extends State<UserDetails> {
                       style: TextStyle(
                           fontWeight: FontWeight.w400,
                           fontSize: 24,
-                          color: Provider.of<AppSetting>(context).getdarkMode
-                              ? Colors.grey.shade200
-                              : Colors.black),
+                          color: Colors.black),
                     ),
                     Text(
                       "Followers",
-                      style: TextStyle(
-                          fontSize: 12,
-                          color: Provider.of<AppSetting>(context).getdarkMode
-                              ? Colors.grey.shade200
-                              : Colors.black),
+                      style: TextStyle(fontSize: 12, color: Colors.black),
                     )
                   ],
                 ),
@@ -310,17 +266,11 @@ class _UserDetailsState extends State<UserDetails> {
                       style: TextStyle(
                           fontWeight: FontWeight.w400,
                           fontSize: 24,
-                          color: Provider.of<AppSetting>(context).getdarkMode
-                              ? Colors.grey.shade200
-                              : Colors.black),
+                          color: Colors.black),
                     ),
                     Text(
                       "Following",
-                      style: TextStyle(
-                          fontSize: 12,
-                          color: Provider.of<AppSetting>(context).getdarkMode
-                              ? Colors.grey.shade200
-                              : Colors.black),
+                      style: TextStyle(fontSize: 12, color: Colors.black),
                     )
                   ],
                 ),

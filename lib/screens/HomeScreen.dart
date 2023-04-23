@@ -8,13 +8,11 @@ import 'package:shore_app/Components/HomeScreen/Home.dart';
 import 'package:shore_app/Components/Profile/Profile.dart';
 import 'package:shore_app/Utils/cloud_firestore.dart';
 import 'package:shore_app/models.dart';
-import 'package:shore_app/provider/AppSetting.dart';
 import 'package:shore_app/provider/Posts.dart';
 import 'package:shore_app/provider/SignUser.dart';
 import 'package:shore_app/Components/NewPostContainer.dart';
 
 class HomeScreen extends StatefulWidget {
-  // static String routeName = "home";
   HomeScreen({super.key});
   static const routeName = "";
   bool start = true;
@@ -81,31 +79,18 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   void _onItemTapped(int index) {
-    // if ((index == 2 || index == 1) &&
-    //     !Provider.of<SignUser>(context, listen: false).getIsAuth) {
-    //   Navigator.of(context).popAndPushNamed(AuthScreen.routeName);
-    // }
     setState(() {
       _selectedIndex = index;
       _pageController.animateToPage(index + 1,
-          duration: const Duration(milliseconds: 500),
-          curve: Curves.easeInOutQuart);
+          duration: const Duration(milliseconds: 1000),
+          curve: Curves.easeOutQuart);
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    // setState(() {
     if (widget.start) {
       Provider.of<SignUser>(context, listen: false).init();
-      // _pageController.animateToPage(1,
-      //     duration: const Duration(milliseconds: 500),
-      //     curve: Curves.easeInOutQuart);
-      // Provider.of<SignUser>(context, listen: false).onLoad().then((el) {
-      //   if (el) {
-
-      //   }
-      // });
       Provider.of<SignUser>(context, listen: false).loadUserPosts().then((el) {
         setState(() {
           userPostList = el;
@@ -130,9 +115,6 @@ class _HomeScreenState extends State<HomeScreen> {
         listen: false,
       ).loadFriendsUsers();
     }
-
-    Provider.of<AppSetting>(context, listen: false).onLoad();
-    // });
 
     void reloadPosts() {
       Provider.of<Posts>(context, listen: false).loadPosts().then((el) {
@@ -189,7 +171,6 @@ class _HomeScreenState extends State<HomeScreen> {
           isLoadingMore: _isPostLoadingMore,
           isLoading: _isLoading,
           setIsLoading: setIsLoading),
-      // Requests(isLoading: _isLoading, setIsLoading: setIsLoading),
       Chats(isLoading: _isLoading, setIsLoading: setIsLoading),
       Profile(userPostList: userPostList, reloadUserPosts: reloadUserPosts)
     ];
@@ -209,39 +190,75 @@ class _HomeScreenState extends State<HomeScreen> {
               type: BottomNavigationBarType.fixed,
               items: [
                 BottomNavigationBarItem(
-                    icon: Icon(Icons.home),
-                    label: "Home",
-                    activeIcon: Icon(
-                      Icons.home,
-                      color: const Color.fromARGB(255, 0, 190, 184),
-                    )),
-                // BottomNavigationBarItem(
-                //     icon: Icon(Icons.favorite),
-                //     label: "Fav",
-                //     activeIcon: Icon(
-                //       Icons.favorite,
-                //       color: const Color.fromARGB(255, 0, 190, 184),
-                //     )),
+                  icon: AnimatedSwitcher(
+                      duration: const Duration(milliseconds: 350),
+                      transitionBuilder: (child, anim) => FadeTransition(
+                            opacity: child.key == ValueKey('icon6')
+                                ? Tween<double>(begin: 1, end: 0.5)
+                                    .animate(anim)
+                                : Tween<double>(begin: 0.75, end: 1)
+                                    .animate(anim),
+                            child: ScaleTransition(scale: anim, child: child),
+                          ),
+                      child: _selectedIndex == 0
+                          ? Icon(Icons.home,
+                              color: Color.fromARGB(255, 0, 190, 184),
+                              key: const ValueKey('icon5'))
+                          : Icon(
+                              Icons.home,
+                              color: Colors.grey.shade800,
+                              key: const ValueKey('icon6'),
+                            )),
+                  label: "Home",
+                ),
                 BottomNavigationBarItem(
-                    icon: Icon(Icons.chat),
-                    label: "",
-                    activeIcon: Icon(
-                      Icons.chat,
-                      color: const Color.fromARGB(255, 0, 190, 184),
-                    )),
+                  icon: AnimatedSwitcher(
+                      duration: const Duration(milliseconds: 350),
+                      transitionBuilder: (child, anim) => FadeTransition(
+                            opacity: child.key == ValueKey('icon6')
+                                ? Tween<double>(begin: 1, end: 0.5)
+                                    .animate(anim)
+                                : Tween<double>(begin: 0.75, end: 1)
+                                    .animate(anim),
+                            child: ScaleTransition(scale: anim, child: child),
+                          ),
+                      child: _selectedIndex == 1
+                          ? Icon(Icons.chat,
+                              color: Color.fromARGB(255, 0, 190, 184),
+                              key: const ValueKey('icon5'))
+                          : Icon(
+                              Icons.chat,
+                              color: Colors.grey.shade800,
+                              key: const ValueKey('icon6'),
+                            )),
+                  label: "",
+                ),
                 BottomNavigationBarItem(
-                    icon: Icon(Icons.person),
-                    label: "",
-                    activeIcon: Icon(
-                      Icons.person,
-                      color: const Color.fromARGB(255, 0, 190, 184),
-                    )),
+                  icon: AnimatedSwitcher(
+                      duration: const Duration(milliseconds: 350),
+                      transitionBuilder: (child, anim) => FadeTransition(
+                            opacity: child.key == ValueKey('icon6')
+                                ? Tween<double>(begin: 1, end: 0.5)
+                                    .animate(anim)
+                                : Tween<double>(begin: 0.75, end: 1)
+                                    .animate(anim),
+                            child: ScaleTransition(scale: anim, child: child),
+                          ),
+                      child: _selectedIndex == 2
+                          ? Icon(Icons.person,
+                              color: Color.fromARGB(255, 0, 190, 184),
+                              key: const ValueKey('icon5'))
+                          : Icon(
+                              Icons.person,
+                              color: Colors.grey.shade800,
+                              key: const ValueKey('icon6'),
+                            )),
+                  label: "",
+                ),
               ],
               onTap: _onItemTapped),
           body: Container(
-            color: Provider.of<AppSetting>(context).getdarkMode
-                ? Colors.grey.shade800
-                : Colors.white,
+            color:  Colors.white,
             child: SizedBox.expand(
                 child: PageView(
               controller: _pageController,

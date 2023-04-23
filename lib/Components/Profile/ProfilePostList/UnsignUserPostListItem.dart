@@ -2,7 +2,6 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shore_app/models.dart';
-import 'package:shore_app/provider/AppSetting.dart';
 import 'package:shore_app/provider/Posts.dart';
 import 'package:shore_app/provider/SignUser.dart';
 import 'package:shore_app/screens/AuthScreen.dart';
@@ -46,9 +45,7 @@ class _UnsignUserPostListItemState extends State<UnsignUserPostListItem> {
     return Column(
       children: [
         Container(
-          color: Provider.of<AppSetting>(context).getdarkMode
-              ? Color.fromARGB(255, 32, 32, 32)
-              : Colors.white,
+          color: Colors.white,
           child: SizedBox(
               child: Column(
             children: [
@@ -59,22 +56,6 @@ class _UnsignUserPostListItemState extends State<UnsignUserPostListItem> {
                   children: [
                     ClipRRect(
                         borderRadius: BorderRadius.circular(10),
-                        // child: Image.network(
-                        //     widget.user.imgUrl.isNotEmpty
-                        //         ? widget.user.imgUrl
-                        //         : "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png",
-                        //     height: 50,
-                        //     width: 50,
-                        //     fit: BoxFit.cover,
-                        //     filterQuality: FilterQuality.low, errorBuilder:
-                        //         (BuildContext context, Object exception,
-                        //             StackTrace? stackTrace) {
-                        //   return Container(
-                        //       height: 50,
-                        //       width: 50,
-                        //       decoration: const BoxDecoration(),
-                        //       child: const Center(child: Text('😊')));
-                        // })),
                         child: CachedNetworkImage(
                           imageUrl: widget.user.imgUrl.isNotEmpty
                               ? widget.user.imgUrl
@@ -103,10 +84,7 @@ class _UnsignUserPostListItemState extends State<UnsignUserPostListItem> {
                           style: TextStyle(
                               fontWeight: FontWeight.w600,
                               fontSize: 15,
-                              color:
-                                  Provider.of<AppSetting>(context).getdarkMode
-                                      ? Colors.grey.shade300
-                                      : Colors.grey.shade800),
+                              color: Colors.grey.shade800),
                         ),
                         const SizedBox(
                           height: 3,
@@ -114,11 +92,7 @@ class _UnsignUserPostListItemState extends State<UnsignUserPostListItem> {
                         Text(
                           widget.newDate,
                           style: TextStyle(
-                              fontSize: 12,
-                              color:
-                                  Provider.of<AppSetting>(context).getdarkMode
-                                      ? Colors.grey.shade300
-                                      : Colors.grey.shade800),
+                              fontSize: 12, color: Colors.grey.shade800),
                         )
                       ],
                     )
@@ -135,10 +109,7 @@ class _UnsignUserPostListItemState extends State<UnsignUserPostListItem> {
                     children: [
                       Text(
                         widget.post.description,
-                        style: TextStyle(
-                            color: Provider.of<AppSetting>(context).getdarkMode
-                                ? Colors.grey.shade300
-                                : Colors.grey.shade800),
+                        style: TextStyle(color: Colors.grey.shade800),
                       ),
                     ],
                   ),
@@ -149,8 +120,6 @@ class _UnsignUserPostListItemState extends State<UnsignUserPostListItem> {
                     try {
                       if (!isLiked) {
                         setState(() {
-                          // isLiked = true;
-                          // _likes += 1;
                           widget.post.likes.add(userDetails.id);
                         });
                         await Provider.of<SignUser>(context, listen: false)
@@ -167,34 +136,6 @@ class _UnsignUserPostListItemState extends State<UnsignUserPostListItem> {
                   decoration: const BoxDecoration(
                       color: Color.fromARGB(31, 165, 165, 165)),
                   child: widget.post.url.isNotEmpty
-                      // ? Hero(
-                      //     tag: widget.post.id,
-                      //     child: Image.network(widget.post.url,
-                      //         filterQuality: FilterQuality.low,
-                      //         cacheHeight:
-                      //             MediaQuery.of(context).size.width.toInt(),
-                      //         loadingBuilder: (ctx, child, loadingProgress) {
-                      //       if (loadingProgress == null) return child;
-                      //       return SizedBox(
-                      //           height: MediaQuery.of(ctx).size.width,
-                      //           width: MediaQuery.of(ctx).size.width,
-                      //           child: const Center(
-                      //             child: CircularProgressIndicator.adaptive(),
-                      //           ));
-                      //     }, errorBuilder: (BuildContext context,
-                      //             Object exception, StackTrace? stackTrace) {
-                      //       return Container(
-                      //           width: MediaQuery.of(context).size.width,
-                      //           height: MediaQuery.of(context).size.width,
-                      //           decoration: const BoxDecoration(),
-                      //           child: Center(
-                      //               child: Image.asset(
-                      //                   "lib/assets/images/error.png")));
-                      //     }
-                      //         // cacheHeight: MediaQuery.of(context).size.width.toInt(),
-                      //         // cacheWidth: MediaQuery.of(context).size.width.toInt(),
-                      //         ),
-                      //   )
                       ? CachedNetworkImage(
                           imageUrl: widget.post.url,
                           filterQuality: FilterQuality.low,
@@ -225,16 +166,12 @@ class _UnsignUserPostListItemState extends State<UnsignUserPostListItem> {
                       try {
                         if (isLiked) {
                           setState(() {
-                            // isLiked = false;
-                            // _likes -= 1;
                             widget.post.likes.remove(userDetails.id);
                           });
                           await Provider.of<SignUser>(context, listen: false)
                               .postUnlike(widget.post.id);
                         } else {
                           setState(() {
-                            // isLiked = true;
-                            // _likes += 1;
                             widget.post.likes.add(userDetails.id);
                           });
                           await Provider.of<SignUser>(context, listen: false)
@@ -252,10 +189,7 @@ class _UnsignUserPostListItemState extends State<UnsignUserPostListItem> {
                     height: 50,
                     width: MediaQuery.of(context).size.width / 3,
                     decoration: BoxDecoration(
-                      border: Border.all(
-                          color: Provider.of<AppSetting>(context).getdarkMode
-                              ? Colors.grey.shade800
-                              : Colors.grey),
+                      border: Border.all(color: Colors.grey),
                     ),
                     child: Center(
                         child: Row(
@@ -274,21 +208,14 @@ class _UnsignUserPostListItemState extends State<UnsignUserPostListItem> {
                           width: 4,
                         ),
                         Text(_likes.toString(),
-                            style: TextStyle(
-                                color:
-                                    Provider.of<AppSetting>(context).getdarkMode
-                                        ? Colors.grey.shade300
-                                        : Colors.black))
+                            style: TextStyle(color: Colors.black))
                       ],
                     )),
                   ),
                 ),
                 Container(
-                  decoration: BoxDecoration(
-                      border: Border.all(
-                          color: Provider.of<AppSetting>(context).getdarkMode
-                              ? Colors.grey.shade800
-                              : Colors.grey)),
+                  decoration:
+                      BoxDecoration(border: Border.all(color: Colors.grey)),
                   width: MediaQuery.of(context).size.width / 3,
                   child: Center(
                     child: IconButton(
@@ -329,10 +256,7 @@ class _UnsignUserPostListItemState extends State<UnsignUserPostListItem> {
                     height: 50,
                     width: MediaQuery.of(context).size.width / 3,
                     decoration: BoxDecoration(
-                      border: Border.all(
-                          color: Provider.of<AppSetting>(context).getdarkMode
-                              ? Colors.grey.shade800
-                              : Colors.grey),
+                      border: Border.all(color: Colors.grey),
                     ),
                     child: Center(
                         child: isFav
@@ -352,9 +276,7 @@ class _UnsignUserPostListItemState extends State<UnsignUserPostListItem> {
         ),
         Container(
           height: 10,
-          color: Provider.of<AppSetting>(context).getdarkMode
-              ? Colors.grey.shade800
-              : Colors.grey.shade300,
+          color: Colors.grey.shade300,
         )
       ],
     );

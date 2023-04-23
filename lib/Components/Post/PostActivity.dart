@@ -33,7 +33,7 @@ class _PostActivityState extends State<PostActivity> {
     return Container(
       padding: EdgeInsets.only(bottom: 10, top: 10),
       decoration: BoxDecoration(
-        color: Colors.grey.shade300,
+        color: Colors.grey.shade200,
       ),
       child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -45,16 +45,12 @@ class _PostActivityState extends State<PostActivity> {
                   try {
                     if (widget.isLiked) {
                       setState(() {
-                        // isLiked = false;
-                        // _likes -= 1;
                         widget.likes.remove(widget.userId);
                       });
                       await Provider.of<SignUser>(context, listen: false)
                           .postUnlike(widget.postId);
                     } else {
                       setState(() {
-                        // isLiked = true;
-                        // _likes += 1;
                         widget.likes.add(widget.userId);
                       });
                       await Provider.of<SignUser>(context, listen: false)
@@ -80,24 +76,34 @@ class _PostActivityState extends State<PostActivity> {
                         spreadRadius: 1,
                         blurRadius: 15,
                         offset:
-                            const Offset(1, 1), // changes position of shadow
+                            const Offset(1, 1), 
                       ),
                     ],
                     borderRadius: BorderRadius.circular(10)),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    widget.isLiked
-                        ? const Icon(
-                            Icons.favorite,
-                            size: 25,
-                            color: Color.fromARGB(255, 0, 190, 184),
-                          )
-                        : Icon(
-                            Icons.favorite_border_outlined,
-                            size: 25,
-                            color: Colors.grey.shade800,
-                          ),
+                    AnimatedSwitcher(
+                        duration: const Duration(milliseconds: 350),
+                        transitionBuilder: (child, anim) => FadeTransition(
+                              opacity: child.key == ValueKey('icon1')
+                                  ? Tween<double>(begin: 1, end: 0.5)
+                                      .animate(anim)
+                                  : Tween<double>(begin: 0.75, end: 1)
+                                      .animate(anim),
+                              child: ScaleTransition(scale: anim, child: child),
+                            ),
+                        child: widget.isLiked
+                            ? Icon(Icons.favorite,
+                                size: 25,
+                                color: Color.fromARGB(255, 0, 190, 184),
+                                key: const ValueKey('icon1'))
+                            : Icon(
+                                Icons.favorite_border_outlined,
+                                size: 25,
+                                color: Colors.grey.shade800,
+                                key: const ValueKey('icon2'),
+                              )),
                     const SizedBox(
                       width: 4,
                     ),
@@ -129,7 +135,7 @@ class _PostActivityState extends State<PostActivity> {
                           spreadRadius: 1,
                           blurRadius: 15,
                           offset:
-                              const Offset(1, 1), // changes position of shadow
+                              const Offset(1, 1), 
                         ),
                       ],
                       borderRadius: BorderRadius.circular(10)),
@@ -177,7 +183,6 @@ class _PostActivityState extends State<PostActivity> {
               child: Center(
                 child: Container(
                   height: 44,
-                  // width: 70,
                   padding:
                       EdgeInsets.only(left: 15, right: 15, top: 8, bottom: 8),
                   decoration: BoxDecoration(
@@ -188,22 +193,33 @@ class _PostActivityState extends State<PostActivity> {
                           spreadRadius: 1,
                           blurRadius: 15,
                           offset:
-                              const Offset(1, 1), // changes position of shadow
+                              const Offset(1, 1), 
                         ),
                       ],
                       borderRadius: BorderRadius.circular(10)),
                   child: Center(
-                      child: widget.isFav
-                          ? Icon(
-                              Icons.bookmark,
-                              size: 25,
-                              color: Colors.grey.shade800,
-                            )
-                          : Icon(
-                              Icons.bookmark_add_outlined,
-                              size: 25,
-                              color: Colors.grey.shade800,
-                            )),
+                    child: AnimatedSwitcher(
+                        duration: const Duration(milliseconds: 350),
+                        transitionBuilder: (child, anim) => FadeTransition(
+                              opacity: child.key == ValueKey('icon3')
+                                  ? Tween<double>(begin: 1, end: 0.5)
+                                      .animate(anim)
+                                  : Tween<double>(begin: 0.75, end: 1)
+                                      .animate(anim),
+                              child: ScaleTransition(scale: anim, child: child),
+                            ),
+                        child: widget.isFav
+                            ? Icon(Icons.bookmark,
+                                size: 25,
+                                color: Colors.grey.shade800,
+                                key: const ValueKey('icon3'))
+                            : Icon(
+                                Icons.bookmark_add_outlined,
+                                size: 25,
+                                color: Colors.grey.shade800,
+                                key: const ValueKey('icon4'),
+                              )),
+                  ),
                 ),
               ),
             ),

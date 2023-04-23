@@ -1,10 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
-import 'package:provider/provider.dart';
 import 'package:shore_app/Components/HomeScreen/PostItem.dart';
 import 'package:shore_app/models.dart';
-import 'package:shore_app/provider/SignUser.dart';
 
 class PostList extends StatefulWidget {
   List<PostModel> postList = [];
@@ -27,14 +24,10 @@ class PostList extends StatefulWidget {
 }
 
 class _PostListState extends State<PostList> {
-  // ScrollController _controller = ScrollController();
-
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-
-    // widget.scrollController = _controller;
 
     widget.scrollController.addListener(() async {
       if (widget.scrollController.position.atEdge) {
@@ -55,9 +48,6 @@ class _PostListState extends State<PostList> {
 
   @override
   Widget build(BuildContext context) {
-    UserModel userDetails =
-        Provider.of<SignUser>(context, listen: false).getUserDetails;
-
     return Expanded(
         child: ListView.separated(
       itemCount: widget.postList.length,
@@ -74,19 +64,8 @@ class _PostListState extends State<PostList> {
             isLoading: widget.isLoading,
             setIsLoading: widget.setIsLoading);
       }),
-      // physics: ScrollPhysics(),
       physics: const AlwaysScrollableScrollPhysics(),
       separatorBuilder: (BuildContext context, int index) {
-        // if (index % 2 == 0 && Platform.isAndroid) {
-        //   return Container(
-        //     child: Card(
-        //         color: Colors.white,
-        //         child: AdmobBanner(
-        //             adUnitId: "ca-app-pub-1856488952723088/3203828354",
-        //             adSize: AdmobBannerSize.ADAPTIVE_BANNER(
-        //                 width: (MediaQuery.of(context).size.width).round()))),
-        //   );
-        // }
         return Container();
       },
     ));

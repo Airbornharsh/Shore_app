@@ -11,7 +11,6 @@ import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:shore_app/Utils/firebase_options.dart';
 import 'package:shore_app/provider/AppSetting.dart';
-import 'package:shore_app/provider/Messages.dart';
 import 'package:shore_app/provider/Posts.dart';
 import 'package:shore_app/provider/UnsignUser.dart';
 import 'package:shore_app/provider/SignUser.dart';
@@ -123,15 +122,12 @@ Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
-  // This widget is the root of your application.
-
   @override
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider.value(value: AppSetting()),
         ChangeNotifierProvider.value(value: SignUser()),
-        ChangeNotifierProvider.value(value: Messages()),
         ChangeNotifierProvider.value(value: UnsignUser()),
         ChangeNotifierProvider.value(value: Posts()),
       ],

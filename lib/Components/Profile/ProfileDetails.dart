@@ -1,8 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:shore_app/models.dart';
-import 'package:shore_app/provider/AppSetting.dart';
 import 'package:shore_app/screens/EditProfileScreen.dart';
 import 'package:shore_app/screens/FollowersScreen.dart';
 import 'package:shore_app/screens/FollowingsScreen.dart';
@@ -20,17 +18,9 @@ class _ProfileDetailsState extends State<ProfileDetails> {
   @override
   Widget build(BuildContext context) {
     return Column(children: [
-      // Image.network(
-      //     "https://cdn.pixabay.com/photo/2015/04/23/22/00/tree-736885__480.jpg",
-      //     height: 130,
-      //     width: MediaQuery.of(context).size.width,
-      //     fit: BoxFit.cover),
       Container(
         height: 260,
-        decoration: BoxDecoration(
-            color: Provider.of<AppSetting>(context).getdarkMode
-                ? Colors.grey.shade900
-                : Colors.white),
+        decoration: BoxDecoration(color: Colors.white),
         child: Stack(
           children: [
             Column(
@@ -76,22 +66,14 @@ class _ProfileDetailsState extends State<ProfileDetails> {
                             style: TextStyle(
                                 fontWeight: FontWeight.w400,
                                 fontSize: 18,
-                                color:
-                                    Provider.of<AppSetting>(context).getdarkMode
-                                        ? Colors.grey.shade300
-                                        : Colors.black),
+                                color: Colors.black),
                           ),
                           const SizedBox(
                             height: 3,
                           ),
                           Text(
                             "@${widget.user.userName}",
-                            style: TextStyle(
-                                fontSize: 12,
-                                color:
-                                    Provider.of<AppSetting>(context).getdarkMode
-                                        ? Colors.grey.shade300
-                                        : Colors.black),
+                            style: TextStyle(fontSize: 12, color: Colors.black),
                           )
                         ],
                       ),
@@ -102,13 +84,7 @@ class _ProfileDetailsState extends State<ProfileDetails> {
                           },
                           style: ButtonStyle(
                               backgroundColor: MaterialStatePropertyAll<Color>(
-                                  Provider.of<AppSetting>(context).getdarkMode
-                                      ? const Color.fromARGB(255, 0, 99, 95)
-                                      : Provider.of<AppSetting>(context)
-                                              .getdarkMode
-                                          ? const Color.fromARGB(255, 0, 99, 95)
-                                          : const Color.fromARGB(
-                                              255, 0, 190, 184))),
+                                  const Color.fromARGB(255, 0, 190, 184))),
                           child: const Text(
                             "  Edit Profile  ",
                             style: TextStyle(color: Colors.white, fontSize: 14),
@@ -127,9 +103,7 @@ class _ProfileDetailsState extends State<ProfileDetails> {
                   icon: Icon(
                     Icons.settings,
                     size: 28,
-                    color: Provider.of<AppSetting>(context).getdarkMode
-                        ? Colors.grey.shade200
-                        : Colors.grey.shade600,
+                    color: Colors.grey.shade600,
                   )),
             )
           ],
@@ -139,10 +113,7 @@ class _ProfileDetailsState extends State<ProfileDetails> {
         height: 2,
       ),
       Container(
-        decoration: BoxDecoration(
-            color: Provider.of<AppSetting>(context).getdarkMode
-                ? Colors.grey.shade900
-                : Colors.white),
+        decoration: BoxDecoration(color: Colors.white),
         height: 90,
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.center,
@@ -159,17 +130,11 @@ class _ProfileDetailsState extends State<ProfileDetails> {
                     style: TextStyle(
                         fontWeight: FontWeight.w400,
                         fontSize: 24,
-                        color: Provider.of<AppSetting>(context).getdarkMode
-                            ? Colors.grey.shade200
-                            : Colors.black),
+                        color: Colors.black),
                   ),
                   Text(
                     "Posts",
-                    style: TextStyle(
-                        fontSize: 12,
-                        color: Provider.of<AppSetting>(context).getdarkMode
-                            ? Colors.grey.shade200
-                            : Colors.black),
+                    style: TextStyle(fontSize: 12, color: Colors.black),
                   )
                 ],
               ),
@@ -195,17 +160,11 @@ class _ProfileDetailsState extends State<ProfileDetails> {
                       style: TextStyle(
                           fontWeight: FontWeight.w400,
                           fontSize: 24,
-                          color: Provider.of<AppSetting>(context).getdarkMode
-                              ? Colors.grey.shade200
-                              : Colors.black),
+                          color: Colors.black),
                     ),
                     Text(
                       "Followers",
-                      style: TextStyle(
-                          fontSize: 12,
-                          color: Provider.of<AppSetting>(context).getdarkMode
-                              ? Colors.grey.shade200
-                              : Colors.black),
+                      style: TextStyle(fontSize: 12, color: Colors.black),
                     )
                   ],
                 ),
@@ -232,17 +191,11 @@ class _ProfileDetailsState extends State<ProfileDetails> {
                       style: TextStyle(
                           fontWeight: FontWeight.w400,
                           fontSize: 24,
-                          color: Provider.of<AppSetting>(context).getdarkMode
-                              ? Colors.grey.shade200
-                              : Colors.black),
+                          color: Colors.black),
                     ),
                     Text(
                       "Following",
-                      style: TextStyle(
-                          fontSize: 12,
-                          color: Provider.of<AppSetting>(context).getdarkMode
-                              ? Colors.grey.shade200
-                              : Colors.black),
+                      style: TextStyle(fontSize: 12, color: Colors.black),
                     )
                   ],
                 ),

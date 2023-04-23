@@ -3,7 +3,6 @@ import 'package:provider/provider.dart';
 import 'package:shore_app/Components/UserListBuilder.dart';
 import 'package:shore_app/Utils/snackBar.dart';
 import 'package:shore_app/models.dart';
-import 'package:shore_app/provider/AppSetting.dart';
 import 'package:shore_app/provider/UnsignUser.dart';
 import 'package:shore_app/provider/SignUser.dart';
 
@@ -79,9 +78,7 @@ class _SearchScreenState extends State<SearchScreen> {
       children: [
         Scaffold(
             appBar: AppBar(
-              backgroundColor: Provider.of<AppSetting>(context).getdarkMode
-                  ? const Color.fromARGB(255, 0, 99, 95)
-                  : const Color.fromARGB(255, 0, 190, 184),
+              backgroundColor:  const Color.fromARGB(255, 0, 190, 184),
               title: Hero(
                   tag: "search-bar",
                   child: TextField(
@@ -91,7 +88,6 @@ class _SearchScreenState extends State<SearchScreen> {
                     decoration: const InputDecoration(
                         border: InputBorder.none,
                         hintText: "Search",
-                        // icon: Icon(Icons.search, color: Colors.white),
                         suffixIcon: Icon(Icons.search, color: Colors.white),
                         iconColor: Colors.white,
                         suffixIconColor: Colors.white),
@@ -105,11 +101,6 @@ class _SearchScreenState extends State<SearchScreen> {
                         snackBar(context, "Please Log In");
                       }
                     },
-                    // onSubmitted: _searchController.text.isNotEmpty
-                    //     ? (value) async {
-                    //         await searchFun();
-                    //       }
-                    //     : null,
                   )),
             ),
             body: Container(
@@ -120,11 +111,6 @@ class _SearchScreenState extends State<SearchScreen> {
                     Expanded(
                         child: UserListBuilder(
                             users: _users, addMoreUser: addMoreUser)),
-                    // if (_isLoadingMore)
-                    //   Container(
-                    //     margin: const EdgeInsets.symmetric(vertical: 10),
-                    //     child: const CircularProgressIndicator(),
-                    //   )
                   ]),
                   Positioned(
                       child: _isLoadingMore

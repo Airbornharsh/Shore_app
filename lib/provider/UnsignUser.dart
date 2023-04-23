@@ -6,8 +6,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:shore_app/models.dart';
 
 class UnsignUser with ChangeNotifier {
-  // final List<UnsignUserModel> _users = [];
-
   Future<List<UnsignUserModel>> loadUsers(String userName, int page) async {
     List<UnsignUserModel> users = [];
     var client = Client();

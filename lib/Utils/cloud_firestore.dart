@@ -1,6 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:shore_app/models.dart';
 
 class cloud_firestore {
   static get getFirestore {
@@ -118,15 +117,6 @@ class cloud_firestore {
     final _auth = FirebaseAuth.instance;
     if (_auth.currentUser == null) return "";
 
-    // await _firestore.collection('messages').doc(roomId).add({
-    //   "from": from,
-    //   "message": message,
-    //   "time": time,
-    //   "to": to,
-    //   "read": read,
-    //   "type": type,
-    // });
-
     try {
       final ok = await _firestore.collection('messages/$roomId/messages').add({
         "from": from,
@@ -153,7 +143,12 @@ class cloud_firestore {
     if (_auth.currentUser == null) return false;
 
     try {
-      await _firestore.collection('messages').doc(roomId).collection("messages").get().then((snapshot) {
+      await _firestore
+          .collection('messages')
+          .doc(roomId)
+          .collection("messages")
+          .get()
+          .then((snapshot) {
         for (DocumentSnapshot ds in snapshot.docs) {
           ds.reference.delete();
         }
@@ -166,56 +161,4 @@ class cloud_firestore {
       return false;
     }
   }
-
-  // static Future<List<Message>> getMessages(String roomId) async {
-  //   final _firestore = FirebaseFirestore.instance;
-  //   final _auth = FirebaseAuth.instance;
-  //   List<Message> messages = [];
-  //   if (_auth.currentUser == null) return [];
-
-  //   try {
-  //     print("roomId: $roomId");
-
-  //     final data = await _firestore
-  //         .collection('messages/$roomId/messages')
-  //         .orderBy("time", descending: true)
-  //         .snapshots();
-
-  //     // await data.forEach((element) async {
-  //     //   print(element.docs.);
-  //     //   // messages.add(Message(
-  //     //   // from: element.docs["from"],
-  //     //   // message: element.docs[0]["message"],
-  //     //   // time: element.docs[0]["time"],
-  //     //   // to: element.docs[0]["to"],
-  //     //   // read: element.docs[0]["read"],
-  //     //   // type: element.docs[0]["type"]));
-  //     // });
-
-  //     await data.forEach((element) async {
-  //       element.docs.forEach((element) {
-  //         final message = element.data();
-
-  //         print(message["message"]);
-  //         messages.add(Message(
-  //             from: message["from"],
-  //             message: message["message"],
-  //             time: message["time"],
-  //             to: message["to"],
-  //             read: message["read"],
-  //             type: message["type"]));
-
-  //         print(messages);
-  //       });
-  //     });
-
-  //     print("List");
-  //     print(messages);
-
-  //     return messages;
-  //   } catch (e) {
-  //     print(e);
-  //     return [];
-  //   }
-  // }
 }

@@ -6,12 +6,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:shore_app/models.dart';
 
 class Posts with ChangeNotifier {
-  // final List<PostModel> _posts = [];
-
-  // List<PostModel> get getPosts {
-  //   return _posts;
-  // }
-
   Future<List<PostModel>> loadPosts() async {
     List<PostModel> posts = [];
     var client = Client();
@@ -21,7 +15,6 @@ class Posts with ChangeNotifier {
       var postRes = await client.post(
         Uri.parse("$domainUri/api/post/get"),
         body: json.encode({"page": 1}),
-        // body: json.encode({"page": 1, "limit": 2}),
       );
 
       var postResBody = json.decode(postRes.body);
@@ -58,7 +51,6 @@ class Posts with ChangeNotifier {
       var postRes = await client.post(
         Uri.parse("$domainUri/api/post/get"),
         body: json.encode({"page": page}),
-        // body: json.encode({"page": page, "limit": 2}),
       );
 
       var postResBody = json.decode(postRes.body);

@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shore_app/Components/UserListBuilder.dart';
 import 'package:shore_app/models.dart';
-import 'package:shore_app/provider/AppSetting.dart';
 import 'package:shore_app/provider/SignUser.dart';
 
 class FollowersScreen extends StatefulWidget {
@@ -47,9 +46,7 @@ class _FollowersScreenState extends State<FollowersScreen> {
         Scaffold(
           appBar: AppBar(
             title: Text("Followers"),
-            backgroundColor: Provider.of<AppSetting>(context).getdarkMode
-                ? const Color.fromARGB(255, 0, 99, 95)
-                : const Color.fromARGB(255, 0, 190, 184),
+            backgroundColor: const Color.fromARGB(255, 0, 190, 184),
           ),
           body: UserListBuilder(users: followersUsers, addMoreUser: () {}),
         ),

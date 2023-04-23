@@ -43,12 +43,6 @@ class _HomeState extends State<Home> {
         },
         child: Stack(
           children: [
-            // if (Provider.of<SignUser>(context).getIsAuth) const Upload(),
-            // const Upload(),
-            // const SizedBox(
-            // height: 8,
-            // ),
-            // PhoneNumber(),
             Column(
               children: [
                 PostList(

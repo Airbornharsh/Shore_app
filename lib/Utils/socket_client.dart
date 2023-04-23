@@ -8,7 +8,6 @@ class SocketClient {
   SocketClient.internal(String tokenId, String accessToken) {
     print("Initializing Socket Client");
     socket = IO.io("http://192.168.1.37:4000", <String, dynamic>{
-      // socket = IO.io("https://shore-socket.adaptable.app", <String, dynamic>{
       "transports": ["websocket"],
       "autoConnect": true,
       "query": "fcmToken=$tokenId&accessToken=$accessToken"

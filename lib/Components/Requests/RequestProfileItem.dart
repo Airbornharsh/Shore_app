@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shore_app/Utils/snackBar.dart';
 import 'package:shore_app/models.dart';
-import 'package:shore_app/provider/AppSetting.dart';
 import 'package:shore_app/provider/SignUser.dart';
 import 'package:shore_app/screens/UserScreen.dart';
 
@@ -28,9 +27,7 @@ class _RequestProfileItemState extends State<RequestProfileItem> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: Provider.of<AppSetting>(context).getdarkMode
-          ? Colors.grey.shade800
-          : Colors.white,
+      color: Colors.white,
       margin: const EdgeInsets.only(bottom: 2),
       child: ListTile(
         style: ListTileStyle.list,
@@ -38,19 +35,6 @@ class _RequestProfileItemState extends State<RequestProfileItem> {
           tag: "user-${widget.user.id}",
           child: ClipRRect(
               borderRadius: BorderRadius.circular(10),
-              // child: Image.network(
-              //     widget.user.imgUrl.isNotEmpty
-              //         ? widget.user.imgUrl
-              //         : "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png",
-              //     height: 50,
-              //     width: 50,
-              //     fit: BoxFit.cover,
-              //     filterQuality: FilterQuality.low, errorBuilder:
-              //         (BuildContext context, Object exception,
-              //             StackTrace? stackTrace) {
-              //   return const SizedBox(
-              //       height: 50, width: 50, child: Center(child: Text('😊')));
-              // })),
               child: CachedNetworkImage(
                 imageUrl: widget.user.imgUrl.isNotEmpty
                     ? widget.user.imgUrl
@@ -67,17 +51,11 @@ class _RequestProfileItemState extends State<RequestProfileItem> {
         ),
         title: Text(
           widget.user.name,
-          style: TextStyle(
-              color: Provider.of<AppSetting>(context).getdarkMode
-                  ? Colors.grey.shade300
-                  : Colors.black),
+          style: TextStyle(color: Colors.black),
         ),
         subtitle: Text(
           "@${widget.user.userName}",
-          style: TextStyle(
-              color: Provider.of<AppSetting>(context).getdarkMode
-                  ? Colors.grey.shade300
-                  : Colors.black),
+          style: TextStyle(color: Colors.black),
         ),
         trailing: SizedBox(
           width: 100,

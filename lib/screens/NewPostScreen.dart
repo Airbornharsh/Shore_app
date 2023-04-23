@@ -6,7 +6,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_native_image/flutter_native_image.dart';
 import 'package:provider/provider.dart';
 import 'package:shore_app/Utils/snackBar.dart';
-import 'package:shore_app/provider/AppSetting.dart';
 import 'package:shore_app/provider/SignUser.dart';
 
 class NewPostScreen extends StatefulWidget {
@@ -22,7 +21,6 @@ class _NewPostScreenState extends State<NewPostScreen> {
   late File _originalFile;
   String _isFile = "";
   bool _isCroppped = false;
-  // late VideoPlayerController _controller;
   final _descriptionController = TextEditingController();
   bool _isLoading = false;
 
@@ -39,18 +37,13 @@ class _NewPostScreenState extends State<NewPostScreen> {
         Scaffold(
           appBar: AppBar(
             title: const Text("New Post"),
-            backgroundColor: Provider.of<AppSetting>(context).getdarkMode
-                ? const Color.fromARGB(255, 0, 99, 95)
-                : const Color.fromARGB(255, 0, 190, 184),
+            backgroundColor: const Color.fromARGB(255, 0, 190, 184),
           ),
           body: Column(
             children: [
               Expanded(
                 child: Container(
-                  decoration: BoxDecoration(
-                      color: Provider.of<AppSetting>(context).getdarkMode
-                          ? Colors.grey.shade900
-                          : Colors.white),
+                  decoration: BoxDecoration(color: Colors.white),
                   width: MediaQuery.of(context).size.width,
                   height: _isFile == "image"
                       ? MediaQuery.of(context).size.width - 10 + 160
@@ -59,7 +52,6 @@ class _NewPostScreenState extends State<NewPostScreen> {
                       top: 10, right: 20, bottom: 10, left: 20),
                   child: SingleChildScrollView(
                     child: Column(
-                      // mainAxisAlignment: MainAxisAlignment.spaceAround,
                       children: [
                         SizedBox(
                           width: MediaQuery.of(context).size.width,
@@ -70,7 +62,6 @@ class _NewPostScreenState extends State<NewPostScreen> {
                                   child: Image.file(
                                     _tempFile,
                                     height: MediaQuery.of(context).size.width,
-                                    // width: MediaQuery.of(context).size.width - 10,
                                     fit: BoxFit.contain,
                                   ),
                                 ),
@@ -180,17 +171,6 @@ class _NewPostScreenState extends State<NewPostScreen> {
                                                             ? fileWidth
                                                             : fileHeight);
 
-                                                // final fileHeight1 =
-                                                //     (await decodeImageFromList(
-                                                //             (croppedFile)
-                                                //                 .readAsBytesSync()))
-                                                //         .height;
-                                                // final fileWidth1 =
-                                                //     (await decodeImageFromList(
-                                                //             (croppedFile)
-                                                //                 .readAsBytesSync()))
-                                                //         .width;
-
                                                 File? compressedFile =
                                                     await FlutterNativeImage
                                                         .compressImage(
@@ -223,11 +203,7 @@ class _NewPostScreenState extends State<NewPostScreen> {
                                           },
                                           icon: Icon(
                                             Icons.delete,
-                                            color:
-                                                Provider.of<AppSetting>(context)
-                                                        .getdarkMode
-                                                    ? Colors.grey.shade300
-                                                    : Colors.black,
+                                            color: Colors.black,
                                           )),
                                     ))
                             ],
@@ -244,18 +220,10 @@ class _NewPostScreenState extends State<NewPostScreen> {
                               height: 45,
                               decoration: BoxDecoration(
                                   border: Border.all(
-                                      width: 1,
-                                      color: Provider.of<AppSetting>(context)
-                                              .getdarkMode
-                                          ? Colors.grey.shade400
-                                          : Colors.black45)),
+                                      width: 1, color: Colors.black45)),
                               width: MediaQuery.of(context).size.width - 140,
                               child: TextField(
-                                style: TextStyle(
-                                    color: Provider.of<AppSetting>(context)
-                                            .getdarkMode
-                                        ? Colors.grey.shade400
-                                        : Colors.black),
+                                style: TextStyle(color: Colors.black),
                                 controller: _descriptionController,
                                 decoration: const InputDecoration(
                                     border: InputBorder.none,
@@ -266,10 +234,7 @@ class _NewPostScreenState extends State<NewPostScreen> {
                             Container(
                               height: 45,
                               width: 82,
-                              color:
-                                  Provider.of<AppSetting>(context).getdarkMode
-                                      ? const Color.fromARGB(255, 0, 99, 95)
-                                      : const Color.fromARGB(255, 0, 190, 184),
+                              color: const Color.fromARGB(255, 0, 190, 184),
                               child: TextButton(
                                 onPressed: () async {
                                   try {
@@ -316,10 +281,8 @@ class _NewPostScreenState extends State<NewPostScreen> {
                                 },
                                 style: ButtonStyle(
                                   backgroundColor: MaterialStateProperty.all<
-                                      Color>(Provider.of<AppSetting>(context)
-                                          .getdarkMode
-                                      ? const Color.fromARGB(255, 0, 99, 95)
-                                      : const Color.fromARGB(255, 0, 190, 184)),
+                                          Color>(
+                                      const Color.fromARGB(255, 0, 190, 184)),
                                   padding: MaterialStateProperty.all(
                                     const EdgeInsets.symmetric(horizontal: 20),
                                   ),
@@ -336,163 +299,6 @@ class _NewPostScreenState extends State<NewPostScreen> {
                         const SizedBox(
                           height: 10,
                         ),
-                        // Row(
-                        //   mainAxisAlignment: MainAxisAlignment.spaceAround,
-                        //   children: [
-                        //     GestureDetector(
-                        //       onTap: () async {
-                        //         try {
-                        //           setState(() {
-                        //             _isCroppped = false;
-                        //             _isLoading = true;
-                        //           });
-                        //           FilePickerResult? result =
-                        //               await FilePicker.platform.pickFiles(
-                        //                   type: FileType.image,
-                        //                   allowMultiple: false);
-
-                        //           if (result == null) return;
-
-                        //           _isFile = "image";
-                        //           String path = result.files[0].path as String;
-
-                        //           final fileHeight = (await decodeImageFromList(
-                        //                   (File(path)).readAsBytesSync()))
-                        //               .height;
-                        //           final fileWidth = (await decodeImageFromList(
-                        //                   (File(path)).readAsBytesSync()))
-                        //               .width;
-
-                        //           final compressedtargetwidth =
-                        //               (400 / fileHeight) * fileWidth;
-
-                        //           File? compressedFile = 400 /
-                        //                       compressedtargetwidth !=
-                        //                   4 / 3
-                        //               ? await FlutterNativeImage.compressImage(
-                        //                   path,
-                        //                   quality: 40,
-                        //                   targetHeight: 400 * 5,
-                        //                   targetWidth:
-                        //                       compressedtargetwidth.toInt() * 5)
-                        //               : await FlutterNativeImage.compressImage(
-                        //                   path,
-                        //                   quality: 40,
-                        //                   targetHeight:
-                        //                       compressedtargetwidth.toInt() * 5,
-                        //                   targetWidth: 400 * 5);
-
-                        //           setState(() {
-                        //             _tempFile = compressedFile;
-                        //             _originalFile = compressedFile;
-                        //             _isLoading = false;
-                        //           });
-                        //         } catch (e) {
-                        //           print(e);
-                        //           _isFile = "";
-                        //           setState(() {
-                        //             _isLoading = false;
-                        //           });
-                        //         }
-                        //       },
-                        //       child: Row(children: [
-                        //         const Icon(
-                        //           Icons.photo,
-                        //           color: Colors.red,
-                        //         ),
-                        //         const SizedBox(
-                        //           width: 5,
-                        //         ),
-                        //         Text(
-                        //           "Photo",
-                        //           style: TextStyle(
-                        //               color: Provider.of<AppSetting>(context)
-                        //                       .getdarkMode
-                        //                   ? Colors.grey.shade400
-                        //                   : Colors.black45),
-                        //         )
-                        //       ]),
-                        //     ),
-                        //     Container(
-                        //       width: 1.5,
-                        //       color:
-                        //           Provider.of<AppSetting>(context).getdarkMode
-                        //               ? Colors.grey.shade400
-                        //               : Colors.black38,
-                        //       height: 30,
-                        //     ),
-                        //     GestureDetector(
-                        //       onTap: () async {
-                        //         try {
-                        //           FilePickerResult? result =
-                        //               await FilePicker.platform.pickFiles(
-                        //                   type: FileType.video,
-                        //                   allowMultiple: false);
-
-                        //           if (result == null) return;
-
-                        //           setState(() {
-                        //             _isFile = "video";
-                        //             final path = result.files[0].path;
-
-                        //             _tempFile = File(path as String);
-
-                        //             // _controller =
-                        //             //     VideoPlayerController.file(_tempFile);
-                        //           });
-                        //         } catch (e) {
-                        //           print(e);
-                        //           _isFile = "";
-                        //         }
-                        //       },
-                        //       child: Row(children: [
-                        //         const Icon(
-                        //           Icons.video_collection_rounded,
-                        //           color: Colors.greenAccent,
-                        //         ),
-                        //         const SizedBox(
-                        //           width: 5,
-                        //         ),
-                        //         Text(
-                        //           "Video",
-                        //           style: TextStyle(
-                        //               color: Provider.of<AppSetting>(context)
-                        //                       .getdarkMode
-                        //                   ? Colors.grey.shade400
-                        //                   : Colors.black45),
-                        //         )
-                        //       ]),
-                        //     ),
-                        //     Container(
-                        //       width: 1.5,
-                        //       color:
-                        //           Provider.of<AppSetting>(context).getdarkMode
-                        //               ? Colors.grey.shade400
-                        //               : Colors.black38,
-                        //       height: 30,
-                        //     ),
-                        //     GestureDetector(
-                        //       onTap: () {},
-                        //       child: Row(children: [
-                        //         const Icon(
-                        //           Icons.photo,
-                        //           color: Colors.orange,
-                        //         ),
-                        //         const SizedBox(
-                        //           width: 5,
-                        //         ),
-                        //         Text(
-                        //           "File",
-                        //           style: TextStyle(
-                        //               color: Provider.of<AppSetting>(context)
-                        //                       .getdarkMode
-                        //                   ? Colors.grey.shade400
-                        //                   : Colors.black45),
-                        //         )
-                        //       ]),
-                        //     ),
-                        //   ],
-                        // ),
                         const SizedBox(
                           height: 10,
                         ),

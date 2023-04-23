@@ -22,7 +22,6 @@ class ChatScreen extends StatefulWidget {
 class _ChatScreenState extends State<ChatScreen> {
   bool _isLoading = false;
   bool _isMoreMessage = true;
-  // late Socket socketClient;
   List<Message> messages = [];
   final messageController = TextEditingController();
   final ScrollController _scrollController = ScrollController();
@@ -64,45 +63,6 @@ class _ChatScreenState extends State<ChatScreen> {
     final unsignUser = Provider.of<SignUser>(context).getFriend(userId);
     final signUserId = Provider.of<SignUser>(context).getUserDetails.id;
     final roomId = Functions.genHash(signUserId, userId);
-    // if (widget.start) {
-    //   setState(() {
-    //     widget.start = false;
-    //     _isLoading = false;
-    //   });
-
-    //   // Timer(Duration(milliseconds: 400), () {
-    //   //   _scrollController.jumpTo(_scrollController.position.maxScrollExtent);
-    //   //   // _scrollController.animateTo(
-    //   //   //   0.0,
-    //   //   //   curve: Curves.easeOut,
-    //   //   //   duration: const Duration(milliseconds: 300),
-    //   //   // );
-    //   // });
-    //   // socketClient = SocketClient.staticInstance.socket!;
-
-    //   // socketClient.on("receive-message-id", (data) {
-    //   //   print(data["message"]);
-    //   //   setState(() {
-    //   //     messages.add(data["message"]);
-    //   //   });
-    //   // });
-
-    //   // Provider.of<SignUser>(context).getRoomMessage(userId).then((value) {
-    //   //   setState(() {
-    //   //     // messages = value!;
-    //   //     _isLoading = false;
-    //   //   });
-    //   // });
-    // }
-
-    // print(messages.length);
-
-    // if (socketClient.connected) {
-    //   print("connected with ${socketClient.id}");
-    // }
-    // if (socketClient.disconnected) {
-    //   print("disconnected");
-    // }
 
     void sendMessage() async {
       String messageText = messageController.text;
@@ -128,22 +88,6 @@ class _ChatScreenState extends State<ChatScreen> {
               children: [
                 ClipRRect(
                     borderRadius: BorderRadius.circular(100),
-                    // child: Image.network(
-                    //     unsignUser.imgUrl.isNotEmpty
-                    //         ? unsignUser.imgUrl
-                    //         : "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png",
-                    //     height: 35,
-                    //     width: 35,
-                    //     fit: BoxFit.cover,
-                    //     filterQuality: FilterQuality.low, errorBuilder:
-                    //         (BuildContext context, Object exception,
-                    //             StackTrace? stackTrace) {
-                    //   return Container(
-                    //       height: 35,
-                    //       width: 35,
-                    //       decoration: const BoxDecoration(),
-                    //       child: const Center(child: Text('😊')));
-                    // })),
                     child: CachedNetworkImage(
                       imageUrl: unsignUser.imgUrl.isNotEmpty
                           ? unsignUser.imgUrl
@@ -215,11 +159,6 @@ class _ChatScreenState extends State<ChatScreen> {
                             Timer(Duration(milliseconds: 400), () {
                               _scrollController.jumpTo(
                                   _scrollController.position.maxScrollExtent);
-                              // _scrollController.animateTo(
-                              //   0.0,
-                              //   curve: Curves.easeOut,
-                              //   duration: const Duration(milliseconds: 300),
-                              // );
                               setState(() {
                                 widget.start = false;
                               });
@@ -230,17 +169,6 @@ class _ChatScreenState extends State<ChatScreen> {
                           if (messageData.from == signUserId) {
                             return Column(
                               children: [
-                                // Container(
-                                //   alignment: AlignmentDirectional.center,
-                                //   child: Text(
-                                //     DateFormat.MMMMEEEEd()
-                                //         .format(DateTime.fromMillisecondsSinceEpoch(
-                                //             messageData.time))
-                                //         .toString(),
-                                //     style: TextStyle(
-                                //         fontSize: 12, color: Colors.grey),
-                                //   ),
-                                // ),
                                 Container(
                                   decoration: BoxDecoration(
                                       color: const Color.fromARGB(

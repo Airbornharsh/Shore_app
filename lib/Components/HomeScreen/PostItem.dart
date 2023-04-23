@@ -1,17 +1,14 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
-import 'package:shore_app/Components/PostActivity.dart';
-import 'package:shore_app/Components/PostDetailRender.dart';
+import 'package:shore_app/Components/Post/PostActivity.dart';
+import 'package:shore_app/Components/Post/PostDetailRender.dart';
+import 'package:shore_app/Components/Post/PostImage.dart';
 import 'package:shore_app/models.dart';
 import 'package:shore_app/provider/Posts.dart';
 import 'package:shore_app/provider/SignUser.dart';
 import 'package:shore_app/provider/UnsignUser.dart';
 import 'package:shore_app/screens/AuthScreen.dart';
-import 'package:shore_app/screens/CommentScreen.dart';
 import 'package:shore_app/screens/UserScreen.dart';
-// import "package:cached_network_image/cached_network_image.dart"
 
 class PostItem extends StatefulWidget {
   DateTime newDate;
@@ -93,7 +90,6 @@ class _PostItemState extends State<PostItem> {
               ),
               if (widget.post.description.isNotEmpty)
                 Container(
-                  // height: 20,
                   width: MediaQuery.of(context).size.width,
                   margin: const EdgeInsets.only(left: 10, bottom: 5),
                   child: Column(
@@ -113,8 +109,6 @@ class _PostItemState extends State<PostItem> {
                     try {
                       if (!isLiked) {
                         setState(() {
-                          // isLiked = true;
-                          // _likes += 1;
                           widget.post.likes.add(userDetails.id);
                         });
                         await Provider.of<SignUser>(context, listen: false)
@@ -129,37 +123,7 @@ class _PostItemState extends State<PostItem> {
                 },
                 child: Stack(
                   children: [
-                    Container(
-                      decoration: const BoxDecoration(
-                          color: Color.fromARGB(31, 165, 165, 165)),
-                      child: widget.post.url.isNotEmpty
-                          ? CachedNetworkImage(
-                              imageUrl: widget.post.url,
-                              filterQuality: FilterQuality.low,
-                              width: MediaQuery.of(context).size.width,
-                              fit: BoxFit.cover,
-                              memCacheWidth:
-                                  MediaQuery.of(context).size.width.toInt(),
-                              progressIndicatorBuilder:
-                                  (context, url, downloadProgress) {
-                                return SizedBox(
-                                    height:
-                                        MediaQuery.of(context).size.width * 0.8,
-                                    width: MediaQuery.of(context).size.width,
-                                    child: const Center(
-                                      child:
-                                          CircularProgressIndicator.adaptive(),
-                                    ));
-                              },
-                              errorWidget: (context, url, error) => SizedBox(
-                                  width: MediaQuery.of(context).size.width,
-                                  height: MediaQuery.of(context).size.width,
-                                  child: Center(
-                                      child: Image.asset(
-                                          "lib/assets/images/error.png"))),
-                            )
-                          : null,
-                    ),
+                    PostImage(postUrl: widget.post.url, postId: widget.post.id)
                   ],
                 ),
               ),

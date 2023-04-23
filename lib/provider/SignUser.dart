@@ -46,7 +46,6 @@ class SignUser with ChangeNotifier {
   Map<String, List<Message>> _roomMessages = {};
   Map<String, List<Comment>> _postComments = {};
 
-  // late String _accessToken;
   bool _isAuth = FirebaseAuth.instance.currentUser == null ? false : true;
 
   void init() async {
@@ -110,14 +109,6 @@ class SignUser with ChangeNotifier {
     return _roomMessages;
   }
 
-  // Future<List<Message>?> getRoomMessage(String id) async {
-  //   final messages =
-  //       await cloud_firestore.getMessages(Functions.genHash(_user.id, id));
-
-  //   print("Hii");
-  //   return messages;
-  // }
-
   Map<String, String> get getRoomIds {
     return _friendRoomId;
   }
@@ -155,7 +146,6 @@ class SignUser with ChangeNotifier {
     final prefs = await SharedPreferences.getInstance();
 
     FirebaseAuth.instance.signOut();
-    // prefs.setString("shore_accessToken", "");
     _isAuth = false;
     _user = UserModel(
         id: "1",
@@ -368,10 +358,6 @@ class SignUser with ChangeNotifier {
             "password": password,
             "deviceToken": deviceToken
           }),
-          // body: json.encode({
-          //   "emailId": "harshkeshri1234567@gmail.com",
-          //   "password": "Password1!"
-          // }),
           headers: {"Content-Type": "application/json"});
 
       if (tokenRes.statusCode != 200) {
@@ -558,7 +544,6 @@ class SignUser with ChangeNotifier {
       await credential.user!.updateDisplayName(userName.toString());
 
       debugPrint("Updated Display Name");
-      // var parsedBody = json.decode(res.body);
 
       cloud_firestore.createUser(name, phoneNumber);
 
@@ -598,8 +583,6 @@ class SignUser with ChangeNotifier {
         throw postRes.body;
       }
 
-      // var postResBody = json.decode(postRes.body);
-
       return true;
     } catch (e) {
       print(e);
@@ -608,8 +591,6 @@ class SignUser with ChangeNotifier {
       notifyListeners();
     }
   }
-
-  // files/63ce582198aafbd60d76f6be/IMG-20230124-WA0003_compressed6825376798441975810.jpg_2023-01-25 20:25:51.726868
 
   Future<String> fileUpload(File file, String destination) async {
     try {
@@ -648,8 +629,6 @@ class SignUser with ChangeNotifier {
         throw res.body;
       }
 
-      // var resBody = json.decode(res.body);
-
       return true;
     } catch (e) {
       print(e);
@@ -679,8 +658,6 @@ class SignUser with ChangeNotifier {
         throw res.body;
       }
 
-      // var resBody = json.decode(res.body);
-
       return true;
     } catch (e) {
       print(e);
@@ -707,8 +684,6 @@ class SignUser with ChangeNotifier {
       if (res.statusCode != 200) {
         throw res.body;
       }
-
-      // var resBody = json.decode(res.body);
 
       return true;
     } catch (e) {
@@ -737,8 +712,6 @@ class SignUser with ChangeNotifier {
       if (res.statusCode != 200) {
         throw res.body;
       }
-
-      // var resBody = json.decode(res.body);
 
       return true;
     } catch (e) {
@@ -789,12 +762,11 @@ class SignUser with ChangeNotifier {
     return _userPosts;
   }
 
-  Future<String> editProfile(
-      {required String name,
-      required String gender,
-      required String userName,
-      required String emailId,
-      required String phoneNumber}) async {
+  Future<String> editProfile({
+    required String name,
+    required String gender,
+    required String userName,
+  }) async {
     var client = Client();
     final prefs = await SharedPreferences.getInstance();
     String domainUri = prefs.get("shore_backend_uri") as String;
@@ -805,8 +777,6 @@ class SignUser with ChangeNotifier {
         "name": "",
         "gender": "",
         "userName": "",
-        "emailId": "",
-        "phoneNumber": ""
       };
 
       if (name.trim() != _user.name) {
@@ -819,14 +789,6 @@ class SignUser with ChangeNotifier {
 
       if (userName.trim() != _user.userName) {
         data["userName"] = userName.toLowerCase().trim();
-      }
-
-      if (emailId.trim() != _user.emailId) {
-        data["emailId"] = emailId;
-      }
-
-      if (phoneNumber.trim() != _user.phoneNumber) {
-        data["phoneNumber"] = phoneNumber;
       }
 
       var res = await client.post(Uri.parse("$domainUri/api/user/edit"),
@@ -851,15 +813,14 @@ class SignUser with ChangeNotifier {
     }
   }
 
-  Future<String> editProfileWithImg(
-      {required File file,
-      required String fileName,
-      required String destination,
-      required String name,
-      required String gender,
-      required String userName,
-      required String emailId,
-      required String phoneNumber}) async {
+  Future<String> editProfileWithImg({
+    required File file,
+    required String fileName,
+    required String destination,
+    required String name,
+    required String gender,
+    required String userName,
+  }) async {
     var client = Client();
     final prefs = await SharedPreferences.getInstance();
     String domainUri = prefs.get("shore_backend_uri") as String;
@@ -874,8 +835,6 @@ class SignUser with ChangeNotifier {
         "name": "",
         "gender": "",
         "userName": "",
-        "emailId": "",
-        "phoneNumber": ""
       };
 
       if (name.trim() != _user.name) {
@@ -888,14 +847,6 @@ class SignUser with ChangeNotifier {
 
       if (userName.trim() != _user.userName) {
         data["userName"] = userName.toLowerCase().trim();
-      }
-
-      if (emailId.trim() != _user.emailId) {
-        data["emailId"] = emailId;
-      }
-
-      if (phoneNumber.trim() != _user.phoneNumber) {
-        data["phoneNumber"] = phoneNumber;
       }
 
       var res = await client.post(Uri.parse("$domainUri/api/user/edit"),
@@ -1137,8 +1088,6 @@ class SignUser with ChangeNotifier {
         throw res.body;
       }
 
-      // var resBody = json.decode(res.body);
-
       _user.followings.remove(userId);
 
       return true;
@@ -1260,7 +1209,6 @@ class SignUser with ChangeNotifier {
   }
 
   Future<List<UnsignUserModel>> loadFriendsUsers() async {
-    // Map<String, List<Message>> messages = {};
     var client = Client();
     final prefs = await SharedPreferences.getInstance();
     String domainUri = prefs.get("shore_backend_uri") as String;
@@ -1409,9 +1357,6 @@ class SignUser with ChangeNotifier {
       if (res.statusCode != 200) {
         throw res.body;
       }
-
-      // var resBody = json.decode(res.body);
-
       _user.acceptedFollowerRequests.add(userId);
       _user.followers.add(userId);
       _user.requestingFollowers.remove(userId);
@@ -1443,8 +1388,6 @@ class SignUser with ChangeNotifier {
       if (res.statusCode != 200) {
         throw res.body;
       }
-
-      // var resBody = json.decode(res.body);
 
       _user.declinedFollowingRequests.add(userId);
       _user.followers.add(userId);
@@ -1506,38 +1449,6 @@ class SignUser with ChangeNotifier {
   Future<bool> sendMessage(String recieverUserId, String message,
       ScrollController scrollController, int currentTime) async {
     final roomId = Functions.genHash(recieverUserId, _user.id);
-    // if (_roomMessages.containsKey(roomId)) {
-    //   _roomMessages[roomId]?.add(Message(
-    //       from: _user.id.toString(),
-    //       message: message,
-    //       time: currentTime,
-    //       to: recieverUserId,
-    //       read: false,
-    //       type: "text"));
-    // } else {
-    //   // _roomMessages.putIfAbsent(
-    //   //     roomId.toString(),
-    //   //     () => [
-    //   //           Message(
-    //   //               from: _user.id.toString(),
-    //   //               message: message,
-    //   //               time: int.parse(currentTime),
-    //   //               to: recieverUserId,
-    //   //               read: false,
-    //   //               type: "text")
-    //   //         ]);
-
-    //   _roomMessages[roomId] = [
-    //     Message(
-    //         from: _user.id.toString(),
-    //         message: message,
-    //         time: currentTime,
-    //         to: recieverUserId,
-    //         read: false,
-    //         type: "text")
-    //   ];
-    // }
-
     notifyListeners();
 
     scrollController.jumpTo(
@@ -1560,8 +1471,6 @@ class SignUser with ChangeNotifier {
     final accessToken = await prefs.get("shore_accessToken") as String;
     try {
       print("Sending");
-
-      // fcm.
 
       await client.post(Uri.parse("$domainUri/api/user/message/one"),
           body: json.encode({
@@ -1604,18 +1513,6 @@ class SignUser with ChangeNotifier {
         throw parsedBody["message"];
       }
 
-      // Comment comment = Comment(
-      //     id: parsedBody["_id"],
-      //     description: parsedBody["description"],
-      //     reply: parsedBody["reply"] == null ? "" : parsedBody["reply"],
-      //     commented: parsedBody["commented"],
-      //     likes: List<String>.from(parsedBody["likes"]),
-      //     to: parsedBody["to"],
-      //     postId: parsedBody["postId"],
-      //     time: parsedBody["time"]);
-
-      // _user.commented.add(parsedBody["_id"]);
-
       _postComments.clear();
 
       parsedBody.forEach((comment) {
@@ -1638,12 +1535,6 @@ class SignUser with ChangeNotifier {
           _postComments.putIfAbsent(postId, () => [newComment]);
         }
       });
-
-      // if (_postComments.containsKey(postId)) {
-      //   _postComments[postId]?.add(comment);
-      // } else {
-      //   _postComments.putIfAbsent(postId, () => [comment]);
-      // }
 
       return true;
     } catch (e) {

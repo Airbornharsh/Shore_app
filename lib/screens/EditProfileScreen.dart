@@ -7,7 +7,6 @@ import 'package:flutter_native_image/flutter_native_image.dart';
 import 'package:provider/provider.dart';
 import 'package:shore_app/Utils/snackBar.dart';
 import 'package:shore_app/models.dart';
-import 'package:shore_app/provider/AppSetting.dart';
 import 'package:shore_app/provider/SignUser.dart';
 
 class EditProfileScreen extends StatefulWidget {
@@ -25,9 +24,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   bool _isLoading = false;
   final _nameController = TextEditingController();
   final _genderController = TextEditingController();
-  final _emailIdController = TextEditingController();
   final _userNameController = TextEditingController();
-  final _phoneNumberController = TextEditingController();
 
   @override
   void dispose() {
@@ -35,9 +32,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
 
     _nameController.dispose();
     _genderController.dispose();
-    _emailIdController.dispose();
     _userNameController.dispose();
-    _phoneNumberController.dispose();
 
     super.dispose();
   }
@@ -50,8 +45,6 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
       _nameController.text = user.name;
       _genderController.text = user.gender;
       _userNameController.text = user.userName;
-      _emailIdController.text = user.emailId;
-      _phoneNumberController.text = user.phoneNumber;
       setState(() {
         _tempFile = File(user.imgUrl.isNotEmpty
             ? user.imgUrl
@@ -65,9 +58,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
       children: [
         Scaffold(
           appBar: AppBar(
-            backgroundColor: Provider.of<AppSetting>(context).getdarkMode
-                ? const Color.fromARGB(255, 0, 99, 95)
-                : const Color.fromARGB(255, 0, 190, 184),
+            backgroundColor: const Color.fromARGB(255, 0, 190, 184),
             title: Text(user.userName),
           ),
           body: Column(
@@ -75,10 +66,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
               Expanded(
                 child: Container(
                   width: MediaQuery.of(context).size.width,
-                  decoration: BoxDecoration(
-                      color: Provider.of<AppSetting>(context).getdarkMode
-                          ? Colors.grey.shade900
-                          : Colors.white),
+                  decoration: BoxDecoration(color: Colors.white),
                   child: SingleChildScrollView(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.center,
@@ -124,25 +112,6 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                                         )
                                       : Hero(
                                           tag: user.id,
-                                          // child: Image.network(
-                                          //     user.imgUrl.isNotEmpty
-                                          //         ? user.imgUrl
-                                          //         : "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png",
-                                          //     height: 90,
-                                          //     width: 90,
-                                          //     fit: BoxFit.cover,
-                                          //     filterQuality: FilterQuality.low,
-                                          //     errorBuilder:
-                                          //         (BuildContext context,
-                                          //             Object exception,
-                                          //             StackTrace? stackTrace) {
-                                          //   return Container(
-                                          //       width: 90,
-                                          //       height: 90,
-                                          //       child: Center(
-                                          //           child: Image.asset(
-                                          //               "lib/assets/images/error.png")));
-                                          // }),
                                           child: CachedNetworkImage(
                                             imageUrl: user.imgUrl.isNotEmpty
                                                 ? user.imgUrl
@@ -178,30 +147,17 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                           padding: const EdgeInsets.only(top: 4),
                           decoration: BoxDecoration(
                               border: Border.all(
-                                  color: Provider.of<AppSetting>(context)
-                                          .getdarkMode
-                                      ? const Color.fromARGB(255, 0, 99, 95)
-                                      : const Color.fromARGB(
-                                          255, 0, 190, 184))),
+                                  color:
+                                      const Color.fromARGB(255, 0, 190, 184))),
                           child: TextField(
-                            style: TextStyle(
-                                color:
-                                    Provider.of<AppSetting>(context).getdarkMode
-                                        ? Colors.grey.shade400
-                                        : Colors.black),
+                            style: TextStyle(color: Colors.black),
                             decoration: InputDecoration(
                               border: InputBorder.none,
                               hintText: "Name",
                               hintStyle: TextStyle(
-                                color:
-                                    Provider.of<AppSetting>(context).getdarkMode
-                                        ? Colors.grey.shade400
-                                        : Colors.black,
+                                color: Colors.black,
                               ),
-                              fillColor:
-                                  Provider.of<AppSetting>(context).getdarkMode
-                                      ? Colors.grey.shade900
-                                      : Colors.white,
+                              fillColor: Colors.white,
                               filled: true,
                             ),
                             controller: _nameController,
@@ -213,30 +169,17 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                           padding: const EdgeInsets.only(top: 4),
                           decoration: BoxDecoration(
                               border: Border.all(
-                                  color: Provider.of<AppSetting>(context)
-                                          .getdarkMode
-                                      ? const Color.fromARGB(255, 0, 99, 95)
-                                      : const Color.fromARGB(
-                                          255, 0, 190, 184))),
+                                  color:
+                                      const Color.fromARGB(255, 0, 190, 184))),
                           child: TextField(
-                            style: TextStyle(
-                                color:
-                                    Provider.of<AppSetting>(context).getdarkMode
-                                        ? Colors.grey.shade400
-                                        : Colors.black),
+                            style: TextStyle(color: Colors.black),
                             decoration: InputDecoration(
                               border: InputBorder.none,
                               hintText: "Gender",
                               hintStyle: TextStyle(
-                                color:
-                                    Provider.of<AppSetting>(context).getdarkMode
-                                        ? Colors.grey.shade400
-                                        : Colors.black,
+                                color: Colors.black,
                               ),
-                              fillColor:
-                                  Provider.of<AppSetting>(context).getdarkMode
-                                      ? Colors.grey.shade900
-                                      : Colors.white,
+                              fillColor: Colors.white,
                               filled: true,
                             ),
                             controller: _genderController,
@@ -248,103 +191,20 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                           padding: const EdgeInsets.only(top: 4),
                           decoration: BoxDecoration(
                               border: Border.all(
-                                  color: Provider.of<AppSetting>(context)
-                                          .getdarkMode
-                                      ? const Color.fromARGB(255, 0, 99, 95)
-                                      : const Color.fromARGB(
-                                          255, 0, 190, 184))),
+                                  color:
+                                      const Color.fromARGB(255, 0, 190, 184))),
                           child: TextField(
-                            style: TextStyle(
-                                color:
-                                    Provider.of<AppSetting>(context).getdarkMode
-                                        ? Colors.grey.shade400
-                                        : Colors.black),
+                            style: TextStyle(color: Colors.black),
                             decoration: InputDecoration(
                               border: InputBorder.none,
                               hintText: "User Name",
                               hintStyle: TextStyle(
-                                color:
-                                    Provider.of<AppSetting>(context).getdarkMode
-                                        ? Colors.grey.shade400
-                                        : Colors.black,
+                                color: Colors.black,
                               ),
-                              fillColor:
-                                  Provider.of<AppSetting>(context).getdarkMode
-                                      ? Colors.grey.shade900
-                                      : Colors.white,
+                              fillColor: Colors.white,
                               filled: true,
                             ),
                             controller: _userNameController,
-                          ),
-                        ),
-                        Container(
-                          margin: const EdgeInsets.symmetric(
-                              horizontal: 20, vertical: 14),
-                          padding: const EdgeInsets.only(top: 4),
-                          decoration: BoxDecoration(
-                              border: Border.all(
-                                  color: Provider.of<AppSetting>(context)
-                                          .getdarkMode
-                                      ? const Color.fromARGB(255, 0, 99, 95)
-                                      : const Color.fromARGB(
-                                          255, 0, 190, 184))),
-                          child: TextField(
-                            style: TextStyle(
-                                color:
-                                    Provider.of<AppSetting>(context).getdarkMode
-                                        ? Colors.grey.shade400
-                                        : Colors.black),
-                            decoration: InputDecoration(
-                              border: InputBorder.none,
-                              hintText: "Email Id",
-                              hintStyle: TextStyle(
-                                color:
-                                    Provider.of<AppSetting>(context).getdarkMode
-                                        ? Colors.grey.shade400
-                                        : Colors.black,
-                              ),
-                              fillColor:
-                                  Provider.of<AppSetting>(context).getdarkMode
-                                      ? Colors.grey.shade900
-                                      : Colors.white,
-                              filled: true,
-                            ),
-                            controller: _emailIdController,
-                          ),
-                        ),
-                        Container(
-                          margin: const EdgeInsets.symmetric(
-                              horizontal: 20, vertical: 14),
-                          padding: const EdgeInsets.only(top: 4),
-                          decoration: BoxDecoration(
-                              border: Border.all(
-                                  color: Provider.of<AppSetting>(context)
-                                          .getdarkMode
-                                      ? const Color.fromARGB(255, 0, 99, 95)
-                                      : const Color.fromARGB(
-                                          255, 0, 190, 184))),
-                          child: TextField(
-                            style: TextStyle(
-                                color:
-                                    Provider.of<AppSetting>(context).getdarkMode
-                                        ? Colors.grey.shade400
-                                        : Colors.black),
-                            decoration: InputDecoration(
-                              border: InputBorder.none,
-                              hintText: "Phone Number",
-                              hintStyle: TextStyle(
-                                color:
-                                    Provider.of<AppSetting>(context).getdarkMode
-                                        ? Colors.grey.shade400
-                                        : Colors.black,
-                              ),
-                              fillColor:
-                                  Provider.of<AppSetting>(context).getdarkMode
-                                      ? Colors.grey.shade900
-                                      : Colors.white,
-                              filled: true,
-                            ),
-                            controller: _phoneNumberController,
                           ),
                         ),
                         TextButton(
@@ -376,8 +236,6 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                                       name: _nameController.text,
                                       gender: _genderController.text,
                                       userName: _userNameController.text,
-                                      emailId: _emailIdController.text,
-                                      phoneNumber: _phoneNumberController.text,
                                     )
                                   : await Provider.of<SignUser>(context,
                                           listen: false)
@@ -385,8 +243,6 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                                       name: _nameController.text,
                                       gender: _genderController.text,
                                       userName: _userNameController.text,
-                                      emailId: _emailIdController.text,
-                                      phoneNumber: _phoneNumberController.text,
                                     );
 
                               setState(() {
@@ -397,10 +253,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                                 _nameController.clear();
                                 _genderController.clear();
                                 _userNameController.clear();
-                                _emailIdController.clear();
-                                _phoneNumberController.clear();
                                 setState(() {
-                                  // _descriptionController.clear();
                                   _isFile = true;
                                 });
                               } else if (res == "withoutImg") {
@@ -408,8 +261,6 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                                 _nameController.clear();
                                 _genderController.clear();
                                 _userNameController.clear();
-                                _emailIdController.clear();
-                                _phoneNumberController.clear();
                               } else {
                                 snackBar(context, "Try Again");
                               }
@@ -423,10 +274,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                           },
                           style: ButtonStyle(
                               backgroundColor: MaterialStateProperty.all<Color>(
-                                  Provider.of<AppSetting>(context).getdarkMode
-                                      ? const Color.fromARGB(255, 0, 99, 95)
-                                      : const Color.fromARGB(
-                                          255, 0, 190, 184))),
+                                  const Color.fromARGB(255, 0, 190, 184))),
                           child: const Text(
                             "Update",
                             style: TextStyle(color: Colors.white),
