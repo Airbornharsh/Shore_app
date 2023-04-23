@@ -111,7 +111,7 @@ class UnsignUser with ChangeNotifier {
 
       var parsedUserBody = json.decode(res.body);
 
-      newUser = UnsignUserModel(
+      newUser = await UnsignUserModel(
         id: parsedUserBody["id"].toString(),
         name: parsedUserBody["name"].toString(),
         gender: parsedUserBody["gender"].toString(),
@@ -124,10 +124,10 @@ class UnsignUser with ChangeNotifier {
         phoneNumberFirebaseId:
             parsedUserBody["phoneNumberFirebaseId"].toString(),
         isPrivate: parsedUserBody["isPrivate"],
-        deviceTokens: List<String>.from(parsedUserBody["deviceTokens"]),
-        posts: List<String>.from(parsedUserBody["posts"]),
-        followers: List<String>.from(parsedUserBody["followers"]),
-        followings: List<String>.from(parsedUserBody["followings"]),
+        deviceTokens: List<String>.from(parsedUserBody["deviceTokens"] ?? []),
+        posts: List<String>.from(parsedUserBody["posts"] ?? []),
+        followers: List<String>.from(parsedUserBody["followers"] ?? []),
+        followings: List<String>.from(parsedUserBody["followings"] ?? []),
       );
     } catch (e) {
       print(e);

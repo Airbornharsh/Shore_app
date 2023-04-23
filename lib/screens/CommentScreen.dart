@@ -4,6 +4,8 @@ import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:shore_app/models.dart';
 import 'package:shore_app/provider/SignUser.dart';
+import 'package:shore_app/provider/UnsignUser.dart';
+import 'package:shore_app/screens/UserScreen.dart';
 
 class CommentScreen extends StatefulWidget {
   static const String routeName = "/comment";
@@ -73,79 +75,106 @@ class _CommentScreenState extends State<CommentScreen> {
                 itemBuilder: (context, index) {
                   return Stack(
                     children: [
-                      Container(
-                        margin:
-                            EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                        padding: EdgeInsets.only(
-                            left: 8, right: 9, top: 8, bottom: 20),
-                        decoration: BoxDecoration(
-                            color: Colors.grey.shade200,
-                            borderRadius: BorderRadius.circular(10)),
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Row(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                ClipRRect(
-                                    borderRadius: BorderRadius.circular(30),
-                                    child: CachedNetworkImage(
-                                      imageUrl: comments[index]
-                                              .imgUrl
-                                              .isNotEmpty
-                                          ? comments[index].imgUrl
-                                          : "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png",
-                                      height: 40,
-                                      width: 40,
-                                      memCacheWidth: 40,
-                                      memCacheHeight: 40,
-                                      fit: BoxFit.cover,
-                                      filterQuality: FilterQuality.low,
-                                      errorWidget: (context, url, error) =>
-                                          Container(
-                                              height: 40,
-                                              width: 40,
-                                              child: Center(
-                                                  child: Image.asset(
-                                                      "lib/assets/images/error.png"))),
-                                    )),
-                                SizedBox(
-                                  width: 10,
-                                ),
-                                Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      comments[index].name,
-                                      style: TextStyle(fontSize: 16),
-                                    ),
-                                    Text(
-                                      "@${comments[index].userName}",
-                                      style: TextStyle(fontSize: 12),
-                                    ),
-                                    SizedBox(
-                                      height: 15,
-                                    ),
-                                    Container(
-                                      width: MediaQuery.of(context).size.width -
-                                          110,
-                                      child: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          Text(
-                                            comments[index].description,
-                                            overflow: TextOverflow.visible,
-                                          ),
-                                        ],
+                      GestureDetector(
+                        onTap: () async {
+                          try {
+                            setState(() {
+                              _isLoading = true;
+                            });
+
+                            final user = await Provider.of<UnsignUser>(context,
+                                    listen: false)
+                                .reloadUser(comments[index].commented);
+
+                            Navigator.of(context).pushNamed(
+                                UserScreen.routeName,
+                                arguments: user);
+                            setState(() {
+                              _isLoading = false;
+                            });
+                          } catch (e) {
+                            setState(() {
+                              _isLoading = false;
+                            });
+                            print(e);
+                          }
+                        },
+                        child: Container(
+                          margin:
+                              EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                          padding: EdgeInsets.only(
+                              left: 8, right: 9, top: 8, bottom: 20),
+                          decoration: BoxDecoration(
+                              color: Colors.grey.shade200,
+                              borderRadius: BorderRadius.circular(10)),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Row(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  ClipRRect(
+                                      borderRadius: BorderRadius.circular(30),
+                                      child: CachedNetworkImage(
+                                        imageUrl: comments[index]
+                                                .imgUrl
+                                                .isNotEmpty
+                                            ? comments[index].imgUrl
+                                            : "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png",
+                                        height: 40,
+                                        width: 40,
+                                        memCacheWidth: 40,
+                                        memCacheHeight: 40,
+                                        fit: BoxFit.cover,
+                                        filterQuality: FilterQuality.low,
+                                        errorWidget: (context, url, error) =>
+                                            Container(
+                                                height: 40,
+                                                width: 40,
+                                                child: Center(
+                                                    child: Image.asset(
+                                                        "lib/assets/images/error.png"))),
+                                      )),
+                                  SizedBox(
+                                    width: 10,
+                                  ),
+                                  Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        comments[index].name,
+                                        style: TextStyle(fontSize: 16),
                                       ),
-                                    )
-                                  ],
-                                ),
-                              ],
-                            )
-                          ],
+                                      Text(
+                                        "@${comments[index].userName}",
+                                        style: TextStyle(fontSize: 12),
+                                      ),
+                                      SizedBox(
+                                        height: 15,
+                                      ),
+                                      Container(
+                                        width:
+                                            MediaQuery.of(context).size.width -
+                                                110,
+                                        child: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            Text(
+                                              comments[index].description,
+                                              overflow: TextOverflow.visible,
+                                            ),
+                                          ],
+                                        ),
+                                      )
+                                    ],
+                                  ),
+                                ],
+                              )
+                            ],
+                          ),
                         ),
                       ),
                       Positioned(
