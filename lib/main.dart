@@ -1,9 +1,11 @@
 import 'dart:async';
+import 'dart:convert';
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart';
 // import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -47,8 +49,15 @@ Future main() async {
 
   final prefs = await SharedPreferences.getInstance();
 
+  Client client = Client();
+  final res = await client.post(
+    Uri.parse("https://shore.vercel.app/api/get-api"),
+  );
+
+  final parsedBody = json.decode(res.body);
+
   prefs.setString("shore_device_token", value!);
-  prefs.setString("shore_backend_uri", "https://shore.vercel.app");
+  prefs.setString("shore_backend_uri", parsedBody["api_uri"]);
   // prefs.setString("shore_backend_uri", "http://192.168.1.42:3000");
   // prefs.setString("shore_backend_socket_uri", "http://192.168.1.37:4000");
 
