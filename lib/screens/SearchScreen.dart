@@ -98,7 +98,8 @@ class _SearchScreenState extends State<SearchScreen> {
                     autofocus: true,
                     autocorrect: true,
                     onSubmitted: (value) async {
-                      if (Provider.of<SignUser>(context, listen: false).getIsAuth) {
+                      if (Provider.of<SignUser>(context, listen: false)
+                          .getIsAuth) {
                         await searchFun();
                       } else {
                         snackBar(context, "Please Log In");
@@ -113,16 +114,31 @@ class _SearchScreenState extends State<SearchScreen> {
             ),
             body: Container(
               decoration: BoxDecoration(color: Colors.grey.shade200),
-              child: Column(children: [
-                Expanded(
-                    child: UserListBuilder(
-                        users: _users, addMoreUser: addMoreUser)),
-                if (_isLoadingMore)
-                  Container(
-                    margin: const EdgeInsets.symmetric(vertical: 10),
-                    child: const CircularProgressIndicator(),
-                  )
-              ]),
+              child: Stack(
+                children: [
+                  Column(children: [
+                    Expanded(
+                        child: UserListBuilder(
+                            users: _users, addMoreUser: addMoreUser)),
+                    // if (_isLoadingMore)
+                    //   Container(
+                    //     margin: const EdgeInsets.symmetric(vertical: 10),
+                    //     child: const CircularProgressIndicator(),
+                    //   )
+                  ]),
+                  Positioned(
+                      child: _isLoadingMore
+                          ? SizedBox(
+                              height: 25,
+                              width: 25,
+                              child: CircularProgressIndicator(
+                                strokeWidth: 3,
+                              ))
+                          : const SizedBox(),
+                      bottom: 9,
+                      left: MediaQuery.of(context).size.width / 2 - 12),
+                ],
+              ),
             )),
         if (_isLoading)
           Positioned(
