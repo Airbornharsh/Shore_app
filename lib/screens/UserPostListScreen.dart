@@ -13,6 +13,7 @@ import '../models.dart';
 class UserPostListScreen extends StatefulWidget {
   static String routeName = "user-post-list";
   UserPostListScreen({super.key});
+  bool start = true;
 
   @override
   State<UserPostListScreen> createState() => UserPostListScreenState();
@@ -36,10 +37,15 @@ class UserPostListScreenState extends State<UserPostListScreen> {
 
     UserModel user = Provider.of<SignUser>(context).getUserDetails;
 
-    Timer(Duration(seconds: 0), () {
-      itemScrollController.scrollTo(
-          index: args.index, duration: Duration(milliseconds: 300));
-    });
+    if (widget.start) {
+      Timer(Duration(seconds: 0), () {
+        itemScrollController.scrollTo(
+            index: args.index, duration: Duration(milliseconds: 300));
+      });
+      setState(() {
+        widget.start = false;
+      });
+    }
 
     return Stack(
       children: [

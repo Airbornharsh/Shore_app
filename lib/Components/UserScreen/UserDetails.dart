@@ -80,8 +80,7 @@ class _UserDetailsState extends State<UserDetails> {
                         height: 90,
                         width: 90,
                         child: Center(
-                            child: Image.asset(
-                                "lib/assets/images/error.png"))),
+                            child: Image.asset("lib/assets/images/error.png"))),
                   )),
             ),
             const SizedBox(
@@ -186,25 +185,18 @@ class _UserDetailsState extends State<UserDetails> {
                   if (isFollowing == "Following")
                     TextButton(
                         onPressed: () async {
-                          if (Provider.of<SignUser>(context, listen: false)
-                              .getIsAuth) {
-                            try {
-                              await Provider.of<SignUser>(context,
-                                      listen: false)
-                                  .unfollow(widget.user.id);
-                              widget.user.followers.remove(
-                                  Provider.of<SignUser>(context, listen: false)
-                                      .getUserDetails
-                                      .id);
-                              setState(() {
-                                isFollowing = "Follow";
-                              });
-                            } catch (e) {
-                              print(e);
-                            }
-                          } else {
-                            Navigator.of(context)
-                                .popAndPushNamed(AuthScreen.routeName);
+                          try {
+                            await Provider.of<SignUser>(context, listen: false)
+                                .unfollow(widget.user.id);
+                            widget.user.followers.remove(
+                                Provider.of<SignUser>(context, listen: false)
+                                    .getUserDetails
+                                    .id);
+                            setState(() {
+                              isFollowing = "Follow";
+                            });
+                          } catch (e) {
+                            print(e);
                           }
                         },
                         style: ButtonStyle(

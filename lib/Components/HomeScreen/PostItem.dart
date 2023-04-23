@@ -344,7 +344,6 @@ class _PostItemState extends State<PostItem> {
                 ),
                 GestureDetector(
                   onTap: () {
-                    print("comment");
                     Navigator.of(context).pushNamed(
                       CommentScreen.routeName,
                       arguments: widget.post.id,

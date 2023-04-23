@@ -6,6 +6,7 @@ import 'package:shore_app/provider/AppSetting.dart';
 import 'package:shore_app/provider/Posts.dart';
 import 'package:shore_app/provider/SignUser.dart';
 import 'package:shore_app/screens/AuthScreen.dart';
+import 'package:shore_app/screens/CommentScreen.dart';
 
 class UserPostListItem extends StatefulWidget {
   String newDate;
@@ -247,10 +248,7 @@ class _UserPostListItemState extends State<UserPostListItem> {
                     height: 50,
                     width: MediaQuery.of(context).size.width / 3,
                     decoration: BoxDecoration(
-                      border: Border.all(
-                          color: Provider.of<AppSetting>(context).getdarkMode
-                              ? Colors.grey.shade800
-                              : Colors.grey),
+                      border: Border.all(color: Colors.grey),
                     ),
                     child: Center(
                         child: Row(
@@ -268,30 +266,30 @@ class _UserPostListItemState extends State<UserPostListItem> {
                         const SizedBox(
                           width: 4,
                         ),
-                        Text(_likes.toString(),
-                            style: TextStyle(
-                                color:
-                                    Provider.of<AppSetting>(context).getdarkMode
-                                        ? Colors.grey.shade300
-                                        : Colors.black))
+                        Text(
+                          _likes.toString(),
+                          style: TextStyle(color: Colors.black),
+                        )
                       ],
                     )),
                   ),
                 ),
-                Container(
-                  decoration: BoxDecoration(
-                      border: Border.all(
-                          color: Provider.of<AppSetting>(context).getdarkMode
-                              ? Colors.grey.shade800
-                              : Colors.grey)),
-                  width: MediaQuery.of(context).size.width / 3,
-                  child: Center(
-                    child: IconButton(
-                        onPressed: () {},
-                        icon: const Icon(
-                          Icons.comment_bank_outlined,
-                          color: Colors.grey,
-                        )),
+                GestureDetector(
+                  onTap: () {
+                    Navigator.of(context).pushNamed(
+                      CommentScreen.routeName,
+                      arguments: widget.post.id,
+                    );
+                  },
+                  child: Container(
+                    decoration:
+                        BoxDecoration(border: Border.all(color: Colors.grey)),
+                    width: MediaQuery.of(context).size.width / 3,
+                    height: 50,
+                    child: Center(
+                      child: const Icon(Icons.comment_bank_outlined,
+                          color: Colors.grey),
+                    ),
                   ),
                 ),
                 GestureDetector(
@@ -324,10 +322,7 @@ class _UserPostListItemState extends State<UserPostListItem> {
                     height: 50,
                     width: MediaQuery.of(context).size.width / 3,
                     decoration: BoxDecoration(
-                      border: Border.all(
-                          color: Provider.of<AppSetting>(context).getdarkMode
-                              ? Colors.grey.shade800
-                              : Colors.grey),
+                      border: Border.all(color: Colors.grey),
                     ),
                     child: Center(
                         child: isFav
