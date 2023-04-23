@@ -317,36 +317,45 @@ class _AuthScreenState extends State<AuthScreen> {
       auth.authStateChanges().listen((User? user) {
         if (user == null) {
           print('User is currently signed out!');
+          setState(() {
+            widget.start = false;
+            isLoggedChecked = true;
+          });
         } else {
           print('User is signed in!');
+          Provider.of<SignUser>(context, listen: false)
+              .isValidAccessToken()
+              .then((value) => null);
+
+          changeRoute(HomeScreen.routeName, context);
         }
       });
       // changeLoading(true);
       void onLoad() async {
-        final prefs = await SharedPreferences.getInstance();
+        // final prefs = await SharedPreferences.getInstance();
 
         try {
-          if (prefs.containsKey("shore_accessToken")) {
-            bool isValid = await Provider.of<SignUser>(context, listen: false)
-                .isValidAccessToken();
-            print(isValid);
+          // if (prefs.containsKey("shore_accessToken")) {
+          //   bool isValid = await Provider.of<SignUser>(context, listen: false)
+          //       .isValidAccessToken();
+          //   print(isValid);
 
-            // changeLoading(false);
-            if (isValid) {
-              changeRoute(HomeScreen.routeName, context);
-            }
-            setState(() {
-              changeLoading(false);
-              isLoading = false;
-              widget.start = false;
-              isLoggedChecked = true;
-            });
-          }
-          setState(() {
-            changeLoading(false);
-            widget.start = false;
-            isLoggedChecked = true;
-          });
+          //   // changeLoading(false);
+          //   if (isValid) {
+          //     changeRoute(HomeScreen.routeName, context);
+          //   }
+          //   setState(() {
+          //     changeLoading(false);
+          //     isLoading = false;
+          //     widget.start = false;
+          //     isLoggedChecked = true;
+          //   });
+          // }
+          // setState(() {
+          //   changeLoading(false);
+          //   widget.start = false;
+          //   isLoggedChecked = true;
+          // });
         } catch (e) {
           print(e);
           changeLoading(false);
