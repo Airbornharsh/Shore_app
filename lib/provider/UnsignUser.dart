@@ -15,9 +15,11 @@ class UnsignUser with ChangeNotifier {
     String domainUri = prefs.get("shore_backend_uri") as String;
     try {
       var res = await client.post(
-        Uri.parse("$domainUri/api/unsignuser/get-users"),
-        body: json.encode({"limit": 15, "userName": userName, "page": page}),
-      );
+          Uri.parse("$domainUri/api/unsignuser/get-users"),
+          body: json.encode({"limit": 15, "userName": userName, "page": page}),
+          headers: {
+            "Content-Type": "application/json",
+          });
 
       var parsedUserBody = json.decode(res.body);
 
@@ -57,9 +59,11 @@ class UnsignUser with ChangeNotifier {
     String domainUri = prefs.get("shore_backend_uri") as String;
     try {
       var res = await client.post(
-        Uri.parse("$domainUri/api/unsignuser/get-users"),
-        body: json.encode({"limit": 15, "userName": userName, "page": page}),
-      );
+          Uri.parse("$domainUri/api/unsignuser/get-users"),
+          body: json.encode({"limit": 15, "userName": userName, "page": page}),
+          headers: {
+            "Content-Type": "application/json",
+          });
 
       var parsedUserBody = json.decode(res.body);
 
@@ -99,9 +103,11 @@ class UnsignUser with ChangeNotifier {
     String domainUri = prefs.get("shore_backend_uri") as String;
     try {
       var res = await client.post(
-        Uri.parse("$domainUri/api/unsignuser/get-user"),
-        body: json.encode({"userId": userId}),
-      );
+          Uri.parse("$domainUri/api/unsignuser/get-user"),
+          body: json.encode({"userId": userId}),
+          headers: {
+            "Content-Type": "application/json",
+          });
 
       var parsedUserBody = json.decode(res.body);
 
@@ -142,7 +148,7 @@ class UnsignUser with ChangeNotifier {
       var postRes = await client.post(
           Uri.parse("$domainUri/api/unsignuser/post/list"),
           body: json.encode({"userId": userId}),
-           headers: {
+          headers: {
             "authorization": "Bearer $accessToken",
             "Content-Type": "application/json",
           });
