@@ -166,7 +166,7 @@ class _PostItemState extends State<PostItem> {
                                   height: 3,
                                 ),
                                 Text(
-                                  DateFormat("kk:hh").format(widget.newDate),
+                                  DateFormat.jm().format(widget.newDate),
                                   style: TextStyle(
                                       fontSize: 12,
                                       color: Colors.grey.shade800),

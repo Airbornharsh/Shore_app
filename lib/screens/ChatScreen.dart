@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
@@ -18,7 +20,7 @@ class ChatScreen extends StatefulWidget {
 }
 
 class _ChatScreenState extends State<ChatScreen> {
-  bool _isLoading = true;
+  bool _isLoading = false;
   bool _isMoreMessage = true;
   // late Socket socketClient;
   List<Message> messages = [];
@@ -62,35 +64,36 @@ class _ChatScreenState extends State<ChatScreen> {
     final unsignUser = Provider.of<SignUser>(context).getFriend(userId);
     final signUserId = Provider.of<SignUser>(context).getUserDetails.id;
     final roomId = Functions.genHash(signUserId, userId);
-    if (widget.start) {
-      setState(() {
-        widget.start = false;
-        _isLoading = false;
-      });
-      // Timer(Duration(milliseconds: 400), () {
-      //   _scrollController.jumpTo(_scrollController.position.maxScrollExtent);
-      //   // _scrollController.animateTo(
-      //   //   0.0,
-      //   //   curve: Curves.easeOut,
-      //   //   duration: const Duration(milliseconds: 300),
-      //   // );
-      // });
-      // socketClient = SocketClient.staticInstance.socket!;
+    // if (widget.start) {
+    //   setState(() {
+    //     widget.start = false;
+    //     _isLoading = false;
+    //   });
 
-      // socketClient.on("receive-message-id", (data) {
-      //   print(data["message"]);
-      //   setState(() {
-      //     messages.add(data["message"]);
-      //   });
-      // });
+    //   // Timer(Duration(milliseconds: 400), () {
+    //   //   _scrollController.jumpTo(_scrollController.position.maxScrollExtent);
+    //   //   // _scrollController.animateTo(
+    //   //   //   0.0,
+    //   //   //   curve: Curves.easeOut,
+    //   //   //   duration: const Duration(milliseconds: 300),
+    //   //   // );
+    //   // });
+    //   // socketClient = SocketClient.staticInstance.socket!;
 
-      // Provider.of<SignUser>(context).getRoomMessage(userId).then((value) {
-      //   setState(() {
-      //     // messages = value!;
-      //     _isLoading = false;
-      //   });
-      // });
-    }
+    //   // socketClient.on("receive-message-id", (data) {
+    //   //   print(data["message"]);
+    //   //   setState(() {
+    //   //     messages.add(data["message"]);
+    //   //   });
+    //   // });
+
+    //   // Provider.of<SignUser>(context).getRoomMessage(userId).then((value) {
+    //   //   setState(() {
+    //   //     // messages = value!;
+    //   //     _isLoading = false;
+    //   //   });
+    //   // });
+    // }
 
     // print(messages.length);
 
@@ -208,10 +211,20 @@ class _ChatScreenState extends State<ChatScreen> {
                         physics: BouncingScrollPhysics(),
                         shrinkWrap: true,
                         itemBuilder: (context, index) {
-                          // Timer(Duration.zero, () {
-                          //   _scrollController.jumpTo(
-                          //       _scrollController.position.maxScrollExtent);
-                          // });
+                          if (index == messages.length - 1 && widget.start) {
+                            Timer(Duration(milliseconds: 400), () {
+                              _scrollController.jumpTo(
+                                  _scrollController.position.maxScrollExtent);
+                              // _scrollController.animateTo(
+                              //   0.0,
+                              //   curve: Curves.easeOut,
+                              //   duration: const Duration(milliseconds: 300),
+                              // );
+                              setState(() {
+                                widget.start = false;
+                              });
+                            });
+                          }
 
                           final messageData = messages[index];
                           if (messageData.from == signUserId) {
@@ -268,7 +281,19 @@ class _ChatScreenState extends State<ChatScreen> {
                                           fontSize: 10,
                                           color: Colors.grey.shade400,
                                         ),
-                                      )
+                                      ),
+                                      SizedBox(
+                                        width: 8,
+                                      ),
+                                      Text(
+                                        DateFormat("dd MMM yyyy").format(
+                                            DateTime.fromMillisecondsSinceEpoch(
+                                                messageData.time)),
+                                        style: TextStyle(
+                                          fontSize: 10,
+                                          color: Colors.grey.shade400,
+                                        ),
+                                      ),
                                     ],
                                   ),
                                 )
@@ -316,7 +341,19 @@ class _ChatScreenState extends State<ChatScreen> {
                                           fontSize: 10,
                                           color: Colors.grey.shade400,
                                         ),
-                                      )
+                                      ),
+                                      SizedBox(
+                                        width: 8,
+                                      ),
+                                      Text(
+                                        DateFormat("dd MMM yyyy").format(
+                                            DateTime.fromMillisecondsSinceEpoch(
+                                                messageData.time)),
+                                        style: TextStyle(
+                                          fontSize: 10,
+                                          color: Colors.grey.shade400,
+                                        ),
+                                      ),
                                     ],
                                   ),
                                 )
