@@ -40,6 +40,7 @@ class SignUser with ChangeNotifier {
       fav: []);
 
   List<UserPostModel> _userPosts = [];
+  List<PostModel> _userLikedPosts = [];
   List<UnsignUserModel> _friends = [];
   Map<String, String> _friendRoomId = {};
   Map<String, List<Message>> _roomMessages = {};
@@ -131,6 +132,10 @@ class SignUser with ChangeNotifier {
     } else {
       return [];
     }
+  }
+
+  List<PostModel> get getUserLikedPosts {
+    return _userLikedPosts;
   }
 
   void addMessage(Map<String, dynamic> message) {
@@ -1690,6 +1695,50 @@ class SignUser with ChangeNotifier {
       } else {
         _postComments.putIfAbsent(postId, () => [comment]);
       }
+
+      return true;
+    } catch (e) {
+      print(e);
+      return false;
+    } finally {
+      notifyListeners();
+    }
+  }
+
+  Future<bool> getLikedPosts() async {
+    var client = Client();
+    final prefs = await SharedPreferences.getInstance();
+    final domainUri = await prefs.get("shore_backend_uri") as String;
+    final accessToken = await prefs.get("shore_accessToken") as String;
+    try {
+      Response res = await client
+          .post(Uri.parse("$domainUri/api/user/liked/post/list"), headers: {
+        "authorization": "Bearer $accessToken",
+        "Content-Type": "application/json",
+      });
+
+      var parsedBody = json.decode(res.body);
+
+      if (res.statusCode != 200) {
+        throw parsedBody["message"];
+      }
+
+      _userLikedPosts.clear();
+      await parsedBody.forEach((post) {
+        PostModel newPost = PostModel(
+            id: post["_id"].toString(),
+            userId: post["userId"].toString(),
+            description: post["description"].toString(),
+            url: post["url"].toString(),
+            postedDate: post["postedDate"].toString(),
+            profileName: post["profileName"].toString(),
+            profileUrl: post["profileUrl"].toString(),
+            profileUserName: post["profileUserName"].toString(),
+            likes: List<String>.from(post["likes"]),
+            comments: List<String>.from(post["comments"]));
+
+        _userLikedPosts.add(newPost);
+      });
 
       return true;
     } catch (e) {

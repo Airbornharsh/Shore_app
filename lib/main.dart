@@ -20,6 +20,7 @@ import 'package:shore_app/screens/EditProfileScreen.dart';
 import 'package:shore_app/screens/FollowersScreen.dart';
 import 'package:shore_app/screens/FollowingsScreen.dart';
 import 'package:shore_app/screens/HomeScreen.dart';
+import 'package:shore_app/screens/LikedPosts.dart';
 import 'package:shore_app/screens/MessageClicked.dart';
 import 'package:shore_app/screens/NewPostScreen.dart';
 import 'package:shore_app/screens/PostEditScreen.dart';
@@ -152,6 +153,7 @@ class MyApp extends StatelessWidget {
           SettingScreen.routeName: (ctx) => const SettingScreen(),
           MessageClicked.routeName: (ctx) => const MessageClicked(),
           CommentScreen.routeName: (ctx) => CommentScreen(),
+          LikedPostsScreen.routeName: (ctx) => LikedPostsScreen(),
         },
       ),
     );

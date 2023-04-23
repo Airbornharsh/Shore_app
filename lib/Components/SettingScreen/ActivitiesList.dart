@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shore_app/provider/AppSetting.dart';
+import 'package:shore_app/screens/LikedPosts.dart';
 
 class ActivitiesList extends StatefulWidget {
   const ActivitiesList({super.key});
@@ -31,7 +32,9 @@ class _ActivitiesListState extends State<ActivitiesList> {
           )),
       children: [
         ListTile(
-          onTap: () {},
+          onTap: () {
+            Navigator.of(context).pushNamed(LikedPostsScreen.routeName);
+          },
           title: Text("Liked Posts",
               style: TextStyle(
                   color: Provider.of<AppSetting>(context).getdarkMode
