@@ -1622,9 +1622,9 @@ class SignUser with ChangeNotifier {
             likes: List<String>.from(comment["likes"]),
             to: comment["to"],
             postId: comment["postId"],
-            imgUrl: _user.imgUrl,
-            name: _user.name,
-            userName: _user.userName,
+            imgUrl: comment["imgUrl"],
+            name: comment["name"],
+            userName: comment["userName"],
             time: comment["time"]);
 
         if (_postComments.containsKey(postId)) {
@@ -1683,10 +1683,10 @@ class SignUser with ChangeNotifier {
           userName: _user.userName,
           time: parsedBody["time"]);
 
-      _user.commented.add(parsedBody["_id"]);
+      _user.commented.insert(0, parsedBody["_id"]);
 
       if (_postComments.containsKey(postId)) {
-        _postComments[postId]?.add(comment);
+        _postComments[postId]?.insert(0, comment);
       } else {
         _postComments.putIfAbsent(postId, () => [comment]);
       }

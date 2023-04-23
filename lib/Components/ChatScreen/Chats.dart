@@ -88,52 +88,54 @@ class _ChatsState extends State<Chats> {
                 : Colors.white),
         child: Column(
           children: [
-            ListView.builder(
-              shrinkWrap: true,
-              itemCount: friends.length,
-              itemBuilder: (context, index) {
-                return ListTile(
-                  onTap: () {
-                    Navigator.of(context).pushNamed(ChatScreen.routeName,
-                        arguments: friends[index].id);
-                  },
-                  leading: ClipRRect(
-                      borderRadius: BorderRadius.circular(10),
-                      // child: Image.network(
-                      //     friends[index].imgUrl.isNotEmpty
-                      //         ? friends[index].imgUrl
-                      //         : "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png",
-                      //     height: 50,
-                      //     width: 50,
-                      //     fit: BoxFit.cover,
-                      //     filterQuality: FilterQuality.low, errorBuilder:
-                      //         (BuildContext context, Object exception,
-                      //             StackTrace? stackTrace) {
-                      //   return Container(
-                      //       height: 50,
-                      //       width: 50,
-                      //       decoration: const BoxDecoration(),
-                      //       child: const Center(child: Text('😊')));
-                      // })),
-                      child: CachedNetworkImage(
-                        imageUrl: friends[index].imgUrl.isNotEmpty
-                            ? friends[index].imgUrl
-                            : "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png",
-                        height: 50,
-                        width: 50,
-                        memCacheWidth: 50,
-                        fit: BoxFit.cover,
-                        filterQuality: FilterQuality.low,
-                        errorWidget: (context, url, error) => Container(
-                            height: 50,
-                            width: 50,
-                            decoration: const BoxDecoration(),
-                            child: const Center(child: Text('😊'))),
-                      )),
-                  title: Text(friends[index].name),
-                  subtitle: Text("Tap to Message"),
-                );
-              },
+            Expanded(
+              child: ListView.builder(
+                shrinkWrap: true,
+                itemCount: friends.length,
+                itemBuilder: (context, index) {
+                  return ListTile(
+                    onTap: () {
+                      Navigator.of(context).pushNamed(ChatScreen.routeName,
+                          arguments: friends[index].id);
+                    },
+                    leading: ClipRRect(
+                        borderRadius: BorderRadius.circular(10),
+                        // child: Image.network(
+                        //     friends[index].imgUrl.isNotEmpty
+                        //         ? friends[index].imgUrl
+                        //         : "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png",
+                        //     height: 50,
+                        //     width: 50,
+                        //     fit: BoxFit.cover,
+                        //     filterQuality: FilterQuality.low, errorBuilder:
+                        //         (BuildContext context, Object exception,
+                        //             StackTrace? stackTrace) {
+                        //   return Container(
+                        //       height: 50,
+                        //       width: 50,
+                        //       decoration: const BoxDecoration(),
+                        //       child: const Center(child: Text('😊')));
+                        // })),
+                        child: CachedNetworkImage(
+                          imageUrl: friends[index].imgUrl.isNotEmpty
+                              ? friends[index].imgUrl
+                              : "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png",
+                          height: 50,
+                          width: 50,
+                          memCacheWidth: 50,
+                          fit: BoxFit.cover,
+                          filterQuality: FilterQuality.low,
+                          errorWidget: (context, url, error) => Container(
+                              height: 50,
+                              width: 50,
+                              decoration: const BoxDecoration(),
+                              child: const Center(child: Text('😊'))),
+                        )),
+                    title: Text(friends[index].name),
+                    subtitle: Text("Tap to Message"),
+                  );
+                },
+              ),
             ),
           ],
         ),
