@@ -6,7 +6,7 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:http/http.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:shore_app/Utils/Prefs.dart';
 import 'package:shore_app/Utils/Functions.dart';
 import 'package:shore_app/Utils/cloud_firestore.dart';
 import 'package:shore_app/models.dart';
@@ -49,10 +49,10 @@ class SignUser with ChangeNotifier {
   bool _isAuth = FirebaseAuth.instance.currentUser == null ? false : true;
 
   void init() async {
-    final prefs = await SharedPreferences.getInstance();
-    final user = await prefs.getString("shore_user_details");
+    if (!Prefs.prefs.containsKey("shore_user_details")) return;
+    final user = await Prefs.getString("shore_user_details");
 
-    final parsedUserBody = json.decode(user!);
+    final parsedUserBody = json.decode(user);
 
     _user = UserModel(
         id: parsedUserBody["_id"].toString(),
@@ -143,8 +143,6 @@ class SignUser with ChangeNotifier {
   }
 
   Future logout() async {
-    final prefs = await SharedPreferences.getInstance();
-
     FirebaseAuth.instance.signOut();
     _isAuth = false;
     _user = UserModel(
@@ -175,9 +173,9 @@ class SignUser with ChangeNotifier {
         fav: []);
     notifyListeners();
 
-    final deviceToken = await prefs.getString("shore_device_token") as String;
-    final domainUri = await prefs.get("shore_backend_uri") as String;
-    final accessToken = await prefs.get("shore_accessToken") as String;
+    final deviceToken = await Prefs.getString("shore_device_token");
+    final domainUri = await Prefs.getString("shore_backend_uri");
+    final accessToken = await Prefs.getString("shore_accessToken");
 
     try {
       final client = Client();
@@ -191,7 +189,7 @@ class SignUser with ChangeNotifier {
             "Content-Type": "application/json",
           });
 
-      await prefs.remove("shore_accessToken");
+      await Prefs.prefs.remove("shore_accessToken");
     } catch (e) {
       print(e);
     }
@@ -199,13 +197,13 @@ class SignUser with ChangeNotifier {
 
   Future<bool> onLoad() async {
     var client = Client();
-    final prefs = await SharedPreferences.getInstance();
-    String domainUri = prefs.get("shore_backend_uri") as String;
+
+    String domainUri = Prefs.getString("shore_backend_uri");
     try {
-      if (!prefs.containsKey("shore_accessToken")) {
+      if (!Prefs.prefs.containsKey("shore_accessToken")) {
         return false;
       }
-      String accessToken = prefs.get("shore_accessToken") as String;
+      String accessToken = Prefs.getString("shore_accessToken");
 
       if (accessToken.isEmpty) return false;
 
@@ -269,9 +267,9 @@ class SignUser with ChangeNotifier {
 
   Future<UserModel> reloadUser() async {
     var client = Client();
-    final prefs = await SharedPreferences.getInstance();
-    String domainUri = prefs.get("shore_backend_uri") as String;
-    final accessToken = prefs.getString("shore_accessToken") as String;
+
+    String domainUri = Prefs.getString("shore_backend_uri");
+    final accessToken = Prefs.getString("shore_accessToken");
 
     try {
       var userRes =
@@ -332,10 +330,10 @@ class SignUser with ChangeNotifier {
 
   Future<String> signIn(String authDetail, String password) async {
     var client = Client();
-    final prefs = await SharedPreferences.getInstance();
-    String domainUri = prefs.get("shore_backend_uri") as String;
+
+    String domainUri = Prefs.getString("shore_backend_uri");
     String authType = "";
-    String deviceToken = prefs.getString("shore_device_token") as String;
+    String deviceToken = Prefs.getString("shore_device_token");
 
     try {
       String emailPattern =
@@ -350,6 +348,7 @@ class SignUser with ChangeNotifier {
         authType = "phoneNumber";
       } else {
         authType = "userName";
+        authDetail = authDetail.toLowerCase();
       }
 
       var tokenRes = await client.post(Uri.parse("$domainUri/api/user/login"),
@@ -361,11 +360,11 @@ class SignUser with ChangeNotifier {
           headers: {"Content-Type": "application/json"});
 
       if (tokenRes.statusCode != 200) {
-        throw tokenRes.body;
+        return json.decode(tokenRes.body)["message"];
       }
 
       var parsedBody = json.decode(tokenRes.body);
-      prefs.setString("shore_accessToken", parsedBody["accessToken"]);
+      Prefs.prefs.setString("shore_accessToken", parsedBody["accessToken"]);
       final accessToken = parsedBody["accessToken"];
 
       _isAuth = true;
@@ -381,7 +380,7 @@ class SignUser with ChangeNotifier {
 
       var parsedUserBody = json.decode(userRes.body);
 
-      prefs.setString("shore_user_details", json.encode(parsedUserBody));
+      Prefs.prefs.setString("shore_user_details", json.encode(parsedUserBody));
 
       _user = UserModel(
           id: parsedUserBody["_id"].toString(),
@@ -429,10 +428,10 @@ class SignUser with ChangeNotifier {
 
   Future<bool> isValidAccessToken() async {
     var client = Client();
-    final prefs = await SharedPreferences.getInstance();
-    final domainUri = prefs.get("shore_backend_uri") as String;
-    final accessToken = prefs.getString("shore_accessToken") as String;
-    final deviceToken = await prefs.getString("shore_device_token") as String;
+
+    final domainUri = Prefs.getString("shore_backend_uri");
+    final accessToken = Prefs.getString("shore_accessToken");
+    final deviceToken = await Prefs.getString("shore_device_token");
 
     try {
       var res = await client.post(
@@ -451,7 +450,7 @@ class SignUser with ChangeNotifier {
         return false;
       }
 
-      prefs.setString("shore_user_details", json.encode(parsedUserBody));
+      Prefs.prefs.setString("shore_user_details", json.encode(parsedUserBody));
 
       _user = UserModel(
           id: parsedUserBody["_id"].toString(),
@@ -510,9 +509,9 @@ class SignUser with ChangeNotifier {
       String phoneNumberFirebaseId,
       PhoneAuthCredential phoneAuthCredential) async {
     var client = Client();
-    final prefs = await SharedPreferences.getInstance();
-    String domainUri = prefs.get("shore_backend_uri") as String;
-    String deviceToken = prefs.get("shore_device_token") as String;
+
+    String domainUri = Prefs.getString("shore_backend_uri");
+    String deviceToken = Prefs.getString("shore_device_token");
 
     if (password != confirmPasssword) {
       return "Password are Different";
@@ -560,8 +559,8 @@ class SignUser with ChangeNotifier {
   Future<bool> postUpload(String isFile, File file, String description,
       String fileName, String destination) async {
     var client = Client();
-    final prefs = await SharedPreferences.getInstance();
-    String domainUri = prefs.get("shore_backend_uri") as String;
+
+    String domainUri = Prefs.getString("shore_backend_uri");
     try {
       final fileUrl =
           isFile == "image" ? await fileUpload(file, destination) : "";
@@ -570,7 +569,7 @@ class SignUser with ChangeNotifier {
         return false;
       }
 
-      final accessToken = prefs.get("shore_accessToken") as String;
+      final accessToken = Prefs.getString("shore_accessToken");
 
       var postRes = await client.post(Uri.parse("$domainUri/api/user/post/add"),
           body: json.encode({"url": fileUrl, "description": description}),
@@ -612,10 +611,10 @@ class SignUser with ChangeNotifier {
   Future<bool> postLike(String postId) async {
     notifyListeners();
     var client = Client();
-    final prefs = await SharedPreferences.getInstance();
-    String domainUri = prefs.get("shore_backend_uri") as String;
+
+    String domainUri = Prefs.getString("shore_backend_uri");
     try {
-      final accessToken = prefs.get("shore_accessToken") as String;
+      final accessToken = Prefs.getString("shore_accessToken");
 
       var res = await client.post(
           Uri.parse("$domainUri/api/user/post/like/add"),
@@ -641,10 +640,10 @@ class SignUser with ChangeNotifier {
   Future<bool> postUnlike(String postId) async {
     notifyListeners();
     var client = Client();
-    final prefs = await SharedPreferences.getInstance();
-    String domainUri = prefs.get("shore_backend_uri") as String;
+
+    String domainUri = Prefs.getString("shore_backend_uri");
     try {
-      final accessToken = prefs.get("shore_accessToken") as String;
+      final accessToken = Prefs.getString("shore_accessToken");
 
       var res = await client.post(
           Uri.parse("$domainUri/api/user/post/like/remove"),
@@ -669,10 +668,10 @@ class SignUser with ChangeNotifier {
 
   Future<bool> postAddFav(String postId) async {
     var client = Client();
-    final prefs = await SharedPreferences.getInstance();
-    String domainUri = prefs.get("shore_backend_uri") as String;
+
+    String domainUri = Prefs.getString("shore_backend_uri");
     try {
-      final accessToken = prefs.get("shore_accessToken") as String;
+      final accessToken = Prefs.getString("shore_accessToken");
 
       var res = await client.post(Uri.parse("$domainUri/api/user/post/fav/add"),
           body: json.encode({"postId": postId}),
@@ -696,10 +695,10 @@ class SignUser with ChangeNotifier {
 
   Future<bool> postRemoveFav(String postId) async {
     var client = Client();
-    final prefs = await SharedPreferences.getInstance();
-    String domainUri = prefs.get("shore_backend_uri") as String;
+
+    String domainUri = Prefs.getString("shore_backend_uri");
     try {
-      final accessToken = prefs.get("shore_accessToken") as String;
+      final accessToken = Prefs.getString("shore_accessToken");
 
       var res = await client.post(
           Uri.parse("$domainUri/api/user/post/fav/remove"),
@@ -724,10 +723,10 @@ class SignUser with ChangeNotifier {
 
   Future<List<UserPostModel>> loadUserPosts() async {
     var client = Client();
-    final prefs = await SharedPreferences.getInstance();
-    String domainUri = prefs.get("shore_backend_uri") as String;
+
+    String domainUri = Prefs.getString("shore_backend_uri");
     try {
-      final accessToken = prefs.get("shore_accessToken") as String;
+      final accessToken = Prefs.getString("shore_accessToken");
 
       var postRes = await client
           .post(Uri.parse("$domainUri/api/user/post/get"), headers: {
@@ -768,10 +767,10 @@ class SignUser with ChangeNotifier {
     required String userName,
   }) async {
     var client = Client();
-    final prefs = await SharedPreferences.getInstance();
-    String domainUri = prefs.get("shore_backend_uri") as String;
+
+    String domainUri = Prefs.getString("shore_backend_uri");
     try {
-      final accessToken = prefs.get("shore_accessToken") as String;
+      final accessToken = Prefs.getString("shore_accessToken");
 
       Map<String, String> data = {
         "name": "",
@@ -822,10 +821,10 @@ class SignUser with ChangeNotifier {
     required String userName,
   }) async {
     var client = Client();
-    final prefs = await SharedPreferences.getInstance();
-    String domainUri = prefs.get("shore_backend_uri") as String;
+
+    String domainUri = Prefs.getString("shore_backend_uri");
     try {
-      final accessToken = prefs.get("shore_accessToken") as String;
+      final accessToken = Prefs.getString("shore_accessToken");
 
       String imgUrl =
           file.path.isNotEmpty ? await fileUpload(file, destination) : "";
@@ -885,10 +884,10 @@ class SignUser with ChangeNotifier {
   Future<String> editPost(
       {required String description, required UserPostModel post}) async {
     var client = Client();
-    final prefs = await SharedPreferences.getInstance();
-    String domainUri = prefs.get("shore_backend_uri") as String;
+
+    String domainUri = Prefs.getString("shore_backend_uri");
     try {
-      final accessToken = prefs.get("shore_accessToken") as String;
+      final accessToken = Prefs.getString("shore_accessToken");
 
       Map<String, String> data = {
         "description": "",
@@ -925,10 +924,10 @@ class SignUser with ChangeNotifier {
       required String description,
       required UserPostModel post}) async {
     var client = Client();
-    final prefs = await SharedPreferences.getInstance();
-    String domainUri = prefs.get("shore_backend_uri") as String;
+
+    String domainUri = Prefs.getString("shore_backend_uri");
     try {
-      final accessToken = prefs.get("shore_accessToken") as String;
+      final accessToken = Prefs.getString("shore_accessToken");
 
       String imgUrl =
           file.path.isNotEmpty ? await fileUpload(file, destination) : "";
@@ -975,10 +974,10 @@ class SignUser with ChangeNotifier {
   Future<String> deletePost(
       {required String description, required UserPostModel post}) async {
     var client = Client();
-    final prefs = await SharedPreferences.getInstance();
-    String domainUri = prefs.get("shore_backend_uri") as String;
+
+    String domainUri = Prefs.getString("shore_backend_uri");
     try {
-      final accessToken = prefs.get("shore_accessToken") as String;
+      final accessToken = Prefs.getString("shore_accessToken");
 
       Map<String, String> data = {"postId": post.id};
 
@@ -1035,10 +1034,10 @@ class SignUser with ChangeNotifier {
 
   Future<String> follow(String userId) async {
     var client = Client();
-    final prefs = await SharedPreferences.getInstance();
-    String domainUri = prefs.get("shore_backend_uri") as String;
+
+    String domainUri = Prefs.getString("shore_backend_uri");
     try {
-      final accessToken = prefs.get("shore_accessToken") as String;
+      final accessToken = Prefs.getString("shore_accessToken");
 
       var res = await client.post(
           Uri.parse("$domainUri/api/user/unsign-user/follow"),
@@ -1071,10 +1070,10 @@ class SignUser with ChangeNotifier {
 
   Future<bool> unfollow(String userId) async {
     var client = Client();
-    final prefs = await SharedPreferences.getInstance();
-    String domainUri = prefs.get("shore_backend_uri") as String;
+
+    String domainUri = Prefs.getString("shore_backend_uri");
     try {
-      final accessToken = prefs.get("shore_accessToken") as String;
+      final accessToken = Prefs.getString("shore_accessToken");
 
       var res = await client.post(
           Uri.parse("$domainUri/api/user/unsign-user/unfollow"),
@@ -1103,9 +1102,9 @@ class SignUser with ChangeNotifier {
       {required String userId}) async {
     List<UnsignUserModel> users = [];
     var client = Client();
-    final prefs = await SharedPreferences.getInstance();
-    String domainUri = prefs.get("shore_backend_uri") as String;
-    final accessToken = prefs.getString("shore_accessToken") as String;
+
+    String domainUri = Prefs.getString("shore_backend_uri");
+    final accessToken = Prefs.getString("shore_accessToken");
 
     try {
       Response res;
@@ -1157,9 +1156,9 @@ class SignUser with ChangeNotifier {
       {required String userId}) async {
     List<UnsignUserModel> users = [];
     var client = Client();
-    final prefs = await SharedPreferences.getInstance();
-    String domainUri = prefs.get("shore_backend_uri") as String;
-    final accessToken = prefs.getString("shore_accessToken") as String;
+
+    String domainUri = Prefs.getString("shore_backend_uri");
+    final accessToken = Prefs.getString("shore_accessToken");
 
     try {
       Response res;
@@ -1210,9 +1209,9 @@ class SignUser with ChangeNotifier {
 
   Future<List<UnsignUserModel>> loadFriendsUsers() async {
     var client = Client();
-    final prefs = await SharedPreferences.getInstance();
-    String domainUri = prefs.get("shore_backend_uri") as String;
-    final accessToken = prefs.getString("shore_accessToken") as String;
+
+    String domainUri = Prefs.getString("shore_backend_uri");
+    final accessToken = Prefs.getString("shore_accessToken");
 
     try {
       Response res = await client.post(
@@ -1298,9 +1297,9 @@ class SignUser with ChangeNotifier {
   Future<List<UnsignUserModel>> loadRequestingFollowers() async {
     List<UnsignUserModel> users = [];
     var client = Client();
-    final prefs = await SharedPreferences.getInstance();
-    String domainUri = prefs.get("shore_backend_uri") as String;
-    final accessToken = prefs.getString("shore_accessToken") as String;
+
+    String domainUri = Prefs.getString("shore_backend_uri");
+    final accessToken = Prefs.getString("shore_accessToken");
 
     try {
       var res = await client
@@ -1341,10 +1340,10 @@ class SignUser with ChangeNotifier {
 
   Future<bool> acceptFollowRequest(String userId) async {
     var client = Client();
-    final prefs = await SharedPreferences.getInstance();
-    String domainUri = prefs.get("shore_backend_uri") as String;
+
+    String domainUri = Prefs.getString("shore_backend_uri");
     try {
-      final accessToken = prefs.get("shore_accessToken") as String;
+      final accessToken = Prefs.getString("shore_accessToken");
 
       var res = await client.post(
           Uri.parse("$domainUri/api/user/requesting/accept"),
@@ -1372,10 +1371,10 @@ class SignUser with ChangeNotifier {
 
   Future<bool> declineFollowRequest(String userId) async {
     var client = Client();
-    final prefs = await SharedPreferences.getInstance();
-    String domainUri = prefs.get("shore_backend_uri") as String;
+
+    String domainUri = Prefs.getString("shore_backend_uri");
     try {
-      final accessToken = prefs.get("shore_accessToken") as String;
+      final accessToken = Prefs.getString("shore_accessToken");
 
       var res = await client.post(
           Uri.parse("$domainUri/api/user/requesting/decline"),
@@ -1405,9 +1404,9 @@ class SignUser with ChangeNotifier {
   Future<List<UnsignUserModel>> loadRequestingFollowing() async {
     List<UnsignUserModel> users = [];
     var client = Client();
-    final prefs = await SharedPreferences.getInstance();
-    String domainUri = prefs.get("shore_backend_uri") as String;
-    final accessToken = prefs.getString("shore_accessToken") as String;
+
+    String domainUri = Prefs.getString("shore_backend_uri");
+    final accessToken = Prefs.getString("shore_accessToken");
 
     try {
       var res = await client
@@ -1465,10 +1464,10 @@ class SignUser with ChangeNotifier {
         type: "text");
 
     var client = Client();
-    final prefs = await SharedPreferences.getInstance();
-    final fcm = await FirebaseMessaging.instance;
-    final domainUri = await prefs.get("shore_backend_uri") as String;
-    final accessToken = await prefs.get("shore_accessToken") as String;
+
+    await FirebaseMessaging.instance;
+    final domainUri = await Prefs.getString("shore_backend_uri");
+    final accessToken = await Prefs.getString("shore_accessToken");
     try {
       print("Sending");
 
@@ -1495,9 +1494,9 @@ class SignUser with ChangeNotifier {
 
   Future loadComments(String postId) async {
     var client = Client();
-    final prefs = await SharedPreferences.getInstance();
-    final domainUri = await prefs.get("shore_backend_uri") as String;
-    final accessToken = await prefs.get("shore_accessToken") as String;
+
+    final domainUri = await Prefs.getString("shore_backend_uri");
+    final accessToken = await Prefs.getString("shore_accessToken");
     try {
       Response res = await client.post(
           Uri.parse("$domainUri/api/user/post/comment/get/post-render"),
@@ -1547,9 +1546,9 @@ class SignUser with ChangeNotifier {
 
   Future<bool> sendComment(String postId, String description) async {
     var client = Client();
-    final prefs = await SharedPreferences.getInstance();
-    final domainUri = await prefs.get("shore_backend_uri") as String;
-    final accessToken = await prefs.get("shore_accessToken") as String;
+
+    final domainUri = await Prefs.getString("shore_backend_uri");
+    final accessToken = await Prefs.getString("shore_accessToken");
     try {
       Response res = await client.post(
           Uri.parse("$domainUri/api/user/post/comment/add"),
@@ -1598,9 +1597,9 @@ class SignUser with ChangeNotifier {
 
   Future<bool> getLikedPosts() async {
     var client = Client();
-    final prefs = await SharedPreferences.getInstance();
-    final domainUri = await prefs.get("shore_backend_uri") as String;
-    final accessToken = await prefs.get("shore_accessToken") as String;
+
+    final domainUri = await Prefs.getString("shore_backend_uri");
+    final accessToken = await Prefs.getString("shore_accessToken");
     try {
       Response res = await client
           .post(Uri.parse("$domainUri/api/user/liked/post/list"), headers: {

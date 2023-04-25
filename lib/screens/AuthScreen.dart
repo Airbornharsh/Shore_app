@@ -1,6 +1,9 @@
+import 'dart:async';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:shore_app/Utils/Prefs.dart';
 import 'package:shore_app/Utils/snackBar.dart';
 import 'package:pinput/pinput.dart';
 import 'package:shore_app/provider/SignUser.dart';
@@ -125,6 +128,8 @@ class _AuthScreenState extends State<AuthScreen> {
     late final String emailIdFirebaseId;
     late final String phoneNumberFirebaseId;
     late final phoneAuthCredential;
+    User phoneAuthUser;
+    User emailIdAuthUser;
 
     if (!isCodeValidation) {
       return;
@@ -140,7 +145,9 @@ class _AuthScreenState extends State<AuthScreen> {
       final authCredential =
           await auth.signInWithCredential(phoneAuthCredential);
 
-      phoneNumberFirebaseId = authCredential.user!.uid;
+      // phoneNumberFirebaseId = authCredential.user!.uid;
+
+      phoneAuthUser = authCredential.user!;
 
       print("step 2");
 
@@ -162,9 +169,11 @@ class _AuthScreenState extends State<AuthScreen> {
         password: _passwordController.text,
       );
 
-      credential.user?.sendEmailVerification();
+      await credential.user?.sendEmailVerification();
 
-      emailIdFirebaseId = credential.user?.uid as String;
+      // emailIdFirebaseId = credential.user?.uid as String;
+
+      emailIdAuthUser = credential.user!;
 
       print("Send Email Verification");
     } on FirebaseAuthException catch (e) {
@@ -191,8 +200,8 @@ class _AuthScreenState extends State<AuthScreen> {
           _emailIdController.text,
           _passwordController.text,
           _confirmPasswordController.text,
-          emailIdFirebaseId,
-          phoneNumberFirebaseId,
+          emailIdAuthUser.uid,
+          phoneAuthUser.uid,
           phoneAuthCredential);
 
       if (Res == "Done") {
@@ -206,6 +215,8 @@ class _AuthScreenState extends State<AuthScreen> {
         _passwordController.clear();
         _confirmPasswordController.clear();
       } else {
+        await phoneAuthUser.delete();
+        await emailIdAuthUser.delete();
         var snackBar = SnackBar(content: Text(Res));
         ScaffoldMessenger.of(context).showSnackBar(snackBar);
         changeLoading(false);
@@ -218,6 +229,7 @@ class _AuthScreenState extends State<AuthScreen> {
         _confirmPasswordController.clear();
       }
     } catch (e) {
+      auth.currentUser!.delete();
       print(e);
       return;
     } finally {
@@ -273,13 +285,21 @@ class _AuthScreenState extends State<AuthScreen> {
       String loginRes = await Provider.of<SignUser>(context, listen: false)
           .signIn(_authController.text, _passwordController.text);
 
-      auth.signInWithEmailAndPassword(
-          email: Provider.of<SignUser>(context, listen: false)
-              .getUserDetails
-              .emailId,
-          password: _passwordController.text);
+      // if (!auth.currentUser!.emailVerified) {
+      //   snackBar(context, "Please Verify Your Email", duration: 1500);
+      //   await auth.currentUser!.sendEmailVerification();
+      //   Prefs.remove("shore_accessToken");
+      //   changeLoading(false);
+      //   return;
+      // }
 
       if (loginRes == "Done") {
+        await auth.signInWithEmailAndPassword(
+            email: Provider.of<SignUser>(context, listen: false)
+                .getUserDetails
+                .emailId,
+            password: _passwordController.text);
+
         snackBar(context, "Logged In");
         Navigator.of(context).popAndPushNamed(HomeScreen.routeName);
       } else {
@@ -302,24 +322,48 @@ class _AuthScreenState extends State<AuthScreen> {
         widget.start = false;
       });
 
-      auth.authStateChanges().listen((User? user) {
-        if (user == null) {
-          print('User is currently signed out!');
+      void onLoad() async {
+        User? user;
+
+        if (auth.currentUser == null) {
+          print("Step 1");
+          Prefs.setString("shore_accessToken", "");
           setState(() {
-            widget.start = false;
             isLoggedChecked = true;
           });
+          return;
         } else {
-          print('User is signed in!');
-          Provider.of<SignUser>(context, listen: false)
-              .isValidAccessToken()
-              .then((value) => null);
-
-          changeRoute(HomeScreen.routeName, context);
+          print("Step 2");
+          user = auth.currentUser;
         }
-      });
-      void onLoad() async {
-        try {} catch (e) {
+
+        try {
+          bool res = await Provider.of<SignUser>(context, listen: false)
+              .isValidAccessToken();
+
+          print("Step 3");
+
+          if (res) {
+            print("Step 4");
+            changeRoute(HomeScreen.routeName, context);
+          } else {
+            // if (!user!.emailVerified) {
+            //   print("Step 5");
+            //   snackBar(context, "Email is Not Verified Yet", duration: 1500);
+            //   await auth.signOut();
+            //   setState(() {
+            //     isLoggedChecked = true;
+            //   });
+            //   return;
+            // }
+            print("Step 6");
+            await auth.signOut();
+            setState(() {
+              isLoggedChecked = true;
+            });
+            // changeRoute(AuthScreen.routeName, context);
+          }
+        } catch (e) {
           print(e);
           changeLoading(false);
           widget.start = false;
@@ -328,6 +372,27 @@ class _AuthScreenState extends State<AuthScreen> {
       }
 
       onLoad();
+
+      // auth.authStateChanges().listen((User? user) {
+      //   if (user == null) {
+      //     print('User is currently signed out!');
+      //     setState(() {
+      //       isLoggedChecked = true;
+      //     });
+      //   } else {
+      //     print('User is signed in!');
+      //     Provider.of<SignUser>(context, listen: false)
+      //         .isValidAccessToken()
+      //         .then((value) async {
+      //       if (!value) {
+      //         await auth.signOut();
+      //         changeRoute(AuthScreen.routeName, context);
+      //       } else {
+      //         changeRoute(HomeScreen.routeName, context);
+      //       }
+      //     });
+      //   }
+      // });
 
       widget.start = false;
     }
@@ -721,7 +786,7 @@ class _AuthScreenState extends State<AuthScreen> {
               color: Colors.grey.shade400),
         ),
         Text(
-          "Email Verification sent after Number Verification ${_emailIdController.text} skjkfmskmkmv sskgfposogosog",
+          "Email Verification will be sent after Number Verification ${_emailIdController.text}",
           overflow: TextOverflow.visible,
           textAlign: TextAlign.center,
           style: TextStyle(

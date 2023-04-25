@@ -57,6 +57,7 @@ dependencies:
   uuid: ^3.0.7
   crypto: ^3.0.2
   cached_network_image: ^3.2.3
+  double_back_to_close_app: ^2.1.0
   # socket_io_client: ^2.0.1
 
 dev_dependencies:

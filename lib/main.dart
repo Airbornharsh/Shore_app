@@ -8,7 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart';
 // import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:provider/provider.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:shore_app/Utils/Prefs.dart';
 import 'package:shore_app/Utils/firebase_options.dart';
 import 'package:shore_app/provider/AppSetting.dart';
 import 'package:shore_app/provider/Posts.dart';
@@ -46,7 +46,8 @@ Future main() async {
 
   var value = await FirebaseMessaging.instance.getToken();
 
-  final prefs = await SharedPreferences.getInstance();
+  await Prefs.init();
+
 
   Client client = Client();
   final res = await client.post(
@@ -55,8 +56,8 @@ Future main() async {
 
   final parsedBody = json.decode(res.body);
 
-  prefs.setString("shore_device_token", value!);
-  prefs.setString("shore_backend_uri", parsedBody["api_uri"]);
+  Prefs.prefs.setString("shore_device_token", value!);
+  Prefs.prefs.setString("shore_backend_uri", parsedBody["api_uri"]);
   // prefs.setString("shore_backend_uri", "http://192.168.1.42:3000");
   // prefs.setString("shore_backend_socket_uri", "http://192.168.1.37:4000");
 

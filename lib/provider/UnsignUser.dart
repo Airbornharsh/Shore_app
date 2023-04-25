@@ -2,15 +2,15 @@ import 'dart:convert';
 
 import 'package:flutter/cupertino.dart';
 import 'package:http/http.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:shore_app/Utils/Prefs.dart';
 import 'package:shore_app/models.dart';
 
 class UnsignUser with ChangeNotifier {
   Future<List<UnsignUserModel>> loadUsers(String userName, int page) async {
     List<UnsignUserModel> users = [];
     var client = Client();
-    final prefs = await SharedPreferences.getInstance();
-    String domainUri = prefs.get("shore_backend_uri") as String;
+
+    String domainUri = Prefs.getString("shore_backend_uri");
     try {
       var res = await client.post(
           Uri.parse("$domainUri/api/unsignuser/get-users"),
@@ -53,8 +53,8 @@ class UnsignUser with ChangeNotifier {
   Future<List<UnsignUserModel>> loadMoreUsers(String userName, int page) async {
     List<UnsignUserModel> users = [];
     var client = Client();
-    final prefs = await SharedPreferences.getInstance();
-    String domainUri = prefs.get("shore_backend_uri") as String;
+
+    String domainUri = Prefs.getString("shore_backend_uri");
     try {
       var res = await client.post(
           Uri.parse("$domainUri/api/unsignuser/get-users"),
@@ -97,8 +97,8 @@ class UnsignUser with ChangeNotifier {
   Future<UnsignUserModel> reloadUser(String userId) async {
     late UnsignUserModel newUser;
     var client = Client();
-    final prefs = await SharedPreferences.getInstance();
-    String domainUri = prefs.get("shore_backend_uri") as String;
+
+    String domainUri = Prefs.getString("shore_backend_uri");
     try {
       var res = await client.post(
           Uri.parse("$domainUri/api/unsignuser/get-user"),
@@ -138,10 +138,10 @@ class UnsignUser with ChangeNotifier {
   Future<List<UserPostModel>> loadUnsignUserPosts(String userId) async {
     List<UserPostModel> unsignUserPosts = [];
     var client = Client();
-    final prefs = await SharedPreferences.getInstance();
-    String domainUri = prefs.get("shore_backend_uri") as String;
+
+    String domainUri = Prefs.getString("shore_backend_uri");
     try {
-      final accessToken = prefs.get("shore_accessToken") as String;
+      final accessToken = Prefs.getString("shore_accessToken");
 
       var postRes = await client.post(
           Uri.parse("$domainUri/api/unsignuser/post/list"),

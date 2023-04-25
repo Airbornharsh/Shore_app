@@ -2,15 +2,15 @@ import 'dart:convert';
 
 import 'package:flutter/cupertino.dart';
 import 'package:http/http.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:shore_app/Utils/Prefs.dart';
 import 'package:shore_app/models.dart';
 
 class Posts with ChangeNotifier {
   Future<List<PostModel>> loadPosts() async {
     List<PostModel> posts = [];
     var client = Client();
-    final prefs = await SharedPreferences.getInstance();
-    String domainUri = prefs.get("shore_backend_uri") as String;
+
+    String domainUri = Prefs.getString("shore_backend_uri");
     try {
       var postRes = await client.post(
         Uri.parse("$domainUri/api/post/get"),
@@ -45,8 +45,8 @@ class Posts with ChangeNotifier {
   Future<List<PostModel>> loadNewPosts(int page) async {
     List<PostModel> posts = [];
     var client = Client();
-    final prefs = await SharedPreferences.getInstance();
-    String domainUri = prefs.get("shore_backend_uri") as String;
+
+    String domainUri = Prefs.getString("shore_backend_uri");
     try {
       var postRes = await client.post(
         Uri.parse("$domainUri/api/post/get"),

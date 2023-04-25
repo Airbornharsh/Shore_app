@@ -1,7 +1,6 @@
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:shore_app/Components/ChatScreen/Chats.dart';
 import 'package:shore_app/Components/CustomAppBar.dart';
 import 'package:shore_app/Components/HomeScreen/Home.dart';
@@ -11,6 +10,7 @@ import 'package:shore_app/models.dart';
 import 'package:shore_app/provider/Posts.dart';
 import 'package:shore_app/provider/SignUser.dart';
 import 'package:shore_app/Components/NewPostContainer.dart';
+import 'package:double_back_to_close_app/double_back_to_close_app.dart';
 
 class HomeScreen extends StatefulWidget {
   HomeScreen({super.key});
@@ -61,9 +61,8 @@ class _HomeScreenState extends State<HomeScreen> {
     _pageController = PageController(initialPage: 1);
 
     void onLoad() async {
-      final prefs = await SharedPreferences.getInstance();
-      // prefs.setString("hopl_backend_uri", "http://localhost:3000");
-      // prefs.setString("shore_backend_uri", "http://10.0.2.2:3000");
+      //Prefs.prefs.setString("hopl_backend_uri", "http://localhost:3000");
+      //Prefs.prefs.setString("shore_backend_uri", "http://10.0.2.2:3000");
     }
 
     onLoad();
@@ -257,20 +256,23 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
               ],
               onTap: _onItemTapped),
-          body: Container(
-            color:  Colors.white,
-            child: SizedBox.expand(
-                child: PageView(
-              controller: _pageController,
-              onPageChanged: ((i) => setState(() {
-                    if (i < 1) {
-                      _selectedIndex = 0;
-                    } else {
-                      _selectedIndex = i - 1;
-                    }
-                  })),
-              children: selectedWidget,
-            )),
+          body: DoubleBackToCloseApp(
+            snackBar: const SnackBar(content: Text("Tap back again to Exit")),
+            child: Container(
+              color: Colors.white,
+              child: SizedBox.expand(
+                  child: PageView(
+                controller: _pageController,
+                onPageChanged: ((i) => setState(() {
+                      if (i < 1) {
+                        _selectedIndex = 0;
+                      } else {
+                        _selectedIndex = i - 1;
+                      }
+                    })),
+                children: selectedWidget,
+              )),
+            ),
           ),
         ),
         if (_isLoading)
