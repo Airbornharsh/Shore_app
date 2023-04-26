@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 
+import "package:firebase_app_check/firebase_app_check.dart";
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
@@ -42,12 +43,16 @@ Future main() async {
   app = await Firebase.initializeApp(
       options: DefaultFirebaseOptions.currentPlatform);
 
+  await FirebaseAppCheck.instance.activate(
+    webRecaptchaSiteKey: "6LeDK7slAAAAAA1wfDN9f8AB5d7sJINwuD6MDcG1",
+    androidProvider: AndroidProvider.playIntegrity,
+  );
+
   auth = await FirebaseAuth.instanceFor(app: app);
 
   var value = await FirebaseMessaging.instance.getToken();
 
   await Prefs.init();
-
 
   Client client = Client();
   final res = await client.post(

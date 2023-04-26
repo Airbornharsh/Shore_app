@@ -392,8 +392,7 @@ class SignUser with ChangeNotifier {
           joinedDate: parsedUserBody["joinedDate"].toString(),
           phoneNumber: parsedUserBody["phoneNumber"].toString(),
           emailIdFirebaseId: parsedUserBody["emailIdFirebaseId"].toString(),
-          phoneNumberFirebaseId:
-              parsedUserBody["phoneNumberFirebaseId"].toString(),
+          phoneNumberFirebaseId: "",
           isPrivate: parsedUserBody["isPrivate"],
           posts: List<String>.from(parsedUserBody["posts"]),
           followers: List<String>.from(parsedUserBody["followers"]),
@@ -499,15 +498,14 @@ class SignUser with ChangeNotifier {
   }
 
   Future<String> signUp(
-      String name,
-      String userName,
-      int phoneNumber,
-      String emailId,
-      String password,
-      String confirmPasssword,
-      String emailIdFirebaseId,
-      String phoneNumberFirebaseId,
-      PhoneAuthCredential phoneAuthCredential) async {
+    String name,
+    String userName,
+    int phoneNumber,
+    String emailId,
+    String password,
+    String confirmPasssword,
+    String emailIdFirebaseId,
+  ) async {
     var client = Client();
 
     String domainUri = Prefs.getString("shore_backend_uri");
@@ -527,7 +525,7 @@ class SignUser with ChangeNotifier {
             "password": password,
             "deviceToken": deviceToken,
             "emailIdFirebaseId": emailIdFirebaseId,
-            "phoneNumberFirebaseId": phoneNumberFirebaseId
+            "phoneNumberFirebaseId": " "
           }),
           headers: {"Content-Type": "application/json"});
 

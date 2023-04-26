@@ -31,6 +31,7 @@ class _AuthScreenState extends State<AuthScreen> {
   final _confirmPasswordController = TextEditingController();
   final _authController = TextEditingController();
   final _confirmCodeController = TextEditingController();
+  late ConfirmationResult _confirmationResult;
 
   FirebaseAuth auth = FirebaseAuth.instance;
   late String verificationId;
@@ -125,43 +126,48 @@ class _AuthScreenState extends State<AuthScreen> {
   Future codeSubmit() async {
     changeLoading(true);
 
-    late final String emailIdFirebaseId;
-    late final String phoneNumberFirebaseId;
-    late final phoneAuthCredential;
-    User phoneAuthUser;
+    // late final String emailIdFirebaseId;
+    // late final String phoneNumberFirebaseId;
+    // late final phoneAuthCredential;
+    // User phoneAuthUser;
     User emailIdAuthUser;
 
-    if (!isCodeValidation) {
-      return;
-    }
-
-    try {
-      phoneAuthCredential = await PhoneAuthProvider.credential(
-          verificationId: this.verificationId,
-          smsCode: _confirmCodeController.text.trim());
-
-      print("step 1");
-
-      final authCredential =
-          await auth.signInWithCredential(phoneAuthCredential);
-
-      // phoneNumberFirebaseId = authCredential.user!.uid;
-
-      phoneAuthUser = authCredential.user!;
-
-      print("step 2");
-
-      if (authCredential.user == null) {
-        snackBar(context, "Invalid Code");
-        changeLoading(false);
-        return;
-      }
-    } catch (e) {
-      print(e);
-      snackBar(context, "Invalid Code");
+    if (!isRegisterValidation) {
       changeLoading(false);
       return;
     }
+
+    // if (!isCodeValidation) {
+    //   return;
+    // }
+
+    // try {
+    //   phoneAuthCredential = await PhoneAuthProvider.credential(
+    //       verificationId: this.verificationId,
+    //       smsCode: _confirmCodeController.text.trim());
+
+    //   print("step 1");
+
+    //   final authCredential =
+    //       await auth.signInWithCredential(phoneAuthCredential);
+
+    //   // phoneNumberFirebaseId = authCredential.user!.uid;
+
+    //   phoneAuthUser = authCredential.user!;
+
+    //   print("step 2");
+
+    //   if (authCredential.user == null) {
+    //     snackBar(context, "Invalid Code");
+    //     changeLoading(false);
+    //     return;
+    //   }
+    // } catch (e) {
+    //   print(e);
+    //   snackBar(context, "Invalid Code");
+    //   changeLoading(false);
+    //   return;
+    // }
 
     try {
       final credential = await auth.createUserWithEmailAndPassword(
@@ -200,13 +206,29 @@ class _AuthScreenState extends State<AuthScreen> {
           _emailIdController.text,
           _passwordController.text,
           _confirmPasswordController.text,
-          emailIdAuthUser.uid,
-          phoneAuthUser.uid,
-          phoneAuthCredential);
+          emailIdAuthUser.uid);
 
       if (Res == "Done") {
         changeLogin(true);
-        changeConfirmCode(false);
+        // changeConfirmCode(false);
+
+        showDialog(
+          context: context,
+          builder: (context) {
+            return AlertDialog(
+              title: Text("Email Verification"),
+              content: Text("Please Verify Your Email Before Login"),
+              actions: [
+                TextButton(
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                  child: Text("Ok"),
+                ),
+              ],
+            );
+          },
+        );
 
         _nameController.clear();
         _userNameController.clear();
@@ -215,7 +237,7 @@ class _AuthScreenState extends State<AuthScreen> {
         _passwordController.clear();
         _confirmPasswordController.clear();
       } else {
-        await phoneAuthUser.delete();
+        // await phoneAuthUser.delete();
         await emailIdAuthUser.delete();
         var snackBar = SnackBar(content: Text(Res));
         ScaffoldMessenger.of(context).showSnackBar(snackBar);
@@ -245,14 +267,16 @@ class _AuthScreenState extends State<AuthScreen> {
       return;
     }
     try {
-      auth.verifyPhoneNumber(
+      await auth.verifyPhoneNumber(
           phoneNumber: "+91${_phoneNumberController.text}",
           verificationCompleted: (PhoneAuthCredential credential) async {
             print("Completed: ${credential}}");
             changeLoading(false);
+            snackBar(context, "Verification Complete");
           },
           verificationFailed: (FirebaseAuthException e) {
             print("Failed: $e");
+            snackBar(context, e.message!);
             changeLoading(false);
           },
           codeSent: (String verificationId, int? resendToken) {
@@ -261,6 +285,7 @@ class _AuthScreenState extends State<AuthScreen> {
             });
             changeConfirmCode(true);
             changeLoading(false);
+            snackBar(context, "Code Sent");
             print("Code Sent: $verificationId and $resendToken");
           },
           codeAutoRetrievalTimeout: (String verificationId) {
@@ -282,16 +307,11 @@ class _AuthScreenState extends State<AuthScreen> {
     }
 
     try {
+      print("started 1");
       String loginRes = await Provider.of<SignUser>(context, listen: false)
           .signIn(_authController.text, _passwordController.text);
 
-      // if (!auth.currentUser!.emailVerified) {
-      //   snackBar(context, "Please Verify Your Email", duration: 1500);
-      //   await auth.currentUser!.sendEmailVerification();
-      //   Prefs.remove("shore_accessToken");
-      //   changeLoading(false);
-      //   return;
-      // }
+      print(loginRes);
 
       if (loginRes == "Done") {
         await auth.signInWithEmailAndPassword(
@@ -299,6 +319,38 @@ class _AuthScreenState extends State<AuthScreen> {
                 .getUserDetails
                 .emailId,
             password: _passwordController.text);
+
+        if (!auth.currentUser!.emailVerified) {
+          snackBar(context, "Please Verify Your Email", duration: 1500);
+
+          showDialog(
+            context: context,
+            builder: (context) {
+              return AlertDialog(
+                title: Text("Email Verification"),
+                content: Text("Please Verify Your Email"),
+                actions: [
+                  TextButton(
+                    onPressed: () {
+                      auth.currentUser!.sendEmailVerification();
+                      Navigator.of(context).pop();
+                    },
+                    child: Text("Send Again"),
+                  ),
+                  TextButton(
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                      },
+                      child: Text("Ok"))
+                ],
+              );
+            },
+          );
+
+          Prefs.remove("shore_accessToken");
+          changeLoading(false);
+          return;
+        }
 
         snackBar(context, "Logged In");
         Navigator.of(context).popAndPushNamed(HomeScreen.routeName);
@@ -721,7 +773,8 @@ class _AuthScreenState extends State<AuthScreen> {
           ]),
           child: TextButton(
               onPressed: () async {
-                await registerHandler();
+                // await registerHandler();
+                await codeSubmit();
               },
               style: ButtonStyle(
                   backgroundColor: MaterialStateProperty.all<Color>(
@@ -876,11 +929,12 @@ class _AuthScreenState extends State<AuthScreen> {
                   height: MediaQuery.of(context).size.height,
                   child: Center(
                     child: Container(
-                      child: isConfirmCode
-                          ? verify
-                          : isLogin
-                              ? login
-                              : register,
+                      // child: isConfirmCode
+                      //     ? verify
+                      //     : isLogin
+                      //         ? login
+                      //         : register,
+                      child: isLogin ? login : register,
                     ),
                   ),
                 ),
