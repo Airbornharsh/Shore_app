@@ -155,7 +155,7 @@ class _ChatScreenState extends State<ChatScreen> {
                         physics: BouncingScrollPhysics(),
                         shrinkWrap: true,
                         itemBuilder: (context, index) {
-                          if (index == messages.length - 1 && widget.start) {
+                          if (index == messages.length - 1) {
                             Timer(Duration(milliseconds: 400), () {
                               _scrollController.jumpTo(
                                   _scrollController.position.maxScrollExtent);
