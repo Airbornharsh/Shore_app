@@ -15,6 +15,7 @@ class Posts with ChangeNotifier {
       var postRes = await client.post(
         Uri.parse("$domainUri/api/post/get"),
         body: json.encode({"page": 1}),
+        headers: {"Content-Type": "application/json"}
       );
 
       var postResBody = json.decode(postRes.body);
@@ -50,7 +51,8 @@ class Posts with ChangeNotifier {
     try {
       var postRes = await client.post(
         Uri.parse("$domainUri/api/post/get"),
-        body: json.encode({"page": page}),
+        body: json.encode({"page": 1}),
+        headers: {"Content-Type": "application/json"}
       );
 
       var postResBody = json.decode(postRes.body);
