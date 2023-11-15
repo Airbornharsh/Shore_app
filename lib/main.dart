@@ -72,7 +72,7 @@ Future main() async {
     print('Got a message whilst in the foreground!');
     print('Message data: ${message.data}');
     // Provider.of<SignUser>(navigatorKey.currentState!.context, listen: false)
-    //     .addMessage(message.data);
+    // .addMessage(message.data);
   });
 
 //Application in Background
@@ -85,33 +85,34 @@ Future main() async {
           .popUntil((route) => route == HomeScreen.routeName);
       Navigator.of(navigatorKey.currentState!.context)
           .pushNamed(HomeScreen.routeName);
-      Navigator.of(
-        navigatorKey.currentState!.context,
-      ).pushNamed(ChatScreen.routeName,
-          arguments: message.data["senderUserId"]);
+      if (message.data["for"] == "messaging")
+        Navigator.of(
+          navigatorKey.currentState!.context,
+        ).pushNamed(ChatScreen.routeName,
+            arguments: message.data["senderUserId"]);
+      else if (message.data["for"] == "follow") {
+        var user = await Provider.of<UnsignUser>(
+                navigatorKey.currentState!.context,
+                listen: false)
+            .reloadUser(message.data["userId"]);
+        Navigator.of(
+          navigatorKey.currentState!.context,
+        ).pushNamed(UserScreen.routeName, arguments: user);
+      } else if (message.data["for"] == "comment")
+        Navigator.of(
+          navigatorKey.currentState!.context,
+        ).pushNamed(CommentScreen.routeName, arguments: message.data["postId"]);
     } else {
       print("Message is null");
     }
   });
-
-  //Application is Terminateed or Killed
-  // FirebaseMessaging.instance
-  //     .getInitialMessage()
-  //     .then((RemoteMessage? message) async {
-  //   if (message != null) {
-  //     print('Message clicked: ${message.data} 09');
-  //     Navigator.popAndPushNamed(
-  //         navigatorKey.currentState!.context, MessageClicked.routeName,
-  //         arguments: message.data);
-  //   }
-  // });
 
   FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
 
   runApp(const MyApp());
 }
 
-Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
+Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage? message) async {
   if (message != null) {
     await Firebase.initializeApp();
     print("Handling a background message: ${message.data}");
@@ -119,9 +120,25 @@ Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
     //     .popUntil((route) => route == HomeScreen.routeName);
     Navigator.of(navigatorKey.currentState!.context)
         .pushNamed(HomeScreen.routeName);
-    Navigator.of(
-      navigatorKey.currentState!.context,
-    ).pushNamed(ChatScreen.routeName, arguments: message.data["senderUserId"]);
+    if (message.data["for"] == "messaging")
+      Navigator.of(
+        navigatorKey.currentState!.context,
+      ).pushNamed(ChatScreen.routeName,
+          arguments: message.data["senderUserId"]);
+    else if (message.data["for"] == "follow") {
+      var user = await Provider.of<UnsignUser>(
+              navigatorKey.currentState!.context,
+              listen: false)
+          .reloadUser(message.data["userId"]);
+      Navigator.of(
+        navigatorKey.currentState!.context,
+      ).pushNamed(UserScreen.routeName, arguments: user);
+    } else if (message.data["for"] == "comment")
+      Navigator.of(
+        navigatorKey.currentState!.context,
+      ).pushNamed(CommentScreen.routeName, arguments: message.data["postId"]);
+  } else {
+    print("Message is null");
   }
 }
 
