@@ -1,6 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:shore_app/Components/Post/PostActivity.dart';
 import 'package:shore_app/models.dart';
 import 'package:shore_app/provider/Posts.dart';
 import 'package:shore_app/provider/SignUser.dart';
@@ -158,119 +159,15 @@ class _UnsignUserPostListItemState extends State<UnsignUserPostListItem> {
                       : null,
                 ),
               ),
-              Row(mainAxisAlignment: MainAxisAlignment.spaceAround, children: [
-                GestureDetector(
-                  onTap: () async {
-                    if (Provider.of<SignUser>(context, listen: false)
-                        .getIsAuth) {
-                      try {
-                        if (isLiked) {
-                          setState(() {
-                            widget.post.likes.remove(userDetails.id);
-                          });
-                          await Provider.of<SignUser>(context, listen: false)
-                              .postUnlike(widget.post.id);
-                        } else {
-                          setState(() {
-                            widget.post.likes.add(userDetails.id);
-                          });
-                          await Provider.of<SignUser>(context, listen: false)
-                              .postLike(widget.post.id);
-                        }
-                      } catch (e) {
-                        print(e);
-                      }
-                    } else {
-                      Navigator.of(context)
-                          .popAndPushNamed(AuthScreen.routeName);
-                    }
-                  },
-                  child: Container(
-                    height: 50,
-                    width: MediaQuery.of(context).size.width / 3,
-                    decoration: BoxDecoration(
-                      border: Border.all(color: Colors.grey),
-                    ),
-                    child: Center(
-                        child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        isLiked
-                            ? const Icon(
-                                Icons.favorite,
-                                color: Colors.red,
-                              )
-                            : const Icon(
-                                Icons.favorite_border_outlined,
-                                color: Colors.grey,
-                              ),
-                        const SizedBox(
-                          width: 4,
-                        ),
-                        Text(_likes.toString(),
-                            style: TextStyle(color: Colors.black))
-                      ],
-                    )),
-                  ),
-                ),
-                Container(
-                  decoration:
-                      BoxDecoration(border: Border.all(color: Colors.grey)),
-                  width: MediaQuery.of(context).size.width / 3,
-                  child: Center(
-                    child: IconButton(
-                        onPressed: () {},
-                        icon: const Icon(
-                          Icons.comment_bank_outlined,
-                          color: Colors.grey,
-                        )),
-                  ),
-                ),
-                GestureDetector(
-                  onTap: () async {
-                    if (Provider.of<SignUser>(context, listen: false)
-                        .getIsAuth) {
-                      try {
-                        if (isFav) {
-                          setState(() {
-                            isFav = false;
-                          });
-                          await Provider.of<SignUser>(context, listen: false)
-                              .postRemoveFav(widget.post.id);
-                        } else {
-                          setState(() {
-                            isFav = true;
-                          });
-                          await Provider.of<SignUser>(context, listen: false)
-                              .postAddFav(widget.post.id);
-                        }
-                      } catch (e) {
-                        print(e);
-                      }
-                    } else {
-                      Navigator.of(context)
-                          .popAndPushNamed(AuthScreen.routeName);
-                    }
-                  },
-                  child: Container(
-                    height: 50,
-                    width: MediaQuery.of(context).size.width / 3,
-                    decoration: BoxDecoration(
-                      border: Border.all(color: Colors.grey),
-                    ),
-                    child: Center(
-                        child: isFav
-                            ? const Icon(
-                                Icons.bookmark,
-                                color: Colors.grey,
-                              )
-                            : const Icon(
-                                Icons.bookmark_add_outlined,
-                                color: Colors.grey,
-                              )),
-                  ),
-                ),
-              ])
+              PostActivity(
+                isLiked: isLiked,
+                isFav: isFav,
+                userId: userDetails.id,
+                likes: widget.post.likes,
+                postId: widget.post.id,
+                likesNo: widget.post.likes.length.toString(),
+                commentNo: widget.post.comments.length.toString(),
+              )
             ],
           )),
         ),

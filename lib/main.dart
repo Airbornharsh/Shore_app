@@ -7,6 +7,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart';
+// import 'package:permission_handler/permission_handler.dart';
 // import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:provider/provider.dart';
 import 'package:shore_app/Utils/Prefs.dart';
@@ -44,7 +45,7 @@ Future main() async {
       options: DefaultFirebaseOptions.currentPlatform);
 
   await FirebaseAppCheck.instance.activate(
-    webRecaptchaSiteKey: "6LeDK7slAAAAAA1wfDN9f8AB5d7sJINwuD6MDcG1",
+    webRecaptchaSiteKey: "6LeDK7slAAAAAA1wfDN9f8AB5d7sJINwuD6MDPcG1",
     androidProvider: AndroidProvider.playIntegrity,
   );
 
@@ -147,6 +148,7 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
     return MultiProvider(
       providers: [
         ChangeNotifierProvider.value(value: AppSetting()),
@@ -155,6 +157,7 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider.value(value: Posts()),
       ],
       child: MaterialApp(
+        
         title: 'MTrace',
         theme: ThemeData(
           colorScheme: ColorScheme.fromSwatch().copyWith(

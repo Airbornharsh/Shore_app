@@ -267,7 +267,7 @@ class _NewPostScreenState extends State<NewPostScreen> {
                                       _isLoading = false;
                                     });
                                     if (res) {
-                                      snackBar(context, "Post 5Uploaded");
+                                      snackBar(context, "Post Uploaded");
                                       setState(() {
                                         _descriptionController.clear();
                                         _isFile = "";

@@ -1,5 +1,6 @@
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
 import 'package:shore_app/Components/ChatScreen/Chats.dart';
 import 'package:shore_app/Components/CustomAppBar.dart';
@@ -52,10 +53,63 @@ class _HomeScreenState extends State<HomeScreen> {
     print('User granted permission: ${settings.authorizationStatus}');
   }
 
+  void permissionHandler() async {
+    // bool isStoragePermission = true;
+    // bool isVideosPermission = true;
+    // bool isPhotosPermission = true;
+
+    try {
+      // var status = await Permission.manageExternalStorage.request();
+      // if (status.isGranted) {
+      //   print('isGranted');
+      // } else if (status.isPermanentlyDenied) {
+      //   print('isPermanentlyDenied');
+      //   openAppSettings();
+      // } else if (status.isDenied) {
+      //   print('isDenied');
+      //   openAppSettings();
+      // }
+      await Permission.storage.request();
+      await Permission.videos.request();
+      await Permission.photos.request();
+      await Permission.manageExternalStorage.request();
+      await Permission.mediaLibrary.request();
+
+      // DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
+      // AndroidDeviceInfo androidInfo = await deviceInfo.androidInfo;
+      // if (androidInfo.version.sdkInt! >= 33) {
+      //   isVideosPermission = await Permission.videos.status.isGranted;
+      //   isPhotosPermission = await Permission.photos.status.isGranted;
+      //   print('isVideosPermission $isVideosPermission');
+      // } else {
+      //   print('isStoragePermission $isStoragePermission');
+      //   isStoragePermission = await Permission.storage.status.isGranted;
+      // }
+
+      // if (!isStoragePermission || !isVideosPermission || !isPhotosPermission) {
+      //   print('request');
+      // }
+
+      // print('request Done');
+      // if (await Permission.storage.request().isGranted) {
+      //   print('isGranted');
+      // } else if (await Permission.storage.request().isPermanentlyDenied) {
+      //   print('isPermanentlyDenied');
+      //   openAppSettings();
+      // } else if (await Permission.storage.request().isDenied) {
+      //   print('isDenied');
+      //   openAppSettings();
+      // }
+    } catch (e) {
+      print('~~error~~~>>>>>> $e');
+    }
+  }
+
   @override
   void initState() {
     // TODO: implement initState
     notificationSetting();
+    permissionHandler();
     cloud_firestore.updateAvailability();
 
     _pageController = PageController(initialPage: 1);

@@ -306,6 +306,8 @@ class _NewPostContainerState extends State<NewPostContainer> {
                     _isCroppped = false;
                   });
                   widget.setIsLoading(true);
+                  print(await FilePicker.platform.getDirectoryPath());
+
                   FilePickerResult? result = await FilePicker.platform
                       .pickFiles(type: FileType.image, allowMultiple: false);
 

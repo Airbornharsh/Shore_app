@@ -23,6 +23,12 @@ class _UserScreenState extends State<UserScreen> {
   List<UserPostModel> unsignUserPostList = [];
   bool isPrivate = true;
 
+  void loadingFn(bool val) {
+    setState(() {
+      _isLoading = val;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     final UserModel profileDetails =
@@ -74,7 +80,8 @@ class _UserScreenState extends State<UserScreen> {
               decoration: BoxDecoration(color: Colors.grey.shade200),
               child: Column(
                 children: [
-                  if (user.id != profileDetails.id) UserDetails(user: user),
+                  if (user.id != profileDetails.id)
+                    UserDetails(user: user, loadingFn: loadingFn),
                   if (user.id == profileDetails.id)
                     ProfileDetails(user: profileDetails),
                   if (user.id != profileDetails.id)

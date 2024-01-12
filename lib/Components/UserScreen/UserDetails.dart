@@ -9,7 +9,8 @@ import 'package:shore_app/screens/FollowingsScreen.dart';
 
 class UserDetails extends StatefulWidget {
   UnsignUserModel user;
-  UserDetails({required this.user, super.key});
+  Function loadingFn;
+  UserDetails({required this.user, required this.loadingFn, super.key});
   bool start = true;
 
   @override
@@ -22,6 +23,9 @@ class _UserDetailsState extends State<UserDetails> {
   @override
   Widget build(BuildContext context) {
     if (widget.start) {
+      // setState(() {
+      //   widget.loadingFn(true);
+      // });
       final res = Provider.of<SignUser>(context).isFollowing(widget.user.id);
       setState(() {
         if (res.isEmpty) {
@@ -29,7 +33,9 @@ class _UserDetailsState extends State<UserDetails> {
         } else {
           isFollowing = res;
         }
+
         widget.start = false;
+        // widget.loadingFn(false);
       });
     }
 
@@ -93,6 +99,7 @@ class _UserDetailsState extends State<UserDetails> {
                   if (isFollowing == "Follow")
                     TextButton(
                         onPressed: () async {
+                          widget.loadingFn(true);
                           if (Provider.of<SignUser>(context, listen: false)
                               .getIsAuth) {
                             try {
@@ -113,6 +120,7 @@ class _UserDetailsState extends State<UserDetails> {
                             Navigator.of(context)
                                 .popAndPushNamed(AuthScreen.routeName);
                           }
+                          widget.loadingFn(false);
                         },
                         style: ButtonStyle(
                             backgroundColor: MaterialStatePropertyAll<Color>(
@@ -157,6 +165,7 @@ class _UserDetailsState extends State<UserDetails> {
                   if (isFollowing == "Following")
                     TextButton(
                         onPressed: () async {
+                          widget.loadingFn(true);
                           try {
                             await Provider.of<SignUser>(context, listen: false)
                                 .unfollow(widget.user.id);
@@ -169,6 +178,8 @@ class _UserDetailsState extends State<UserDetails> {
                             });
                           } catch (e) {
                             print(e);
+                          } finally {
+                            widget.loadingFn(false);
                           }
                         },
                         style: ButtonStyle(
